@@ -15,6 +15,12 @@ h1 { font-size: 2.2rem;
   margin-top: 0px;
 }
 
+.contact-inline {
+  text-align: center;
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+}
+
 .menu {
   display: flex;
   align-items: center;
@@ -81,28 +87,6 @@ h1 { font-size: 2.2rem;
   margin-top: 0;
 }
 
-/*
-.photo-placeholder {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border: 1px solid #ddd;
-  background-color: #f0f0f0;
-  color: #888;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 0.9rem;
-}
-.photo-caption {
-  margin-top: 8px;
-  text-align: center;
-  font-size: 0.85rem;
-  color: #777;
-}
-*/
-
 .photo-frame {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -122,26 +106,6 @@ h1 { font-size: 2.2rem;
   height: auto;
   display: block;
 }
-
-/*
-.services {
-  display: flex;
-  gap: 40px;
-  margin-top: 40px;
-}
-.services-left,
-.services-right {
-  flex: 1;
-}
-
-hr {
-  border: none;
-  border-top: 5px solid #000000;
-  margin: 24px 0;
-}
-
-p { color: #555; }
-*/
 
 .client-profile {
   margin-top: 60px;
@@ -163,15 +127,14 @@ p { color: #555; }
   border: 1px solid #ddd;
 }
 
-.contact {
+#contact {
   margin-top: 60px;
   padding-top: 6px;
   border-top: 1px solid #ddd;
 }
-.contact h2 {
+#contact h2 {
   text-align: center;
 }
-
 .footer {
   margin-top: 40px;
   padding-top: 0px;
