@@ -151,6 +151,13 @@ h1 { font-size: 2.2rem;
     flex-direction: column;
   }
 
+  /* Add horizontal padding so text doesn't hug screen edges */
+  .home-right,
+  .contact {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
   /* Client panels: stack vertically */
   .client-panels {
     flex-direction: column;
