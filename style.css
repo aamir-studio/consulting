@@ -87,17 +87,22 @@ h1 { font-size: 2.2rem;
   margin-top: 0;
 }
 
-.linkedin-badge-frame {
+.photo-frame {
   width: 100%;
-  min-height: 240px;
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 0;
+  border: 1px solid #ddd;
+  background-color: #f0f0f0;
+  overflow: hidden;
 }
 
-.linkedin-badge-frame .LI-profile-badge {
-  max-width: 100%;
+.photo-frame img {
+  max-width: 95%;
+  max-height: 95%;
+  height: auto;
+  display: block;
 }
 
 .client-profile {
