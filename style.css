@@ -101,9 +101,12 @@ h1 { font-size: 2.2rem;
 }
 
 .linkedin-card {
+  display: block;
+  box-sizing: border-box;
   width: min(100%, 320px);
   background-color: #ffffff;
   border: 1px solid #d9d9d9;
+  border-radius: 18px;
   color: #111111;
   text-decoration: none;
   padding: 28px 24px;
