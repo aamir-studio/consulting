@@ -87,9 +87,9 @@ h1 { font-size: 2.2rem;
   margin-top: 0;
 }
 
-.linkedin-card-frame {
+.photo-frame {
   width: 100%;
-  min-height: 352px;
+  aspect-ratio: 1 / 1;
   border: 1px solid #ddd;
   background-color: #f0f0f0;
 
@@ -97,77 +97,14 @@ h1 { font-size: 2.2rem;
   align-items: center;
   justify-content: center;
 
-  padding: 16px;
+  overflow: hidden;
 }
 
-.linkedin-card {
+.photo-frame img {
+  max-width: 95%;
+  max-height: 95%;
+  height: auto;
   display: block;
-  box-sizing: border-box;
-  width: min(100%, 320px);
-  background-color: #ffffff;
-  border: 1px solid #d9d9d9;
-  border-radius: 18px;
-  color: #111111;
-  text-decoration: none;
-  padding: 28px 24px;
-  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.08);
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-}
-
-.linkedin-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 34px rgba(0, 0, 0, 0.12);
-  border-color: #0a66c2;
-}
-
-.linkedin-card__eyebrow {
-  display: block;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #0a66c2;
-  margin-bottom: 16px;
-}
-
-.linkedin-card__brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
-.linkedin-card__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background-color: #0a66c2;
-  color: #ffffff;
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.linkedin-card__name {
-  font-size: 1.45rem;
-  font-weight: 700;
-}
-
-.linkedin-card__handle,
-.linkedin-card__cta {
-  display: block;
-}
-
-.linkedin-card__handle {
-  color: #555555;
-  margin-bottom: 22px;
-}
-
-.linkedin-card__cta {
-  font-weight: 600;
-  color: #0a66c2;
 }
 
 .client-profile {
