@@ -74,14 +74,15 @@ h1 { font-size: 2.2rem;
 }
 
 .home {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 40px;
   margin-top: 40px;
-  align-items: flex-start;
+  align-items: start;
 }
 .home-left,
 .home-right {
-  flex: 1;
+  min-width: 0;
 }
 .home-right p:first-child {
   margin-top: 0;
@@ -89,6 +90,8 @@ h1 { font-size: 2.2rem;
 
 .photo-frame {
   width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
   aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
@@ -99,8 +102,8 @@ h1 { font-size: 2.2rem;
 }
 
 .photo-frame img {
-  max-width: 95%;
-  max-height: 95%;
+  max-width: 78%;
+  max-height: 78%;
   height: auto;
   display: block;
 }
@@ -146,7 +149,11 @@ h1 { font-size: 2.2rem;
 @media (max-width: 768px) {
   /* Home section: stack photo above text */
   .home {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+  }
+
+  .photo-frame {
+    max-width: none;
   }
 
   /* Add horizontal padding so text doesn't hug screen edges */
