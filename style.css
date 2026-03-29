@@ -40,7 +40,7 @@ h1 { font-size: 2.2rem;
 .site-header-logo {
   display: flex;
   justify-content: flex-end;
-  align-items: stretch;
+  align-items: flex-start;
 }
 
 .site-header-logo-frame {
@@ -357,10 +357,12 @@ h1 { font-size: 2.2rem;
   .site-header-logo {
     flex: 0 0 auto;
     justify-content: flex-start;
+    align-items: flex-start;
   }
 
   .site-header-logo-frame {
     padding: 6px;
+    height: auto;
   }
 
   .site-header-logo img {
