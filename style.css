@@ -21,6 +21,65 @@ h1 { font-size: 2.2rem;
   font-size: 0.95rem;
 }
 
+.site-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.site-header-logo,
+.site-header-copy {
+  flex: 1;
+}
+
+.site-header-copy {
+  position: relative;
+  top: -10px;
+}
+
+.site-header-logo {
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+.site-header-logo-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 0.25px solid #ddd;
+  background-color: #f0f0f0;
+  box-sizing: border-box;
+}
+
+.site-header-logo img {
+  width: auto;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.site-header h1 {
+  text-align: left;
+}
+
+.site-header .subtitle {
+  text-align: left;
+}
+
+.site-header .contact-inline {
+  text-align: left;
+}
+
+.site-header-copy > :first-child {
+  margin-top: 0;
+}
+
+.site-header-copy > :last-child {
+  margin-bottom: 0;
+}
+
 .menu {
   display: flex;
   align-items: center;
@@ -87,6 +146,10 @@ h1 { font-size: 2.2rem;
   margin-top: 0;
 }
 
+.home-right p:last-child {
+  margin-bottom: 0;
+}
+
 .photo-frame {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -107,24 +170,67 @@ h1 { font-size: 2.2rem;
   display: block;
 }
 
-.client-profile {
-  margin-top: 60px;
+.photo-caption {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.services {
+  margin-top: 40px;
   padding-top: 6px;
   border-top: 1px solid #ddd;
 }
-.client-profile h2 {
+.services h2 {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 8px;
 }
-.client-panels {
+
+.services-subtitle {
+  margin-top: 0;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.service-intro {
+  margin-bottom: 24px;
+  border: 1px solid #ddd;
+  padding: 24px;
+}
+
+.service-intro p {
+  margin: 0;
+}
+
+.service-outro {
+  margin-top: 24px;
+  margin-bottom: 0;
+}
+
+.service-outro h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.service-panels {
   display: flex;
   gap: 24px;
 }
-.client-panel {
+.service-panel {
   flex: 1;
   background-color: #f0f0f0;
   padding: 20px;
   border: 1px solid #ddd;
+}
+
+.service-panel ul {
+  margin: 12px 0 0;
+  padding-left: 20px;
+}
+
+.service-panel li + li {
+  margin-top: 6px;
 }
 
 #contact {
@@ -132,9 +238,104 @@ h1 { font-size: 2.2rem;
   padding-top: 6px;
   border-top: 1px solid #ddd;
 }
+
 #contact h2 {
   text-align: center;
+  margin-bottom: 32px;
 }
+
+.contact-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.contact-form {
+  flex: 1;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 24px;
+}
+
+.contact-copy {
+  border: 1px solid #ddd;
+  padding: 24px;
+}
+
+.contact-copy p:first-child {
+  margin-top: 0;
+}
+
+.contact-copy p:last-child {
+  margin-bottom: 0;
+}
+
+.contact-form {
+  display: grid;
+  gap: 14px;
+}
+
+.contact-form-title {
+  margin: 0 0 4px;
+  text-align: center;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.optional-label {
+  color: #777777;
+  font-weight: 400;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #bbb;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  font: inherit;
+}
+
+.contact-form textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+
+.primary-button,
+.contact-form button {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid #000000;
+  background-color: #000000;
+  color: #ffffff;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.primary-button:hover,
+.contact-form button:hover {
+  background-color: #222222;
+}
+
+.contact-form-note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #444444;
+}
+
 .footer {
   margin-top: 40px;
   padding-top: 0px;
@@ -146,6 +347,30 @@ h1 { font-size: 2.2rem;
 
 /* For mobile scaling. */
 @media (max-width: 768px) {
+  .site-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .site-header-logo {
+    justify-content: center;
+  }
+
+  .site-header-logo img {
+    width: min(100%, 90px);
+    height: auto;
+  }
+
+  .site-header-copy {
+    top: 0;
+  }
+
+  .site-header h1,
+  .site-header .subtitle,
+  .site-header .contact-inline {
+    text-align: center;
+  }
+
   /* Home section: stack photo above text */
   .home {
     flex-direction: column;
@@ -159,7 +384,15 @@ h1 { font-size: 2.2rem;
   }
 
   /* Client panels: stack vertically */
-  .client-panels {
+  .service-panels {
     flex-direction: column;
+  }
+
+  .contact-layout {
+    flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
   }
 }
