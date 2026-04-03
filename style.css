@@ -180,7 +180,7 @@ h1 { font-size: 2.2rem;
 .services {
   margin-top: 40px;
   padding-top: 6px;
-  border-top: 1px solid #ddd;
+  border-top: 6px solid #000000;
 }
 .services h2 {
   text-align: center;
@@ -231,13 +231,17 @@ h1 { font-size: 2.2rem;
 }
 
 .service-panel li + li {
-  margin-top: 6px;
+  margin-top: 12px;
+}
+
+.service-panel li p {
+  margin: 6px 0 0;
 }
 
 #contact {
   margin-top: 60px;
   padding-top: 6px;
-  border-top: 1px solid #ddd;
+  border-top: 6px solid #000000;
 }
 
 #contact h2 {

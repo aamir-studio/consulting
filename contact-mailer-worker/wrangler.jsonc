@@ -9,7 +9,7 @@
     }
   ],
   "vars": {
-    "CONTACT_FORM_SENDER": "contact@aamir.consulting",
+    "CONTACT_FORM_SENDER": "mailer@aamir.consulting",
     "CONTACT_FORM_RECIPIENT": "aamir.consulting@proton.me"
   }
 }

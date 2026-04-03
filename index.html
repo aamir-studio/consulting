@@ -107,9 +107,27 @@
           </p>
           <p>Here, I offer:</p>
           <ul>
-            <li>Evaluation and Design</li>
-            <li>Execution and Analysis</li>
-            <li>Salvaging Results</li>
+            <li>
+              <strong>Evaluation and Design</strong>
+              <p>
+                Add a short description here about how you assess research goals,
+                identify constraints, and shape a clear analytical path forward.
+              </p>
+            </li>
+            <li>
+              <strong>Execution and Analysis</strong>
+              <p>
+                Add a short description here about your hands-on modeling, computation,
+                data analysis, and interpretation work.
+              </p>
+            </li>
+            <li>
+              <strong>Salvaging Results</strong>
+              <p>
+                Add a short description here about revisiting difficult projects,
+                recovering value from stalled work, and clarifying what still matters.
+              </p>
+            </li>
           </ul>
         </div>
 
@@ -123,9 +141,27 @@
           </p>
           <p>Here, I offer:</p>
           <ul>
-            <li>Evaluation and Mapping</li>
-            <li>Installing Analytics</li>
-            <li>Execution and Delivery</li>
+            <li>
+              <strong>Evaluation and Mapping</strong>
+              <p>
+                Add a short description here about understanding your current process,
+                identifying bottlenecks, and mapping where better systems can help.
+              </p>
+            </li>
+            <li>
+              <strong>Installing Analytics</strong>
+              <p>
+                Add a short description here about creating reporting, measurement,
+                and feedback systems that support practical decisions.
+              </p>
+            </li>
+            <li>
+              <strong>Execution and Delivery</strong>
+              <p>
+                Add a short description here about carrying solutions through
+                implementation and turning ideas into useful outcomes.
+              </p>
+            </li>
           </ul>
         </div>
       </div>
@@ -161,7 +197,7 @@
               rel="noopener noreferrer"
             >
               LinkedIn
-            </a>.
+            </a>if you prefer.
             I look forward to
             engaging with you!
           </p>
@@ -207,10 +243,6 @@
 
           <button type="submit">Send Message</button>
           <p class="contact-form-status" id="contact-form-status" role="status" aria-live="polite"></p>
-          <p class="contact-form-note">
-            This form is wired for Cloudflare Pages and Email Routing. Once the
-            required bindings are configured, submissions will email me directly.
-          </p>
         </form>
       </div>
     </section>
@@ -262,7 +294,7 @@
         }
 
         if (status === "success") {
-          setContactFormStatus("Thanks. Your message has been sent.", "success");
+          setContactFormStatus("Thank you! Your message has been sent.", "success");
         } else {
           setContactFormStatus(
             "I could not send your message just now. Please try again or reach out on LinkedIn.",
@@ -313,7 +345,7 @@
           }
 
           form.reset();
-          setContactFormStatus("Thanks. Your message has been sent.", "success");
+          setContactFormStatus("Thank you! Your message has been sent.", "success");
         } catch (error) {
           setContactFormStatus(
             error.message || "Unable to send your message right now.",

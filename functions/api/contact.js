@@ -38,7 +38,7 @@ function errorResponse(request, message, status = 400) {
 
 function successResponse(request) {
   if (wantsJson(request)) {
-    return jsonResponse({ ok: true, message: "Thanks. Your message has been sent." });
+    return jsonResponse({ ok: true, message: "Thank you! Your message has been sent." });
   }
 
   return redirectToContact(request, "success");
