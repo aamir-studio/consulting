@@ -1,0 +1,15 @@
+{
+  "name": "aamir-consulting-contact-mailer",
+  "main": "src/index.js",
+  "compatibility_date": "2026-04-02",
+  "send_email": [
+    {
+      "name": "CONTACT_SEND_EMAIL",
+      "destination_address": "aamir.consulting@proton.me"
+    }
+  ],
+  "vars": {
+    "CONTACT_FORM_SENDER": "contact@aamir.consulting",
+    "CONTACT_FORM_RECIPIENT": "aamir.consulting@proton.me"
+  }
+}

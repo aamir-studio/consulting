@@ -167,8 +167,8 @@
           </p>
         </div>
 
-        <form class="contact-form">
-          <h3 class="contact-form-title">Get in Touch: Form Not Functional Yet</h3>
+        <form class="contact-form" action="/api/contact" method="post" data-contact-form>
+          <h3 class="contact-form-title">Get in Touch</h3>
           <div class="form-row">
             <div class="form-field">
               <label for="contact-first-name">First Name</label>
@@ -206,9 +206,10 @@
           </div>
 
           <button type="submit">Send Message</button>
+          <p class="contact-form-status" id="contact-form-status" role="status" aria-live="polite"></p>
           <p class="contact-form-note">
-            This form still needs to be connected to an email service or backend
-            before submissions can be delivered.
+            This form is wired for Cloudflare Pages and Email Routing. Once the
+            required bindings are configured, submissions will email me directly.
           </p>
         </form>
       </div>
@@ -235,7 +236,107 @@
         headerLogoFrame.style.height = headerCopy.offsetHeight + "px";
       }
 
-      window.addEventListener("load", syncHeaderLogoHeight);
+      function setContactFormStatus(message, state) {
+        const status = document.getElementById("contact-form-status");
+
+        if (!status) {
+          return;
+        }
+
+        status.textContent = message || "";
+
+        if (state) {
+          status.dataset.state = state;
+          return;
+        }
+
+        delete status.dataset.state;
+      }
+
+      function syncContactFormStatusFromUrl() {
+        const currentUrl = new URL(window.location.href);
+        const status = currentUrl.searchParams.get("contact");
+
+        if (!status) {
+          return;
+        }
+
+        if (status === "success") {
+          setContactFormStatus("Thanks. Your message has been sent.", "success");
+        } else {
+          setContactFormStatus(
+            "I could not send your message just now. Please try again or reach out on LinkedIn.",
+            "error"
+          );
+        }
+
+        currentUrl.searchParams.delete("contact");
+        history.replaceState({}, "", currentUrl.pathname + currentUrl.search + currentUrl.hash);
+      }
+
+      async function handleContactFormSubmit(event) {
+        event.preventDefault();
+
+        const form = event.currentTarget;
+        const submitButton = form.querySelector('button[type="submit"]');
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+        const defaultButtonLabel = submitButton.textContent;
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Sending...";
+        form.setAttribute("aria-busy", "true");
+        setContactFormStatus("", "");
+
+        try {
+          const response = await fetch(form.action, {
+            method: form.method,
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          let result = null;
+
+          try {
+            result = await response.json();
+          } catch (error) {
+            result = null;
+          }
+
+          if (!response.ok || !result.ok) {
+            throw new Error(
+              (result && result.error) || "Unable to send your message right now."
+            );
+          }
+
+          form.reset();
+          setContactFormStatus("Thanks. Your message has been sent.", "success");
+        } catch (error) {
+          setContactFormStatus(
+            error.message || "Unable to send your message right now.",
+            "error"
+          );
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = defaultButtonLabel;
+          form.removeAttribute("aria-busy");
+        }
+      }
+
+      window.addEventListener("load", () => {
+        syncHeaderLogoHeight();
+        syncContactFormStatusFromUrl();
+
+        const contactForm = document.querySelector("[data-contact-form]");
+
+        if (contactForm) {
+          contactForm.addEventListener("submit", handleContactFormSubmit);
+        }
+      });
+
       window.addEventListener("resize", syncHeaderLogoHeight);
     </script>
   </body>
