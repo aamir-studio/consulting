@@ -6,11 +6,12 @@
 <title>moonflower — from home 2 the frontier</title>
 <style>
   /* ---------------------------------------------------------------
-     moonflower — standalone pitch page, v8
-     Builds on pitch7.html. Same routine, but the acrobat is a character
-     now: a face in the bloom, arms off the stem, legs it stands on. The
-     limbs are animated separately from the arc — they wind up, tuck
-     through the flip, and squash on the landing.
+     moonflower — standalone pitch page, v8 / mobile recomposed
+     Portrait now runs the same composition as landscape: lighthouse on
+     the left, beam crossing behind the bouquet in the middle, notes on
+     the right. It fits because the notes break onto shorter lines in
+     portrait — the words stay the same size, the column just gets
+     narrower.
      Self-contained: no external fonts, scripts, images or stylesheets.
      Delete this file and nothing else on the site is affected.
      --------------------------------------------------------------- */
@@ -623,6 +624,7 @@
       title:   { x: 800, y: 128, size: 128, track: 6 },
       tagline: { x: 800, y: 218, size: 58 },
       notes:   { x: 1178, blocks: [430, 572], size: 42, lead: 54, anchor: "start" },
+      copy:  [["making flowers", "for the moon"], ["using flowers", "from home"]],
       earth:   { s: 1, tx: 0, ty: 0 },
       beamEnd: { x: 1168, y: 514 },
       blooms: [
@@ -636,20 +638,28 @@
                grain: 1100, glint: 54, star: 9, dust: 130, beam: 320 }
     },
 
+    /* Same reading order as landscape — earth, then flowers, then the
+       notes — squeezed into a phone by breaking the notes onto four short
+       lines instead of two long ones. The words keep their size; only the
+       column narrows. The lighthouse, the bouquet and the notes are then
+       set at the heights that put the beam just under the flower heads
+       and well clear of the braid, the way it reads in landscape. */
     portrait: {
       viewBox: "0 0 820 1680", w: 820, h: 1680,
       title:   { x: 410, y: 132, size: 88, track: 3 },
       tagline: { x: 410, y: 212, size: 40 },
-      notes:   { x: 420, blocks: [440, 546], size: 40, lead: 44, anchor: "start" },
-      earth:   { s: 0.79, tx: -69.6, ty: 90.3 },
-      beamEnd: { x: 404, y: 500 },
+      notes:   { x: 600, blocks: [400, 633], size: 40, lead: 44, anchor: "start" },
+      copy:  [["making", "flowers", "for the", "moon"],
+              ["using", "flowers", "from", "home"]],
+      earth:   { s: 0.62, tx: -70.8, ty: 290 },
+      beamEnd: { x: 590, y: 568 },
       blooms: [
-        { x: 330, y: 768, r: 54, dissolve: 0.10, seed: 1201 },
-        { x: 416, y: 700, r: 64, dissolve: 0.55, seed: 2402 },
-        { x: 502, y: 770, r: 54, dissolve: 1.00, seed: 3603 }
+        { x: 330, y: 370, r: 44, dissolve: 0.10, seed: 1201 },
+        { x: 392, y: 330, r: 52, dissolve: 0.55, seed: 2402 },
+        { x: 452, y: 372, r: 44, dissolve: 1.00, seed: 3603 }
       ],
-      stemBase: { x: 414, y: 1120 },
-      dome:  { cx: 410, apex: 1090, k: 0.00276, ground: 1700 },
+      stemBase: { x: 390, y: 883 },
+      dome:  { cx: 410, apex: 880, k: 0.00371, ground: 1700 },
       count: { mare: 4, streak: 22, rille: 8, crater: 34, ridge: 5,
                grain: 480, glint: 26, star: 5, dust: 90, beam: 200 }
     }
@@ -1288,12 +1298,11 @@
     link("frontier", "https://www.linkedin.com/in/aamir-consulting/");
     run(" ~");
 
-    var copy = [["making flowers", "for the moon"], ["using flowers", "from home"]];
     L.notes.blocks.forEach(function(y, i){
       var n = el("text", { class: "t-note", x: L.notes.x, y: y,
                            "text-anchor": L.notes.anchor }, g);
       n.style.fontSize = L.notes.size + "px";
-      copy[i].forEach(function(lineText, j){
+      L.copy[i].forEach(function(lineText, j){
         var ts = el("tspan", { x: L.notes.x, dy: j ? L.notes.lead : 0 }, n);
         ts.textContent = lineText;
       });
