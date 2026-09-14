@@ -5,3 +5,6 @@ contact-mailer-worker/node_modules/
 # the published page is moonflower.html
 pitch.html
 pitch[0-9].html
+
+# design iterations kept for reference — local only, never deployed.
+consulting Archive/

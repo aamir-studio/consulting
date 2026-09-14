@@ -1,382 +1,1158 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>aamir.consulting - Home</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- For mobile scaling. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>aamir.consulting</title>
+<meta name="description" content="Aamir Ahmad — applied mathematician. Research support and business infrastructure for problems where numbers and people have to work together.">
+<meta name="theme-color" content="#0d0c0b">
+<meta property="og:title" content="aamir.consulting">
+<meta property="og:description" content="Math that moves the world in service of others.">
+<meta property="og:type" content="website">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   PALETTE — swap these and the whole machine changes character.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:        #0d0c0b;
+  --panel:      #1b1917;
+  --shell:      #e8d9bd;
+  --shell-dk:   #c9b590;
+  --tape:       #4a2f1d;
+  --phosphor:   #ffb648;
+  --phosphor-2: #6fe3c0;
+  --cream:      #f3ead9;
 
-  <body>
-    <header class="site-header">
-      <div class="site-header-logo">
-        <div class="site-header-logo-frame">
-          <img src="images/consulting_glyph_MASTER_website.png" alt="Aamir Consulting logo">
-        </div>
-      </div>
+  --edge: 1px solid #ffffff1f;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sans: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
 
-      <div class="site-header-copy">
-        <h1>aamir.consulting</h1>
-        <p class="subtitle">enriching effort. preserving time. applying math.</p>
-        <p class="contact-inline">
-          <a
-            class="linkedin-link"
-            href="https://www.linkedin.com/in/aamir-consulting"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            LinkedIn
-          </a>
-        </p>
-      </div>
-    </header>
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:
+    radial-gradient(120% 80% at 50% -10%, #241f1a 0%, transparent 60%),
+    var(--ink);
+  color:var(--cream);
+  font-family:var(--sans);
+  font-size:clamp(15px, 0.5vw + 13px, 17px);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:var(--phosphor); text-decoration:none; border-bottom:1px solid #ffb64855;}
+a:hover{border-bottom-color:var(--phosphor);}
+.wrap{width:min(1100px, 92vw); margin:0 auto;}
 
-    <nav class="menu">
-      <div class="menu-links">
-        <a href="#">Home</a>
-        <a href="#services">Services</a>
-        <a href="#contact">Contact</a>
-      </div>
+/* ── PANEL CHROME ── */
+.panel{
+  position:relative;
+  border:var(--edge); border-radius:14px;
+  background:linear-gradient(180deg, #1f1c1a, #141210);
+  padding:clamp(2.2rem, 3.4vw, 3rem) clamp(1.1rem, 2.6vw, 2.2rem) clamp(1.8rem, 3vw, 2.4rem);
+  margin:clamp(1.6rem, 4vw, 3.4rem) 0;
+  box-shadow:0 30px 70px -40px #000;
+}
+.panel-tab{
+  position:absolute; top:-1px; left:-1px;
+  padding:.45rem 1.5rem .5rem;
+  border:var(--edge); border-top-left-radius:14px; border-bottom-right-radius:14px;
+  background:#0f0e0d;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.26em; text-transform:uppercase;
+  color:#bfae94;
+}
+
+/* ── HEADER ── */
+header.site{
+  display:flex; align-items:center; gap:clamp(.8rem,2vw,1.3rem);
+  flex-wrap:wrap; padding:clamp(1rem,2.6vw,1.7rem) 0 .6rem;
+}
+.logo-frame{
+  width:clamp(54px, 6vw, 76px); aspect-ratio:1;
+  border:var(--edge); border-radius:10px;
+  display:grid; place-items:center; overflow:hidden;
+  background:#100f0e; flex:none;
+}
+.logo-frame img{width:100%; height:100%; object-fit:contain;}
+.logo-fallback{font-family:var(--mono); font-size:.65rem; color:#8d8172; letter-spacing:.1em;}
+.brand{font-size:clamp(1.3rem, 3vw, 1.95rem); font-weight:600; letter-spacing:-.02em; line-height:1;}
+.brand small{
+  display:block; margin-top:.38rem;
+  font-family:var(--mono); font-weight:400; letter-spacing:.13em;
+  font-size:clamp(.58rem,1vw,.7rem); color:#a2937e; text-transform:lowercase;
+}
+nav.keys{margin-left:auto; display:flex; gap:.45rem;}
+.key{
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
+  color:#e8dcc7; background:linear-gradient(180deg,#3a352f,#232019);
+  border:1px solid #ffffff22; border-bottom:3px solid #00000090;
+  border-radius:6px; padding:.55rem .95rem .5rem; cursor:pointer;
+  transition:transform .06s, border-bottom-width .06s, background .2s;
+}
+.key:hover{background:linear-gradient(180deg,#464038,#2a251e);}
+.key:active{transform:translateY(2px); border-bottom-width:1px;}
+
+/* ── HOME ──
+   Row 1: portrait beside the machine — the portrait stretches to the
+   full height of the cassette, which now includes its own key deck.
+   Row 2: the two captions.
+   ─────────────────────────────────────────────────────────────── */
+.home-grid{
+  display:grid;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.6fr);
+  grid-template-rows:auto auto;
+  column-gap:clamp(1.1rem, 2.6vw, 2rem);
+  align-items:stretch;
+  max-width:880px; margin:0 auto;
+}
+.col-portrait{grid-column:1; grid-row:1; min-height:0;}
+.name{grid-column:1; grid-row:2; margin-top:.75rem; font-size:1.02rem;}
+.col-deck{grid-column:2; grid-row:1;}
+.deck-line{grid-column:2; grid-row:2;}
+
+.portrait-frame{
+  height:100%; border:var(--edge); border-radius:12px; overflow:hidden;
+  background:#100f0e; display:grid; place-items:center;
+}
+.portrait-frame img{width:100%; height:100%; object-fit:cover; display:block;}
+.name .deg{display:block; font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; color:#a2937e; margin-top:.2rem;}
+
+@media (max-width:820px){
+  .home-grid{grid-template-columns:1fr; max-width:440px;}
+  .col-deck{grid-column:1; grid-row:1;}
+  .deck-line{grid-column:1; grid-row:2;}
+  .col-portrait{grid-column:1; grid-row:3; margin-top:1.4rem;}
+  .name{grid-column:1; grid-row:4;}
+  .portrait-frame{height:auto; aspect-ratio:3/4;}
+}
+
+/* ═══ THE MACHINE ═══
+   Taller shell: a key deck is moulded into the top of the cassette,
+   so the transport keys are part of the body rather than floating
+   above it. 620 × 480 units.
+   ═══════════════════════════════════════════════════════════════ */
+.flipdeck{
+  position:relative; aspect-ratio:620/480;
+  perspective:1800px; user-select:none; -webkit-user-select:none;
+}
+.flip{position:absolute; inset:0; transform-style:preserve-3d;
+  transition:transform .95s cubic-bezier(.16,.84,.28,1);}
+.flipdeck.flipped .flip{transform:rotateY(180deg);}
+.face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+  border-radius:clamp(9px,1.8vw,18px);}
+.face.back{transform:rotateY(180deg);}
+.face.front svg{width:100%; height:100%; display:block; overflow:visible; touch-action:none; cursor:grab;}
+.flipdeck.dragging .face.front svg{cursor:grabbing;}
+
+/* ── THE KEY DECK, moulded into the shell ── */
+.keydeck{
+  position:absolute; left:3.4%; right:3.4%; top:3.6%; height:12.1%;
+  display:flex; align-items:stretch; justify-content:flex-end; gap:.5%;
+  padding:0 .6%;
+}
+.keydeck[hidden]{display:none;}
+.mkey{
+  position:relative; flex:0 0 auto; min-width:11%;
+  display:flex; align-items:center; justify-content:center;
+  padding:0 .85em;
+  font-family:var(--mono); font-size:clamp(.46rem,1.08vw,.7rem);
+  letter-spacing:.1em; color:#4a3c2c; white-space:nowrap;
+  background:linear-gradient(180deg,#f4e9d4 0%, #e0cfae 62%, #cdb894 100%);
+  border:0; border-radius:3px 3px 2px 2px;
+  box-shadow:
+    0 .28em 0 #a58f6b,               /* the key's own edge */
+    0 3px 4px -1px #00000055,
+    inset 0 1px 0 #fffdf6;
+  cursor:pointer;
+  transition:box-shadow .09s ease-out, background .12s, color .12s;
+}
+.mkey::after{                        /* moulded grip line */
+  content:""; position:absolute; left:16%; right:16%; top:22%;
+  height:1px; background:#00000018;
+}
+.mkey:hover{background:linear-gradient(180deg,#fbf2e1 0%, #e8d8b8 62%, #d4bf9b 100%);}
+.mkey:focus-visible{outline:2px solid var(--phosphor); outline-offset:2px;}
+.mkey:active,
+.mkey[aria-pressed="true"]{          /* held down — shading only, the key stays put */
+  background:linear-gradient(180deg,#c9b48e 0%, #bca682 58%, #cbb691 100%);
+  box-shadow:
+    0 .28em 0 #a58f6b,
+    0 3px 4px -1px #00000055,
+    inset 0 4px 7px -2px #00000055,
+    inset 0 -2px 3px -1px #ffffff2e;
+  color:#2f2317;
+}
+.mkey:active::after,
+.mkey[aria-pressed="true"]::after{background:#00000028;}
+.keywell{                            /* the recess the keys sit in */
+  position:absolute; left:2.6%; right:2.6%; top:2.9%; height:13.3%;
+  border-radius:8px; background:#00000014;
+  box-shadow:inset 0 1px 2px #00000026, inset 0 -1px 0 #ffffff40;
+  pointer-events:none;
+}
+
+.deck-line{
+  margin:.9rem auto 0; max-width:44ch;
+  text-align:center; color:#c9bda9; font-size:clamp(.86rem,1.5vw,1rem);
+  line-height:1.5; min-height:3em;
+}
+
+/* ── A/B SLIDE SWITCH ──
+   The sliding tab is the word SIDE. A letter sits at each end of the
+   track and the tab covers one of them:
+     tab left  → SIDE A      tab right → B SIDE
+   ─────────────────────────────────────────────────────────── */
+.abswitch{
+  position:absolute; right:10.4%; top:25.4%; height:7.3%; width:21%;
+  border-radius:5px; background:#2a231c;
+  box-shadow:inset 0 1px 3px #0009, 0 0 0 1px #00000030;
+  cursor:pointer; touch-action:none;
+}
+.abswitch:focus-visible{outline:2px solid var(--phosphor); outline-offset:2px;}
+.ab-under{
+  position:absolute; inset:0;
+  font-family:var(--mono); font-size:clamp(.44rem,1.02vw,.66rem);
+  letter-spacing:.06em; color:#f2e6cf;
+}
+.ab-under span{
+  position:absolute; top:0; bottom:0; width:29%;
+  display:flex; align-items:center; justify-content:center;
+}
+.ab-under .l-b{left:0;}
+.ab-under .l-a{right:0;}
+.ab-knob{
+  position:absolute; top:8%; left:1.5%; width:71%; height:84%;
+  border-radius:4px;
+  background:linear-gradient(180deg,#f0e2c8,#c9b590);
+  box-shadow:0 2px 5px #0007, inset 0 1px 0 #fff8;
+  transition:transform .5s cubic-bezier(.2,.8,.25,1);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:clamp(.42rem,.98vw,.63rem);
+  letter-spacing:.18em; color:#3a2f22;
+}
+.abswitch.right .ab-knob{transform:translateX(36.6%);}
+.abswitch:hover .ab-knob{background:linear-gradient(180deg,#fff0d8,#d6c29c);}
+
+/* ── SIDE B shell ── */
+.back-shell{
+  position:absolute; inset:0; border-radius:clamp(9px,1.8vw,18px);
+  background:linear-gradient(180deg, #e3d3b5, #bfab86);
+  box-shadow:inset 0 0 0 1px #00000030; overflow:hidden;
+}
+.back-label{
+  position:absolute; left:8.4%; top:24.6%; width:83.2%; height:8.75%;
+  background:#f6efe0; border-radius:7px; box-shadow:inset 0 0 0 1px #00000018;
+  display:flex; align-items:center; padding:0 1.1em;
+  font-family:var(--mono); font-size:clamp(.56rem,1.35vw,.88rem);
+  letter-spacing:.18em; color:#3a2f22;
+}
+.screen{
+  position:absolute; left:19.3%; top:36%; width:61.3%; height:32%;
+  border-radius:clamp(5px,1.2vw,12px); overflow:hidden;
+  background:#0a0908; box-shadow:inset 0 0 0 1px #00000060, inset 0 0 40px #000;
+  cursor:crosshair; touch-action:none;
+}
+.screen canvas{display:block; width:100%; height:100%;}
+.screen::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(160deg, #ffffff12 0%, transparent 42%);}
+.back-screw{
+  position:absolute; width:2.4%; aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #d8c8a8, #8c7a5c);
+  box-shadow:inset 0 0 0 1px #00000030;
+}
+.knob-bank{
+  position:absolute; left:14%; right:14%; top:70%; height:24%;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.knob-unit{display:flex; flex-direction:column; align-items:center; gap:.28em; touch-action:none; flex:1;}
+.knob{
+  width:min(56%, 3.2rem); aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle at 34% 28%, #6a6157, #2b2620 70%);
+  border:1px solid #00000050;
+  box-shadow:0 3px 7px -2px #0009, inset 0 -3px 6px #0008, 0 0 0 3px #00000012;
+  position:relative; cursor:grab;
+}
+.knob:active{cursor:grabbing;}
+.knob:focus-visible{outline:2px solid var(--phosphor); outline-offset:3px;}
+.knob::after{
+  content:""; position:absolute; left:50%; top:11%;
+  width:2px; height:32%; margin-left:-1px; border-radius:2px;
+  background:var(--phosphor); box-shadow:0 0 5px var(--phosphor);
+}
+.knob-label{
+  font-family:var(--mono); font-size:clamp(.4rem,.9vw,.58rem);
+  letter-spacing:.14em; text-transform:uppercase; color:#7a6851; text-align:center; line-height:1.35;
+}
+.knob-label b{display:block; color:#3a2f22; font-weight:500; letter-spacing:.06em;}
+
+/* ── SERVICES ── */
+.svc-question{
+  font-size:clamp(1.4rem, 3.8vw, 2.3rem); font-weight:500; letter-spacing:-.02em;
+  display:flex; align-items:center; gap:.6rem; flex-wrap:wrap;
+  line-height:1.25; margin-bottom:clamp(1.2rem,2.6vw,1.9rem);
+}
+.selector{position:relative;}
+.selector-btn{
+  display:inline-flex; align-items:center; gap:.9rem; font:inherit; color:var(--phosphor);
+  background:#100f0e; border:1px solid #ffb64855; border-radius:8px;
+  padding:.25rem .7rem .3rem 1rem; cursor:pointer; transition:border-color .2s, background .2s;
+  text-align:left;
+}
+.selector-btn:hover{border-color:var(--phosphor); background:#16130f;}
+.selector-btn .caret{
+  flex:none; display:grid; place-items:center; width:1.5rem; height:1.5rem;
+  border:1px solid #ffb64855; border-radius:4px; font-size:.6rem; transition:transform .2s;
+}
+.selector.open .selector-btn .caret{transform:rotate(180deg);}
+.selector-list{
+  position:absolute; left:0; top:calc(100% + .5rem); z-index:20; min-width:100%;
+  background:#100f0e; border:1px solid #ffffff24; border-radius:10px; padding:.35rem;
+  box-shadow:0 24px 50px -24px #000;
+  opacity:0; visibility:hidden; transform:translateY(-6px);
+  transition:opacity .16s, transform .16s, visibility .16s;
+}
+.selector.open .selector-list{opacity:1; visibility:visible; transform:none;}
+.selector-list button{
+  display:block; width:100%; text-align:left; font:inherit;
+  font-size:clamp(.95rem,1.8vw,1.25rem);
+  color:var(--cream); background:none; border:0; border-radius:6px;
+  padding:.5rem .9rem; cursor:pointer; white-space:nowrap;
+}
+.selector-list button:hover, .selector-list button[aria-selected="true"]{background:#241f18; color:var(--phosphor);}
+.selector-list button .num{font-family:var(--mono); font-size:.7rem; color:#8d8172; margin-right:.7rem;}
+.svc-body{display:grid; gap:clamp(1.1rem,2.6vw,1.8rem); grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);}
+@media (max-width:820px){.svc-body{grid-template-columns:1fr;}}
+.svc-lede{color:#d8ccb7;}
+.svc-lede .tagnum{font-family:var(--mono); font-size:2.2rem; line-height:1; color:var(--phosphor); display:block; margin-bottom:.5rem;}
+.svc-items{list-style:none; display:grid; gap:.5rem;}
+.svc-items li{border:var(--edge); border-radius:10px; overflow:hidden; background:#151311;}
+.svc-items h4{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  font-size:.98rem; font-weight:500; padding:.8rem 1rem; cursor:pointer;
+}
+.svc-items h4 span{font-family:var(--mono); font-size:.9rem; color:var(--phosphor); transition:transform .2s;}
+.svc-items li.open h4 span{transform:rotate(45deg);}
+.svc-items p{
+  max-height:0; overflow:hidden; padding:0 1rem; color:#bdb2a0; font-size:.93rem;
+  transition:max-height .3s ease, padding .3s ease;
+}
+.svc-items li.open p{max-height:16rem; padding:0 1rem .95rem;}
+.svc-outro{margin-top:clamp(1.2rem,2.6vw,1.9rem); padding-top:1.3rem; border-top:var(--edge); color:#bdb2a0;}
+.svc-outro h3{font-size:1.08rem; font-weight:500; color:var(--cream); margin-bottom:.45rem;}
+
+/* ── CONTACT ── */
+.contact-grid{display:grid; gap:clamp(1.2rem,2.6vw,2rem); grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);}
+@media (max-width:820px){.contact-grid{grid-template-columns:1fr;}}
+.contact-copy h3{font-size:clamp(1.4rem,3.2vw,2rem); font-weight:500; margin-bottom:.9rem;}
+.contact-copy p{color:#d8ccb7; margin-bottom:.9rem;}
+form.contact{display:grid; gap:.85rem;}
+.frow{display:grid; gap:.85rem; grid-template-columns:1fr 1fr;}
+@media (max-width:520px){.frow{grid-template-columns:1fr;}}
+label{display:block; font-family:var(--mono); font-size:.64rem; letter-spacing:.16em; text-transform:uppercase; color:#a2937e; margin-bottom:.3rem;}
+input, textarea{
+  width:100%; font:inherit; font-size:.93rem; color:var(--cream);
+  background:#100f0e; border:1px solid #ffffff20; border-radius:8px; padding:.65rem .8rem;
+  transition:border-color .18s, box-shadow .18s;
+}
+input:focus, textarea:focus{outline:none; border-color:var(--phosphor); box-shadow:0 0 0 3px #ffb6481f;}
+textarea{resize:vertical; min-height:6.5rem;}
+button.send{
+  justify-self:start; font-family:var(--mono); font-size:.76rem; letter-spacing:.18em; text-transform:uppercase;
+  color:#1a1610; background:linear-gradient(180deg,#ffd08a,#e5a13d);
+  border:0; border-bottom:3px solid #8a5c1a; border-radius:6px;
+  padding:.8rem 1.6rem .75rem; cursor:pointer;
+}
+button.send:active{transform:translateY(2px); border-bottom-width:1px;}
+.form-note{font-family:var(--mono); font-size:.64rem; letter-spacing:.12em; color:#8d8172; min-height:1.2em;}
+.opt{text-transform:none; letter-spacing:.04em; color:#7a6f61;}
+footer.site{padding:2.2rem 0 3rem; text-align:center; font-family:var(--mono); font-size:.66rem; letter-spacing:.18em; color:#6f6558;}
+@media (prefers-reduced-motion:reduce){
+  .flip, .ab-knob, .mkey{transition:none;}
+  *{animation:none !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ══ HEADER ══ -->
+  <header class="site">
+    <div class="logo-frame">
+      <img src="images/consulting_glyph_MASTER_website.png" alt="aamir.consulting logo"
+           onerror="this.remove();this.parentNode.insertAdjacentHTML('beforeend','<span class=logo-fallback>a.c</span>')">
+    </div>
+    <div class="brand">
+      aamir.consulting
+      <small>math that moves the world in service of others</small>
+    </div>
+    <nav class="keys">
+      <button class="key" data-goto="home">Home</button>
+      <button class="key" data-goto="services">Services</button>
+      <button class="key" data-goto="contact">Contact</button>
     </nav>
+  </header>
 
-    <section class="home">
-      <div class="home-left">
-        <div class="photo-frame">
-          <img src="images/consulting_portrait.webp" alt="Portrait of Aamir Ahmad">
-        </div>
-        <div class="photo-caption">
-          <a
-            href="https://www.linkedin.com/in/aamir-consulting"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Aamir Ahmad
-          </a>
+  <!-- ══ HOME ══ -->
+  <section class="panel" id="home">
+    <span class="panel-tab">Home</span>
+
+    <div class="home-grid">
+
+      <div class="col-portrait">
+        <div class="portrait-frame">
+          <img src="images/consulting_portrait.webp" alt="Portrait of Aamir Ahmad"
+               onerror="this.remove();this.parentNode.insertAdjacentHTML('beforeend','<span class=logo-fallback>portrait</span>')">
         </div>
       </div>
 
-      <div class="home-right">
-        <p>
-          Time is an important resource we all use in our pursuit to lead a fulfilling
-          life and care for those around us. Time is one thing we can't get back. It is 
-          all the more important that the frameworks and tools we use serve and extend 
-          our understanding instead of bogging us down in anguish. 
-        </p>
-        
-        <p>
-          Math is often a topic that incites frustration. To me, it incites beauty, 
-          elegance, and simplicity. It is an extension of our senses that brings us 
-          to an appreciation of the world and the challenges we face. 
-        </p>
+      <p class="name">
+        <a href="https://www.linkedin.com/in/aamir-consulting" target="_blank" rel="noopener noreferrer">Aamir Ahmad</a>
+        <span class="deg">Applied Mathematician</span>
+      </p>
 
-        <p>
-          I am a calm companion in any situation. I have helped many people through 
-          my presence in their challenges by helping them map a way through using my 
-          skills in math and inventiveness with technology. I would be glad to help 
-          you as well.
-        </p>
+      <div class="col-deck">
+        <div class="flipdeck" id="deck">
+          <div class="flip">
 
-        <p>
-          <a class="primary-button" href="#contact">Get in touch</a>
-        </p>
+            <!-- ── SIDE A : the tape ── -->
+            <div class="face front">
+              <svg viewBox="0 0 620 480" role="img" aria-label="Interactive cassette — drag a reel to wind the tape">
+                <defs>
+                  <linearGradient id="shellGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#f0e2c8"/><stop offset="1" stop-color="#c9b590"/>
+                  </linearGradient>
+                  <linearGradient id="winGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#1b1714"/><stop offset="1" stop-color="#2b2520"/>
+                  </linearGradient>
+                  <radialGradient id="packGrad">
+                    <stop offset="0" stop-color="#6a4527"/><stop offset="1" stop-color="#38210f"/>
+                  </radialGradient>
+                  <clipPath id="winClip"><rect x="120" y="168" width="380" height="196" rx="14"/></clipPath>
+                </defs>
 
-      </div>
-    </section>
+                <rect x="0" y="0" width="620" height="480" rx="20" fill="url(#shellGrad)"/>
+                <rect x="0.5" y="0.5" width="619" height="479" rx="20" fill="none" stroke="#00000030"/>
+                <rect x="16" y="92" width="588" height="372" rx="14" fill="none" stroke="#00000018"/>
 
-    <section id="services" class="services">
-      <h2>Services</h2>
-      <p class="services-subtitle">My work centers around enriching effort and preserving time.</p>
+                <rect x="52" y="118" width="516" height="42" rx="7" fill="#f6efe0" stroke="#00000018"/>
+                <text x="70" y="146" font-family="ui-monospace, Menlo, monospace" font-size="19"
+                      letter-spacing="3" fill="#3a2f22">aamir.consulting</text>
 
-      <div class="service-intro">
-        <p>
-          Below is a list of the services I offer. By no means is this a complete list.
-          If any of these offerings speak to your needs, I would be glad to talk with 
-          you to see how I can help.
-        </p>
-      </div>
+                <rect x="120" y="168" width="380" height="196" rx="14" fill="url(#winGrad)" stroke="#00000040"/>
+                <g clip-path="url(#winClip)">
+                  <path id="tapePath" fill="none" stroke="#3d2415" stroke-width="7" stroke-linejoin="round"/>
+                  <circle id="packL" cx="215" cy="256" r="70" fill="url(#packGrad)"/>
+                  <circle id="packR" cx="405" cy="256" r="34" fill="url(#packGrad)"/>
+                  <g id="ringsL" opacity=".35"></g>
+                  <g id="ringsR" opacity=".35"></g>
+                  <g id="hubL"></g>
+                  <g id="hubR"></g>
+                </g>
 
-      <div class="service-panels">
-        <div class="service-panel">
-          <h3>Academic Research</h3>
-          <p>
-            I think of myself as a math therapist for my colleagues in academic domains
-            all the way from to individual students to lab leads managing demanding 
-            projects. I have a deep appreciation for the how ecclectic our curiosities 
-            can be and a skill for deriving coherent insights in the midst of that chaos.
-          </p>
-          <p>Here, I offer:</p>
-          <ul>
-            <li>
-              <strong>Evaluation and Design</strong>
-              <p>
-                I help you assess research goals, identify constraints, and 
-                shape a clear analytical path forward.
-              </p>
-            </li>
-            <li>
-              <strong>Execution and Analysis</strong>
-              <p>
-                I perform hands-on modeling, computation, data analysis, and 
-                interpretation work.
-              </p>
-            </li>
-            <li>
-              <strong>Salvaging Results</strong>
-              <p>
-                I help you revisit difficult projects, recover value from stalled work, 
-                and clarify what still matters.
-              </p>
-            </li>
-          </ul>
-        </div>
+                <rect x="252" y="382" width="116" height="38" rx="6" fill="#12100e" stroke="#00000040"/>
+                <text id="counter" x="310" y="409" text-anchor="middle"
+                      font-family="ui-monospace, Menlo, monospace" font-size="20"
+                      letter-spacing="4" fill="#ffb648">0000</text>
+                <circle cx="176" cy="391" r="9" fill="#b3a17f" stroke="#00000030"/>
+                <circle cx="444" cy="391" r="9" fill="#b3a17f" stroke="#00000030"/>
+              </svg>
 
-        <div class="service-panel">
-          <h3>Business Processes</h3>
-          <p>
-            I am a concise and comprehensive companion when it comes to listening to the 
-            pulse of your business. There are so many aspects to consider from the technical
-            to the social. I excel at integrating these factors to suggest and implement
-            useful solutions tailored for your business and vision.
-          </p>
-          <p>Here, I offer:</p>
-          <ul>
-            <li>
-              <strong>Evaluation and Mapping</strong>
-              <p>
-                I help you understand your current process, identify bottlenecks, 
-                and map where better systems can help.
-              </p>
-            </li>
-            <li>
-              <strong>Installing Analytics</strong>
-              <p>
-                I create reporting, measurement, and feedback systems that support 
-                practical decisions.
-              </p>
-            </li>
-            <li>
-              <strong>Execution and Delivery</strong>
-              <p>
-                I carry solutions through implementation and turning ideas into 
-                useful outcomes.
-              </p>
-            </li>
-          </ul>
-        </div>
-      </div>
+              <div class="keywell"></div>
+              <div class="keydeck" id="deckA">
+                <button class="mkey" data-t="rew"  aria-pressed="false">◀◀</button>
+                <button class="mkey" data-t="play" aria-pressed="false">▶ PLAY</button>
+                <button class="mkey" data-t="stop" aria-pressed="false">■ STOP</button>
+                <button class="mkey" data-t="ff"   aria-pressed="false">▶▶</button>
+              </div>
 
-      <div class="service-intro service-outro">
-        <h3>Finally, everyone is welcome...</h3>
-        <p>
-          I also work on exploratory, interdisciplinary, and one-off problems that
-          do not fit neatly into standard categories. These often involve questions
-          where clarity and structure are needed to move forward. I am excited to 
-          hear about your ideas.
-        </p>
-      </div>
-    </section>
-
-    <section id="contact">
-      <h2>Contact</h2>
-      <div class="contact-layout">
-        <div class="contact-copy">
-          <p>
-            I look forward to speaking with you!
-          </p>
-          <p>
-            The contact form below goes straight to me. Feel free to share
-            all the details and any links that are relevant.
-          </p>
-          <p>
-            You can also contact me through
-            <a
-              href="https://www.linkedin.com/in/aamir-consulting"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              LinkedIn
-            </a>if you prefer.
-          </p>
-        </div>
-
-        <form class="contact-form" action="/api/contact" method="post" data-contact-form>
-          <h3 class="contact-form-title">Get in Touch</h3>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="contact-first-name">
-                First Name <span class="optional-label">(required)</span>
-              </label>
-              <input id="contact-first-name" name="first-name" type="text" autocomplete="given-name" required>
+              <div class="abswitch" id="swA" role="switch" aria-checked="false" tabindex="0"
+                   aria-label="Side selector: side A or side B">
+                <div class="ab-under"><span class="l-b">B</span><span class="l-a">A</span></div>
+                <div class="ab-knob">SIDE</div>
+              </div>
             </div>
 
-            <div class="form-field">
-              <label for="contact-last-name">
-                Last Name <span class="optional-label">(required)</span>
-              </label>
-              <input id="contact-last-name" name="last-name" type="text" autocomplete="family-name" required>
+            <!-- ── SIDE B : the oscilloscope ── -->
+            <div class="face back">
+              <div class="back-shell">
+                <div class="back-screw" style="left:3%;  top:19%;"></div>
+                <div class="back-screw" style="right:3%; top:19%;"></div>
+                <div class="back-screw" style="left:3%;  bottom:3.6%;"></div>
+                <div class="back-screw" style="right:3%; bottom:3.6%;"></div>
+
+                <div class="back-label">aamir.consulting</div>
+
+                <div class="screen" id="screen">
+                  <canvas id="scope"></canvas>
+                </div>
+
+                <div class="knob-bank">
+                  <div class="knob-unit" data-knob="phase">
+                    <div class="knob" role="slider" tabindex="0" aria-label="Phase"
+                         aria-valuemin="0" aria-valuemax="360" aria-valuenow="180"></div>
+                    <span class="knob-label">Phase<b></b></span>
+                  </div>
+                  <div class="knob-unit" data-knob="freq">
+                    <div class="knob" role="slider" tabindex="0" aria-label="Ratio"
+                         aria-valuemin="1" aria-valuemax="5" aria-valuenow="2"></div>
+                    <span class="knob-label">Ratio<b></b></span>
+                  </div>
+                  <div class="knob-unit" data-knob="gain">
+                    <div class="knob" role="slider" tabindex="0" aria-label="Gain"
+                         aria-valuemin="0" aria-valuemax="100" aria-valuenow="70"></div>
+                    <span class="knob-label">Gain<b></b></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="keywell"></div>
+              <div class="keydeck" id="deckB">
+                <button class="mkey" data-mode="dual" aria-pressed="true">DUAL</button>
+                <button class="mkey" data-mode="sum"  aria-pressed="false">SUM</button>
+                <button class="mkey" data-mode="xy"   aria-pressed="false">X·Y</button>
+              </div>
+
+              <div class="abswitch right" id="swB" role="switch" aria-checked="true" tabindex="0"
+                   aria-label="Side selector: side A or side B">
+                <div class="ab-under"><span class="l-b">B</span><span class="l-a">A</span></div>
+                <div class="ab-knob">SIDE</div>
+              </div>
             </div>
+
           </div>
-
-          <div class="form-row">
-            <div class="form-field">
-              <label for="contact-email">
-                Email <span class="optional-label">(required)</span>
-              </label>
-              <input id="contact-email" name="email" type="email" autocomplete="email" required>
-            </div>
-
-            <div class="form-field">
-              <label for="contact-confirm-email">
-                Confirm Email <span class="optional-label">(required)</span>
-              </label>
-              <input id="contact-confirm-email" name="confirm-email" type="email" autocomplete="email" required>
-            </div>
-          </div>
-
-          <div class="form-field">
-            <label for="contact-website">
-              Your Website <span class="optional-label">(optional)</span>
-            </label>
-            <input id="contact-website" name="website" type="url" inputmode="url" placeholder="https://example.com">
-          </div>
-
-          <div class="form-field">
-            <label for="contact-message">
-              How can I help? <span class="optional-label">(required)</span>
-            </label>
-            <textarea id="contact-message" name="message" rows="6" required></textarea>
-          </div>
-
-          <button type="submit">Send Message</button>
-          <p class="contact-form-status" id="contact-form-status" role="status" aria-live="polite"></p>
-        </form>
+        </div>
       </div>
-    </section>
 
-    <footer class="footer">
-      <p>© 2026 Aamir Ahmad</p>
-    </footer>
+      <p class="deck-line" id="deckLine">Consulting in applied mathematics, statistics, and probability.</p>
 
-    <script>
-      function syncHeaderLogoHeight() {
-        const headerCopy = document.querySelector(".site-header-copy");
-        const headerLogoFrame = document.querySelector(".site-header-logo-frame");
+    </div>
+  </section>
 
-        if (!headerCopy || !headerLogoFrame) {
-          return;
-        }
+  <!-- ══ SERVICES ══ -->
+  <section class="panel" id="services">
+    <span class="panel-tab">Services</span>
 
-        if (window.innerWidth <= 768) {
-          headerLogoFrame.style.height = "";
-          return;
-        }
+    <div class="svc-question">
+      <span>You need</span>
+      <span class="selector" id="selector">
+        <button class="selector-btn" id="selectorBtn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="selectorLabel">research support</span>
+          <span class="caret">▼</span>
+        </button>
+        <span class="selector-list" role="listbox" id="selectorList">
+          <button role="option" aria-selected="true"  data-opt="0"><span class="num">1.</span>research support</button>
+          <button role="option" aria-selected="false" data-opt="1"><span class="num">2.</span>business infrastructure</button>
+        </span>
+      </span>
+    </div>
 
-        headerLogoFrame.style.height = headerCopy.offsetHeight + "px";
-      }
+    <div class="svc-body">
+      <div class="svc-lede">
+        <span class="tagnum" id="svcNum">1.</span>
+        <h3 id="svcTitle" style="font-size:1.3rem; font-weight:500; margin-bottom:.6rem;">Research Support</h3>
+        <p id="svcText"></p>
+      </div>
+      <ul class="svc-items" id="svcItems"></ul>
+    </div>
 
-      function setContactFormStatus(message, state) {
-        const status = document.getElementById("contact-form-status");
+    <div class="svc-outro">
+      <h3>Finally, everyone is welcome…</h3>
+      <p>
+        I also work on exploratory, interdisciplinary, and one-off problems that do not fit
+        neatly into standard categories. These often involve questions where clarity and
+        structure are needed to move forward. I am excited to hear about your ideas.
+      </p>
+    </div>
+  </section>
 
-        if (!status) {
-          return;
-        }
+  <!-- ══ CONTACT ══ -->
+  <section class="panel" id="contact">
+    <span class="panel-tab">Contact</span>
 
-        status.textContent = message || "";
+    <div class="contact-grid">
+      <div class="contact-copy">
+        <h3>Get in Touch</h3>
+        <p>I look forward to speaking with you.</p>
+        <p>This form goes straight to me. Share any details and links related to your work.</p>
+        <p>You can also reach me on
+          <a href="https://www.linkedin.com/in/aamir-consulting" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          if you prefer.</p>
+      </div>
 
-        if (state) {
-          status.dataset.state = state;
-          return;
-        }
+      <form class="contact" id="contactForm" action="/api/contact" method="post">
+        <div class="frow">
+          <div>
+            <label for="fn">First name <span class="opt">(required)</span></label>
+            <input id="fn" name="first-name" type="text" autocomplete="given-name" required>
+          </div>
+          <div>
+            <label for="ln">Last name <span class="opt">(required)</span></label>
+            <input id="ln" name="last-name" type="text" autocomplete="family-name" required>
+          </div>
+        </div>
+        <div class="frow">
+          <div>
+            <label for="em">Email <span class="opt">(required)</span></label>
+            <input id="em" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div>
+            <label for="em2">Confirm email <span class="opt">(required)</span></label>
+            <input id="em2" name="confirm-email" type="email" autocomplete="email" required>
+          </div>
+        </div>
+        <div>
+          <label for="ws">Your website <span class="opt">(optional)</span></label>
+          <input id="ws" name="website" type="url" inputmode="url" placeholder="https://example.com">
+        </div>
+        <div>
+          <label for="ms">How can I help? <span class="opt">(required)</span></label>
+          <textarea id="ms" name="message" rows="6" required></textarea>
+        </div>
+        <button class="send" type="submit">Send message</button>
+        <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
 
-        delete status.dataset.state;
-      }
+  <footer class="site">© 2026 Aamir Ahmad · preview</footer>
+</div>
 
-      function syncContactFormStatusFromUrl() {
-        const currentUrl = new URL(window.location.href);
-        const status = currentUrl.searchParams.get("contact");
+<script>
+(function(){
+"use strict";
 
-        if (!status) {
-          return;
-        }
+/* ═══════════════════════════════════════════════════════════
+   1. SIDE A — THE TAPE   (viewBox is now 620 × 480; the cassette
+   body sits 72 units lower to make room for the moulded key deck.)
 
-        if (status === "success") {
-          setContactFormStatus("Thank you! Your message has been sent.", "success");
-        } else {
-          setContactFormStatus(
-            "I could not send your message just now. Please try again or reach out on LinkedIn.",
-            "error"
-          );
-        }
+   (a) Tape is conserved: r = √(rHub² + k·length).
+   (b) The tape leaves each pack on its OUTER side and drops to a
+       corner guide, so at the left tangent it runs DOWN and at the
+       right tangent it runs UP — both counter-clockwise surface
+       motion. Running tape toward the right reel therefore turns
+       BOTH hubs counter-clockwise.
+   ═══════════════════════════════════════════════════════════ */
+const SVG_NS = "http://www.w3.org/2000/svg";
+const VB_W = 620, VB_H = 480;
+const L = {x:215, y:256}, R = {x:405, y:256};
+const GL = {x:176, y:391}, GR = {x:444, y:391};
+const R_HUB = 26, R_FULL = 74;
+const K = (R_FULL*R_FULL - R_HUB*R_HUB);
 
-        currentUrl.searchParams.delete("contact");
-        history.replaceState({}, "", currentUrl.pathname + currentUrl.search + currentUrl.hash);
-      }
+let pos = 0.18, angL = 0, angR = 0;
+let transport = null;
+let lastT = performance.now();
+let windVel = 0;
+let side = "A";
 
-      async function handleContactFormSubmit(event) {
-        event.preventDefault();
+const packL = document.getElementById("packL");
+const packR = document.getElementById("packR");
+const tapePath = document.getElementById("tapePath");
+const counterEl = document.getElementById("counter");
 
-        const form = event.currentTarget;
-        const submitButton = form.querySelector('button[type="submit"]');
-        const formData = new FormData(form);
-        const payload = Object.fromEntries(formData.entries());
-        const defaultButtonLabel = submitButton.textContent;
+function buildHub(id, cx, cy){
+  const g = document.getElementById(id);
+  const c = document.createElementNS(SVG_NS,"circle");
+  c.setAttribute("r", R_HUB); c.setAttribute("fill","#e6d9bf"); c.setAttribute("stroke","#00000030");
+  g.appendChild(c);
+  for(let i=0;i<6;i++){
+    const t = document.createElementNS(SVG_NS,"path");
+    const a = i*Math.PI/3;
+    t.setAttribute("d", `M${(Math.cos(a)*12).toFixed(1)},${(Math.sin(a)*12).toFixed(1)} L${(Math.cos(a)*(R_HUB+5)).toFixed(1)},${(Math.sin(a)*(R_HUB+5)).toFixed(1)}`);
+    t.setAttribute("stroke","#b3a17f"); t.setAttribute("stroke-width","6"); t.setAttribute("stroke-linecap","round");
+    g.appendChild(t);
+  }
+  const dot = document.createElementNS(SVG_NS,"circle");
+  dot.setAttribute("r","6"); dot.setAttribute("cx","0"); dot.setAttribute("cy","-14"); dot.setAttribute("fill","#8a7458");
+  g.appendChild(dot);
+  g.setAttribute("transform", `translate(${cx},${cy})`);
+  return g;
+}
+const hubL = buildHub("hubL", L.x, L.y), hubR = buildHub("hubR", R.x, R.y);
 
-        submitButton.disabled = true;
-        submitButton.textContent = "Sending...";
-        form.setAttribute("aria-busy", "true");
-        setContactFormStatus("", "");
+function buildRings(id){
+  const g = document.getElementById(id);
+  for(let i=0;i<3;i++){
+    const p = document.createElementNS(SVG_NS,"path");
+    p.setAttribute("stroke","#c39a6a"); p.setAttribute("stroke-width","1.4"); p.setAttribute("fill","none");
+    g.appendChild(p);
+  }
+  return g;
+}
+const ringsL = buildRings("ringsL"), ringsR = buildRings("ringsR");
 
-        try {
-          const response = await fetch(form.action, {
-            method: form.method,
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
-            body: JSON.stringify(payload)
-          });
+function packRadius(len){ return Math.sqrt(R_HUB*R_HUB + K*len); }
 
-          let result = null;
+function drawRings(g, c, r, ang){
+  [...g.children].forEach((p, i) => {
+    const rr = R_HUB + (r - R_HUB) * (0.35 + i*0.28);
+    if(rr >= r - 1.5){ p.setAttribute("d",""); return; }
+    const a0 = ang + i*2.1, a1 = a0 + 2.4;
+    const x0 = c.x + Math.cos(a0)*rr, y0 = c.y + Math.sin(a0)*rr;
+    const x1 = c.x + Math.cos(a1)*rr, y1 = c.y + Math.sin(a1)*rr;
+    p.setAttribute("d", `M${x0.toFixed(1)},${y0.toFixed(1)} A${rr.toFixed(1)},${rr.toFixed(1)} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)}`);
+  });
+}
 
-          try {
-            result = await response.json();
-          } catch (error) {
-            result = null;
-          }
+function tangent(c, r, p, sign){
+  const dx = p.x - c.x, dy = p.y - c.y;
+  const d = Math.hypot(dx, dy) || 1;
+  const a = Math.atan2(dy, dx);
+  const th = Math.acos(Math.min(1, r/d));
+  const ang = a + sign*th;
+  return { x:c.x + r*Math.cos(ang), y:c.y + r*Math.sin(ang) };
+}
 
-          if (!response.ok || !result.ok) {
-            throw new Error(
-              (result && result.error) || "Unable to send your message right now."
-            );
-          }
+function render(){
+  const rL = packRadius(1 - pos), rR = packRadius(pos);
+  packL.setAttribute("r", rL.toFixed(2));
+  packR.setAttribute("r", rR.toFixed(2));
+  hubL.setAttribute("transform", `translate(${L.x},${L.y}) rotate(${angL*57.2958})`);
+  hubR.setAttribute("transform", `translate(${R.x},${R.y}) rotate(${angR*57.2958})`);
+  drawRings(ringsL, L, rL, angL);
+  drawRings(ringsR, R, rR, angR);
+  const tL = tangent(L, rL, GL, +1);
+  const tR = tangent(R, rR, GR, -1);
+  tapePath.setAttribute("d",
+    `M${tL.x.toFixed(1)},${tL.y.toFixed(1)} L${GL.x},${GL.y} L${GR.x},${GR.y} L${tR.x.toFixed(1)},${tR.y.toFixed(1)}`);
+  counterEl.textContent = String(Math.round(pos*9999)).padStart(4,"0");
+}
 
-          form.reset();
-          setContactFormStatus("Thank you! Your message has been sent.", "success");
-        } catch (error) {
-          setContactFormStatus(
-            error.message || "Unable to send your message right now.",
-            "error"
-          );
-        } finally {
-          submitButton.disabled = false;
-          submitButton.textContent = defaultButtonLabel;
-          form.removeAttribute("aria-busy");
-        }
-      }
+function wind(delta){
+  const before = pos;
+  pos = Math.min(1, Math.max(0, pos + delta));
+  const d = pos - before;
+  if(d === 0) return;
+  const rL = packRadius(1 - pos), rR = packRadius(pos);
+  const s = d * K * 0.5;
+  angL -= s / rL;
+  angR -= s / rR;
+  windVel = windVel*0.35 + d*0.65;
+  if(side === "A") render();
+}
 
-      window.addEventListener("load", () => {
-        syncHeaderLogoHeight();
-        syncContactFormStatusFromUrl();
+const deck = document.getElementById("deck");
+const svgEl = deck.querySelector(".face.front svg");
+let drag = null;
 
-        const contactForm = document.querySelector("[data-contact-form]");
+function svgPoint(ev){
+  const b = svgEl.getBoundingClientRect();
+  return { x:(ev.clientX - b.left)/b.width*VB_W, y:(ev.clientY - b.top)/b.height*VB_H };
+}
+svgEl.addEventListener("pointerdown", ev => {
+  if(side !== "A") return;
+  const p = svgPoint(ev);
+  const dl = Math.hypot(p.x-L.x, p.y-L.y), dr = Math.hypot(p.x-R.x, p.y-R.y);
+  let s = null;
+  if(dl < 92 && dl <= dr) s = "L";
+  else if(dr < 92) s = "R";
+  else if(p.y > 364 && p.y < 420 && p.x > 150 && p.x < 470) s = "T";
+  if(!s) return;
+  drag = { s, ang: Math.atan2(p.y - (s==="R"?R.y:L.y), p.x - (s==="R"?R.x:L.x)), x:p.x };
+  setTransport(null);
+  deck.classList.add("dragging");
+  svgEl.setPointerCapture(ev.pointerId);
+  ev.preventDefault();
+});
+svgEl.addEventListener("pointermove", ev => {
+  if(!drag) return;
+  const p = svgPoint(ev);
+  if(drag.s === "T"){
+    wind((p.x - drag.x) * 0.0016); drag.x = p.x;
+  } else {
+    const c = drag.s === "R" ? R : L;
+    const a = Math.atan2(p.y - c.y, p.x - c.x);
+    let d = a - drag.ang;
+    while(d >  Math.PI) d -= 2*Math.PI;
+    while(d < -Math.PI) d += 2*Math.PI;
+    const r = packRadius(drag.s === "R" ? pos : 1 - pos);
+    wind(-d * r / (K*0.5));
+    drag.ang = a;
+  }
+});
+function endDrag(ev){
+  if(!drag) return;
+  drag = null; deck.classList.remove("dragging");
+  try{ svgEl.releasePointerCapture(ev.pointerId); }catch(e){}
+}
+svgEl.addEventListener("pointerup", endDrag);
+svgEl.addEventListener("pointercancel", endDrag);
 
-        if (contactForm) {
-          contactForm.addEventListener("submit", handleContactFormSubmit);
-        }
-      });
+/* ── the moulded transport keys: they latch, like a real deck.
+      PLAY / REW / FF stay down until something releases them.
+      STOP is momentary — it pops whatever is down back up.       ── */
+const tkeys = [...document.querySelectorAll(".mkey[data-t]")];
+function setTransport(next){
+  transport = next;
+  tkeys.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.t === transport)));
+}
+tkeys.forEach(b => b.addEventListener("click", () => {
+  const k = b.dataset.t;
+  setTransport((k === "stop" || transport === k) ? null : k);
+}));
 
-      window.addEventListener("resize", syncHeaderLogoHeight);
-    </script>
-  </body>
+let lastScroll = window.scrollY;
+window.addEventListener("scroll", () => {
+  const d = window.scrollY - lastScroll; lastScroll = window.scrollY;
+  if(!transport && !drag) wind(d * 0.00035);
+}, {passive:true});
+
+/* ═══════════════════════════════════════════════════════════
+   2. THE A/B SLIDE SWITCH
+   ═══════════════════════════════════════════════════════════ */
+const deckKeysA = document.getElementById("deckA");
+const deckKeysB = document.getElementById("deckB");
+const deckLine = document.getElementById("deckLine");
+const switches = [document.getElementById("swA"), document.getElementById("swB")];
+
+const LINE_A = "Consulting in applied mathematics, statistics, and probability.";
+const LINE_B = "Solutions for your biggest problems where numbers and people have to work together to tell the story.";
+
+function setSide(next){
+  if(next === side) return;
+  side = next;
+  const isB = side === "B";
+  deck.classList.toggle("flipped", isB);
+  switches.forEach(s => {
+    s.classList.toggle("right", isB);
+    s.setAttribute("aria-checked", String(isB));
+  });
+  deckLine.textContent = isB ? LINE_B : LINE_A;
+  if(isB){ setTransport("play"); sizeCanvas(); }
+  else { setTransport(null); render(); }
+}
+
+switches.forEach(sw => {
+  const knob = sw.querySelector(".ab-knob");
+  let dragging = false, moved = false, startX = 0, box = null;
+  sw.addEventListener("pointerdown", ev => {
+    box = sw.getBoundingClientRect();
+    dragging = true; moved = false; startX = ev.clientX;
+    knob.style.transition = "none";
+    sw.setPointerCapture(ev.pointerId);
+    ev.preventDefault();
+  });
+  sw.addEventListener("pointermove", ev => {
+    if(!dragging) return;
+    if(Math.abs(ev.clientX - startX) > 3) moved = true;
+    /* the tab is 71% of the track and travels the remaining 26% */
+    const f = Math.min(0.26, Math.max(0, (ev.clientX - box.left) / box.width - 0.37));
+    knob.style.transform = `translateX(${(f/0.26)*36.6}%)`;
+  });
+  function release(ev){
+    if(!dragging) return;
+    dragging = false;
+    knob.style.transition = ""; knob.style.transform = "";
+    try{ sw.releasePointerCapture(ev.pointerId); }catch(e){}
+    if(!moved){ setSide(side === "A" ? "B" : "A"); return; }
+    setSide(((ev.clientX - box.left) / box.width) > 0.5 ? "B" : "A");
+  }
+  sw.addEventListener("pointerup", release);
+  sw.addEventListener("pointercancel", release);
+  sw.addEventListener("keydown", ev => {
+    if(ev.key === " " || ev.key === "Enter"){ setSide(side === "A" ? "B" : "A"); ev.preventDefault(); }
+    if(ev.key === "ArrowRight"){ setSide("B"); ev.preventDefault(); }
+    if(ev.key === "ArrowLeft"){ setSide("A"); ev.preventDefault(); }
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════
+   3. SIDE B — THE OSCILLOSCOPE
+   ═══════════════════════════════════════════════════════════ */
+const cv = document.getElementById("scope");
+const ctx = cv.getContext("2d");
+const screenEl = document.getElementById("screen");
+
+let phase = Math.PI, ratio = 2, gain = 0.70, mode = "dual";
+let W = 0, H = 0;
+
+function sizeCanvas(){
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const b = screenEl.getBoundingClientRect();
+  if(!b.width) return;
+  W = b.width; H = b.height;
+  cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize", sizeCanvas);
+if(window.ResizeObserver) new ResizeObserver(sizeCanvas).observe(screenEl);
+
+function grid(){
+  ctx.save();
+  ctx.strokeStyle = "#ffffff0e"; ctx.lineWidth = 1;
+  for(let i=1;i<10;i++){ const x=W*i/10; ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for(let i=1;i<6;i++){ const y=H*i/6; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  ctx.strokeStyle = "#ffffff20";
+  ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
+  ctx.restore();
+}
+function trace(fn, color, glow){
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = 2;
+  ctx.shadowColor = color; ctx.shadowBlur = glow;
+  ctx.beginPath();
+  const N = 240;
+  for(let i=0;i<=N;i++){
+    const p = fn(i/N);
+    if(i===0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]);
+  }
+  ctx.stroke(); ctx.restore();
+}
+
+let t0 = 0;
+function drawScope(dt){
+  if(!W) return;
+  t0 += dt * (0.6 + Math.abs(windVel)*90);
+  ctx.clearRect(0,0,W,H);
+  grid();
+
+  const amp = (H*0.34)*gain, mid = H/2;
+  const base = pos*6 + t0*1.6;
+  const lock = Math.abs(((phase + Math.PI) % (2*Math.PI)) - Math.PI) < 0.10 && ratio === 1;
+
+  if(mode === "xy"){
+    const r = Math.min(W,H)*0.36*Math.max(gain,0.15);
+    trace(t => {
+      const a = t*Math.PI*2;
+      return [W/2 + r*Math.sin(ratio*a + base), mid + r*Math.sin(a + base + phase)];
+    }, lock ? "#6fe3c0" : "#ffb648", lock ? 16 : 10);
+  } else if(mode === "sum"){
+    trace(t => {
+      const a = t*Math.PI*4 + base;
+      return [t*W, mid - (Math.sin(a) + Math.sin(ratio*a + phase)) * amp/2];
+    }, lock ? "#6fe3c0" : "#ffb648", lock ? 18 : 10);
+  } else {
+    trace(t => [t*W, mid - Math.sin(t*Math.PI*4 + base)*amp], "#ffb648", 10);
+    trace(t => [t*W, mid - Math.sin(ratio*(t*Math.PI*4) + base + phase)*amp*0.86], "#6fe3c0", 10);
+  }
+
+  ctx.save();
+  ctx.font = `${Math.max(8, Math.round(H*0.095))}px ui-monospace, Menlo, monospace`;
+  ctx.fillStyle = "#ffb648b0";
+  ctx.fillText(`Δφ ${(phase*180/Math.PI).toFixed(1)}°   ${ratio}:1   ${String(Math.round(pos*9999)).padStart(4,"0")}`,
+               W*0.04, H*0.18);
+  ctx.textAlign = "right";
+  ctx.fillStyle = lock ? "#6fe3c0" : "#6fe3c033";
+  if(lock){ ctx.shadowColor = "#6fe3c0"; ctx.shadowBlur = 12; }
+  ctx.fillText("IN PHASE", W*0.96, H*0.9);
+  ctx.restore();
+}
+
+function makeKnob(name, min, max, get, set, fmt){
+  const unit = document.querySelector(`.knob-unit[data-knob="${name}"]`);
+  const el = unit.querySelector(".knob");
+  const out = unit.querySelector("b");
+  function paint(){
+    const v = get(), f = (v-min)/(max-min);
+    el.style.transform = `rotate(${-140 + f*280}deg)`;
+    el.setAttribute("aria-valuenow", v.toFixed(2));
+    out.textContent = fmt(v);
+  }
+  let active = false, startY = 0, startV = 0;
+  el.addEventListener("pointerdown", ev => {
+    active = true; startY = ev.clientY; startV = get();
+    el.setPointerCapture(ev.pointerId); ev.preventDefault();
+  });
+  el.addEventListener("pointermove", ev => {
+    if(!active) return;
+    set(Math.min(max, Math.max(min, startV + (startY - ev.clientY)/150 * (max-min))));
+    paint();
+  });
+  const stop = ev => { active = false; try{ el.releasePointerCapture(ev.pointerId); }catch(e){} };
+  el.addEventListener("pointerup", stop);
+  el.addEventListener("pointercancel", stop);
+  el.addEventListener("keydown", ev => {
+    const step = (max-min)/40;
+    if(ev.key === "ArrowUp" || ev.key === "ArrowRight"){ set(Math.min(max, get()+step)); paint(); ev.preventDefault(); }
+    if(ev.key === "ArrowDown" || ev.key === "ArrowLeft"){ set(Math.max(min, get()-step)); paint(); ev.preventDefault(); }
+  });
+  paint();
+  return paint;
+}
+const paintPhase = makeKnob("phase", 0, 2*Math.PI, () => phase, v => phase = v, v => (v*180/Math.PI).toFixed(0) + "°");
+makeKnob("freq", 1, 5, () => ratio, v => ratio = Math.round(v), v => Math.round(v) + ":1");
+makeKnob("gain", 0, 1, () => gain, v => gain = v, v => Math.round(v*100) + "%");
+
+/* the mode keys latch too — exactly one stays down */
+document.querySelectorAll(".mkey[data-mode]").forEach(b => b.addEventListener("click", () => {
+  mode = b.dataset.mode;
+  document.querySelectorAll(".mkey[data-mode]").forEach(o =>
+    o.setAttribute("aria-pressed", String(o.dataset.mode === mode)));
+}));
+
+let scopeDrag = false, scopeX = 0;
+screenEl.addEventListener("pointerdown", ev => {
+  scopeDrag = true; scopeX = ev.clientX; screenEl.setPointerCapture(ev.pointerId); ev.preventDefault();
+});
+screenEl.addEventListener("pointermove", ev => {
+  if(!scopeDrag) return;
+  phase = (phase + (ev.clientX - scopeX)*0.012 + 2*Math.PI) % (2*Math.PI);
+  scopeX = ev.clientX; paintPhase();
+});
+const scopeStop = ev => { scopeDrag = false; try{ screenEl.releasePointerCapture(ev.pointerId); }catch(e){} };
+screenEl.addEventListener("pointerup", scopeStop);
+screenEl.addEventListener("pointercancel", scopeStop);
+
+/* ═══════════════════════════════════════════════════════════
+   4. MAIN LOOP
+   ═══════════════════════════════════════════════════════════ */
+function frame(now){
+  const dt = Math.min((now - lastT)/1000, 0.05); lastT = now;
+  if(transport === "play") wind(dt*0.028);
+  else if(transport === "ff") wind(dt*0.20);
+  else if(transport === "rew") wind(-dt*0.26);
+  if(transport && (pos <= 0 || pos >= 1)){
+    if(side === "B") pos = 0;        // side B loops
+    else setTransport(null);         // side A: the key pops back up
+  }
+  if(!drag && !transport) windVel *= 0.92;
+  if(side === "B") drawScope(dt);
+  requestAnimationFrame(frame);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   5. SERVICES
+   ═══════════════════════════════════════════════════════════ */
+const SERVICES = [
+  {
+    label:"research support",
+    title:"Research Support",
+    text:"I think of myself as a math therapist for my colleagues in academic domains, all the way from individual students to lab leads managing demanding projects. I have a deep appreciation for how eclectic our curiosities can be, and a skill for deriving coherent insights in the midst of that chaos.",
+    items:[
+      ["Evaluation and Design","I help you assess research goals, identify constraints, and shape a clear analytical path forward."],
+      ["Execution and Analysis","I perform hands-on modeling, computation, data analysis, and interpretation work."],
+      ["Salvaging Results","I help you revisit difficult projects, recover value from stalled work, and clarify what still matters."]
+    ]
+  },
+  {
+    label:"business infrastructure",
+    title:"Business Infrastructure",
+    text:"I am a concise and comprehensive companion when it comes to listening to the pulse of your business. There are so many aspects to consider, from the technical to the social. I excel at integrating these factors to suggest and implement useful solutions tailored for your business and vision.",
+    items:[
+      ["Evaluation and Mapping","I help you understand your current process, identify bottlenecks, and map where better systems can help."],
+      ["Installing Analytics","I create reporting, measurement, and feedback systems that support practical decisions."],
+      ["Execution and Delivery","I carry solutions through implementation, turning ideas into useful outcomes."]
+    ]
+  }
+];
+const selector = document.getElementById("selector");
+const selectorBtn = document.getElementById("selectorBtn");
+const selectorList = document.getElementById("selectorList");
+
+function renderService(i){
+  const s = SERVICES[i];
+  document.getElementById("selectorLabel").textContent = s.label;
+  document.getElementById("svcNum").textContent = (i+1) + ".";
+  document.getElementById("svcTitle").textContent = s.title;
+  document.getElementById("svcText").textContent = s.text;
+  const ul = document.getElementById("svcItems");
+  ul.innerHTML = "";
+  s.items.forEach(([h, p], idx) => {
+    const li = document.createElement("li");
+    if(idx === 0) li.className = "open";
+    const h4 = document.createElement("h4");
+    h4.innerHTML = `${h}<span>+</span>`;
+    const par = document.createElement("p");
+    par.textContent = p;
+    h4.addEventListener("click", () => li.classList.toggle("open"));
+    li.append(h4, par); ul.appendChild(li);
+  });
+  selectorList.querySelectorAll("button").forEach(b =>
+    b.setAttribute("aria-selected", String(Number(b.dataset.opt) === i)));
+}
+selectorBtn.addEventListener("click", () => {
+  const open = selector.classList.toggle("open");
+  selectorBtn.setAttribute("aria-expanded", String(open));
+});
+selectorList.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  renderService(Number(b.dataset.opt));
+  selector.classList.remove("open");
+  selectorBtn.setAttribute("aria-expanded","false");
+}));
+document.addEventListener("click", e => {
+  if(!selector.contains(e.target)){
+    selector.classList.remove("open");
+    selectorBtn.setAttribute("aria-expanded","false");
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════
+   6. NAV + DEAD FORM
+   ═══════════════════════════════════════════════════════════ */
+document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () => {
+  document.getElementById(b.dataset.goto).scrollIntoView({behavior:"smooth", block:"start"});
+}));
+/* The form posts to the same Cloudflare function the live site uses.
+   Opened from a file:// path there is no endpoint, so it will report
+   an error — that is expected until the page is deployed. */
+const contactForm = document.getElementById("contactForm");
+const formNote = document.getElementById("formNote");
+
+function setNote(msg, state){
+  formNote.textContent = msg || "";
+  formNote.style.color = state === "success" ? "#6fe3c0"
+                       : state === "error"   ? "#ff9a7a"
+                       : "";
+}
+
+/* a /?contact=success redirect back from the function */
+(function(){
+  const url = new URL(window.location.href);
+  const status = url.searchParams.get("contact");
+  if(!status) return;
+  setNote(status === "success"
+    ? "Thank you! Your message has been sent."
+    : "I could not send your message just now. Please try again or reach out on LinkedIn.",
+    status === "success" ? "success" : "error");
+  url.searchParams.delete("contact");
+  history.replaceState({}, "", url.pathname + url.search + url.hash);
+})();
+
+contactForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = contactForm.querySelector('button[type="submit"]');
+  const label = btn.textContent;
+  const payload = Object.fromEntries(new FormData(contactForm).entries());
+
+  if(payload.email !== payload["confirm-email"]){
+    setNote("Those two email addresses do not match.", "error");
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = "Sending…";
+  contactForm.setAttribute("aria-busy","true");
+  setNote("");
+
+  try{
+    const res = await fetch(contactForm.action, {
+      method: contactForm.method,
+      headers: {"Content-Type":"application/json", "Accept":"application/json"},
+      body: JSON.stringify(payload)
+    });
+    let result = null;
+    try{ result = await res.json(); }catch(err){ result = null; }
+    if(!res.ok || !result || !result.ok){
+      throw new Error((result && result.error) || "Unable to send your message right now.");
+    }
+    contactForm.reset();
+    setNote("Thank you! Your message has been sent.", "success");
+  }catch(err){
+    setNote(err.message || "Unable to send your message right now.", "error");
+  }finally{
+    btn.disabled = false; btn.textContent = label;
+    contactForm.removeAttribute("aria-busy");
+  }
+});
+
+/* boot */
+render();
+setTransport(null);
+renderService(0);
+sizeCanvas();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
 </html>
