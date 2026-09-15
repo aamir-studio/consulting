@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>aamir.consulting</title>
-<meta name="description" content="Aamir Ahmad — applied mathematician. Research support and business infrastructure for problems where numbers and people have to work together.">
+<meta name="description" content="Aamir Ahmad, applied mathematician. Research support and business infrastructure for problems where numbers and people have to work together.">
 <meta name="theme-color" content="#0d0c0b">
 <meta property="og:title" content="aamir.consulting">
 <meta property="og:description" content="Math that moves the world in service of others.">
@@ -82,7 +82,7 @@ header.site{
   font-family:var(--mono); font-weight:400; letter-spacing:.13em;
   font-size:clamp(.58rem,1vw,.7rem); color:#a2937e; text-transform:lowercase;
 }
-nav.keys{margin-left:auto; display:flex; gap:.45rem;}
+nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-content:flex-end;}
 .key{
   font-family:var(--mono); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
   color:#e8dcc7; background:linear-gradient(180deg,#3a352f,#232019);
@@ -92,6 +92,186 @@ nav.keys{margin-left:auto; display:flex; gap:.45rem;}
 }
 .key:hover{background:linear-gradient(180deg,#464038,#2a251e);}
 .key:active{transform:translateY(2px); border-bottom-width:1px;}
+
+/* ── PORTFOLIO ──
+   Two cards, each a shelf label for a piece that lives in its own
+   file under portfolio/. Nothing here touches the cassette.
+   ─────────────────────────────────────────────────────────────── */
+.pf-lede{max-width:62ch; margin:1.2rem 0 clamp(1.4rem,3vw,2rem); color:#d6c8b1;}
+.pf-grid{
+  display:grid; gap:clamp(1rem,2.2vw,1.5rem);
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+.pf-card{
+  display:flex; flex-direction:column;
+  border:var(--edge); border-radius:12px; overflow:hidden;
+  background:linear-gradient(180deg,#232019,#151310);
+  box-shadow:inset 0 1px 0 #ffffff12, 0 18px 40px -34px #000;
+  color:inherit; border-bottom:var(--edge);
+  transition:transform .18s, box-shadow .18s, border-color .18s;
+}
+a.pf-card:hover{
+  transform:translateY(-3px); border-color:#ffb64840;
+  box-shadow:inset 0 1px 0 #ffffff1a, 0 26px 50px -34px #000;
+}
+.pf-thumb{
+  height:clamp(140px, 19vw, 200px); background:#fff; overflow:hidden;
+  border-bottom:var(--edge); display:grid; place-items:center;
+}
+.pf-thumb img{width:100%; height:100%; object-fit:cover; object-position:left top;}
+/* ── PIECE 02 CARD ART ──
+   The Archimedes loop from the piece 02 title card, cropped to the thumb.
+   ─────────────────────────────────────────────────────────────── */
+.ar .ar-anim, .ar .ar-wave, .ar .ar-mote{transform-box:fill-box;}
+.ar-anim{animation-duration:14s; animation-iteration-count:infinite; animation-timing-function:ease-in-out;}
+
+/* resting state = the finished, checked machine */
+.ar-ray, .ar-beam, .ar-spark, .ar-waves, .ar-stream, .ar-glow{opacity:0;}
+.ar-c1, .ar-c2, .ar-c3{stroke-dasharray:1; stroke-dashoffset:0;}
+
+.ar-p1{animation-name:ar-p1; transform-origin:50% 50%;}
+.ar-p2{animation-name:ar-p2; transform-origin:50% 50%;}
+.ar-p3{animation-name:ar-p3; transform-origin:50% 50%;}
+.ar-p4{animation-name:ar-p4; transform-origin:50% 50%;}
+.ar-c1{animation-name:ar-c1;}
+.ar-c2{animation-name:ar-c2;}
+.ar-c3{animation-name:ar-c3;}
+.ar-waves, .ar-stream{animation-name:ar-focus;}
+.ar-glow{animation-name:ar-focus;}
+.ar-armF{animation-name:ar-armF; transform-origin:0 0;}
+.ar-armB{animation-name:ar-armB; transform-origin:100% 0;}
+.ar-spark{animation-name:ar-spark;}
+.ar-ray{animation-name:ar-ray;}
+.ar-beam{animation-name:ar-beam;}
+.ar-ship{animation-name:ar-ship; animation-timing-function:ease-in; transform-origin:50% 50%;}
+.ar-blink{animation:ar-blink .35s steps(2,jump-none) infinite alternate;}
+.ar-wave{animation:ar-wave 1.8s ease-out infinite; transform-origin:50% 50%;}
+.ar-wave:nth-child(2){animation-delay:-.6s;}
+.ar-wave:nth-child(3){animation-delay:-1.2s;}
+.ar-mote{animation:ar-mote 1.2s linear infinite;}
+.ar-mote:nth-child(2){animation-delay:-.3s;}
+.ar-mote:nth-child(3){animation-delay:-.6s;}
+.ar-mote:nth-child(4){animation-delay:-.9s;}
+
+/* parts: scattered → assembled → fade and reset */
+@keyframes ar-p1{0%,10%{transform:translate(-40px,-78px) rotate(-60deg); opacity:1}
+  22%,90%{transform:none; opacity:1} 94%{transform:none; opacity:0}
+  95%{transform:translate(-40px,-78px) rotate(-60deg); opacity:0} 100%{transform:translate(-40px,-78px) rotate(-60deg); opacity:1}}
+@keyframes ar-p2{0%,12%{transform:translate(22px,-100px) rotate(70deg); opacity:1}
+  24%,90%{transform:none; opacity:1} 94%{transform:none; opacity:0}
+  95%{transform:translate(22px,-100px) rotate(70deg); opacity:0} 100%{transform:translate(22px,-100px) rotate(70deg); opacity:1}}
+@keyframes ar-p3{0%,14%{transform:translate(-8px,-120px) rotate(-30deg); opacity:1}
+  26%,90%{transform:none; opacity:1} 94%{transform:none; opacity:0}
+  95%{transform:translate(-8px,-120px) rotate(-30deg); opacity:0} 100%{transform:translate(-8px,-120px) rotate(-30deg); opacity:1}}
+@keyframes ar-p4{0%,30%{transform:translate(0,-80px) rotate(-50deg) scale(.85); opacity:1}
+  45%,90%{transform:none; opacity:1} 94%{transform:none; opacity:0}
+  95%{transform:translate(0,-80px) rotate(-50deg) scale(.85); opacity:0} 100%{transform:translate(0,-80px) rotate(-50deg) scale(.85); opacity:1}}
+/* ticks draw in as each stage completes */
+@keyframes ar-c1{0%,27%{stroke-dashoffset:1} 30%,90%{stroke-dashoffset:0; opacity:1} 94%,100%{stroke-dashoffset:0; opacity:0}}
+@keyframes ar-c2{0%,46%{stroke-dashoffset:1} 49%,90%{stroke-dashoffset:0; opacity:1} 94%,100%{stroke-dashoffset:0; opacity:0}}
+@keyframes ar-c3{0%,63%{stroke-dashoffset:1} 66%,90%{stroke-dashoffset:0; opacity:1} 94%,100%{stroke-dashoffset:0; opacity:0}}
+/* Archimedes concentrates while the parts move */
+@keyframes ar-focus{0%,5%{opacity:0} 8%,46%{opacity:1} 50%,100%{opacity:0}}
+@keyframes ar-armF{0%,4%{transform:rotate(0deg)} 8%,46%{transform:rotate(-70deg)} 52%,100%{transform:rotate(0deg)}}
+@keyframes ar-armB{0%,4%{transform:rotate(0deg)} 8%,46%{transform:rotate(70deg)} 52%,100%{transform:rotate(0deg)}}
+/* integration sparks, then the test shot */
+@keyframes ar-spark{0%,50%{opacity:0} 52%,62%{opacity:1} 64%,100%{opacity:0}}
+@keyframes ar-ray{0%,64%{opacity:0} 67%,86%{opacity:1} 89%,100%{opacity:0}}
+@keyframes ar-beam{0%,67%{opacity:0} 69%,86%{opacity:1} 89%,100%{opacity:0}}
+@keyframes ar-ship{0%,72%{transform:none; opacity:1} 88%{transform:translateX(70px) scaleX(-1); opacity:0}
+  95%{transform:none; opacity:0} 100%{transform:none; opacity:1}}
+@keyframes ar-blink{from{opacity:1} to{opacity:.2}}
+@keyframes ar-wave{from{transform:scale(.6); opacity:.9} to{transform:scale(2.2); opacity:0}}
+@keyframes ar-mote{0%{transform:translate(98px,214px); opacity:0} 15%{opacity:1}
+  50%{transform:translate(144px,180px)} 85%{opacity:1} 100%{transform:translate(196px,188px); opacity:0}}
+
+/* ── PIECE 01 CARD ART ──
+   The moon-farm loop from the piece 01 title card, cropped to the thumb.
+   Same "ma-" classes; the global reduced-motion rule stills it on the
+   recovered scene.
+   ─────────────────────────────────────────────────────────────── */
+.pf-thumb.art{background:#07090e;}
+.pf-thumb.art .pf-art{display:block; width:100%; height:100%;}
+.ma .ma-anim, .ma .ma-drop{transform-box:fill-box;}  /* only on animated parts: on a g with a transform attribute it would move the pivot */
+.ma-anim{animation-duration:14s; animation-iteration-count:infinite; animation-timing-function:linear;}
+
+/* resting state = the recovered scene (what reduced motion shows) */
+.ma-wilt{opacity:0;}
+.ma-alarm{opacity:0;}
+.ma-scan-red{opacity:0;}
+.ma-t-scan, .ma-t-stress{opacity:0;}
+.ma-water{opacity:0;}
+
+.ma-wilt{animation-name:ma-wilt;}
+.ma-well{animation-name:ma-well; transform-origin:50% 100%;}
+.ma-alarm{animation-name:ma-alarm;}
+.ma-scan-red{animation-name:ma-alarm;}
+.ma-t-scan{animation-name:ma-tscan;}
+.ma-t-stress{animation-name:ma-alarm;}
+.ma-t-ok{animation-name:ma-tok;}
+.ma-walker{animation-name:ma-walk; animation-timing-function:linear;}
+.ma-face{animation-name:ma-face; transform-origin:50% 50%;}
+.ma-legA{animation-name:ma-legA; transform-origin:50% 0;}
+.ma-legB{animation-name:ma-legB; transform-origin:50% 0;}
+.ma .ma-arm{animation-name:ma-pour; transform-box:fill-box; transform-origin:30.5px 10.5px;} /* = the hand */
+.ma-water{animation-name:ma-water;}
+.ma-blink{animation:ma-blink .7s steps(2,jump-none) infinite alternate;}
+.ma-drop{animation:ma-drop .8s linear infinite;}
+.ma-drop:nth-child(2){animation-delay:-.27s;}
+.ma-drop:nth-child(3){animation-delay:-.53s;}
+.ma-twinkle{animation:ma-twinkle 3.2s ease-in-out infinite alternate;}
+.ma-twinkle:nth-child(2n){animation-delay:-1.1s;}
+.ma-twinkle:nth-child(3n){animation-delay:-2.3s;}
+
+@keyframes ma-wilt{0%{opacity:1} 52%{opacity:1} 62%{opacity:0} 86%{opacity:0} 100%{opacity:1}}
+@keyframes ma-well{0%{opacity:0; transform:scale(.8)} 52%{opacity:0; transform:scale(.8)}
+  62%{opacity:1; transform:scale(1.04)} 66%{transform:scale(1)} 86%{opacity:1; transform:scale(1)} 100%{opacity:0; transform:scale(.8)}}
+@keyframes ma-alarm{0%,11.9%{opacity:0} 12%,61.9%{opacity:1} 62%,100%{opacity:0}}
+@keyframes ma-tscan{0%,11.9%{opacity:1} 12%,100%{opacity:0}}
+@keyframes ma-tok{0%,61.9%{opacity:0} 62%,100%{opacity:1}}
+@keyframes ma-walk{0%,18%{transform:translateX(230px)} 40%,78%{transform:translateX(0)} 96%,100%{transform:translateX(230px)}}
+@keyframes ma-face{0%,77.9%{transform:scaleX(1)} 78%,100%{transform:scaleX(-1)}}
+@keyframes ma-pour{0%,42%{transform:rotate(0deg)} 46%,58%{transform:rotate(-30deg)} 62%,100%{transform:rotate(0deg)}}
+@keyframes ma-water{0%,45.9%{opacity:0} 46%,57.9%{opacity:1} 58%,100%{opacity:0}}
+@keyframes ma-blink{from{opacity:1} to{opacity:.15}}
+@keyframes ma-drop{from{transform:translateY(0); opacity:1} to{transform:translateY(30px); opacity:0}}
+@keyframes ma-twinkle{from{opacity:.25} to{opacity:.9}}
+@keyframes ma-legA{
+  0%{transform:rotate(0deg)} 18%{transform:rotate(0deg)} 20.75%{transform:rotate(22deg)} 23.5%{transform:rotate(-22deg)}
+  26.25%{transform:rotate(22deg)} 29%{transform:rotate(-22deg)} 31.75%{transform:rotate(22deg)} 34.5%{transform:rotate(-22deg)}
+  37.25%{transform:rotate(22deg)} 40%{transform:rotate(0deg)} 78%{transform:rotate(0deg)} 80.57%{transform:rotate(22deg)}
+  83.14%{transform:rotate(-22deg)} 85.71%{transform:rotate(22deg)} 88.29%{transform:rotate(-22deg)} 90.86%{transform:rotate(22deg)}
+  93.43%{transform:rotate(-22deg)} 96%{transform:rotate(0deg)} 100%{transform:rotate(0deg)}}
+@keyframes ma-legB{
+  0%{transform:rotate(0deg)} 18%{transform:rotate(0deg)} 20.75%{transform:rotate(-22deg)} 23.5%{transform:rotate(22deg)}
+  26.25%{transform:rotate(-22deg)} 29%{transform:rotate(22deg)} 31.75%{transform:rotate(-22deg)} 34.5%{transform:rotate(22deg)}
+  37.25%{transform:rotate(-22deg)} 40%{transform:rotate(0deg)} 78%{transform:rotate(0deg)} 80.57%{transform:rotate(-22deg)}
+  83.14%{transform:rotate(22deg)} 85.71%{transform:rotate(-22deg)} 88.29%{transform:rotate(22deg)} 90.86%{transform:rotate(-22deg)}
+  93.43%{transform:rotate(22deg)} 96%{transform:rotate(0deg)} 100%{transform:rotate(0deg)}}
+
+.pf-thumb.empty{
+  background:#100f0d;
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.2em;
+  text-transform:uppercase; color:#6f6558;
+}
+.pf-body{padding:1.1rem clamp(1rem,2vw,1.3rem) 1.3rem; display:flex; flex-direction:column; flex:1;}
+.pf-num{
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.24em;
+  text-transform:uppercase; color:#8d8172; margin-bottom:.5rem;
+}
+.pf-card h3{font-size:1.1rem; font-weight:600; line-height:1.25; margin-bottom:.45rem;}
+.pf-card p{font-size:.9rem; color:#c2b59e; margin-bottom:.9rem;}
+.pf-chips{display:flex; flex-wrap:wrap; gap:.3rem; margin:auto 0 0;}
+.pf-chips span{
+  font-family:var(--mono); font-size:.58rem; letter-spacing:.12em; text-transform:uppercase;
+  color:#b3a690; border:1px solid #ffffff1f; border-radius:4px; padding:.24rem .45rem .19rem;
+}
+.pf-open{
+  margin-top:1rem; font-family:var(--mono); font-size:.66rem;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--phosphor);
+}
+.pf-card.soon{opacity:.62;}
+.pf-card.soon .pf-open{color:#8d8172;}
 
 /* ── HOME ──
    Row 1: portrait beside the machine — the portrait stretches to the
@@ -380,8 +560,8 @@ footer.site{padding:2.2rem 0 3rem; text-align:center; font-family:var(--mono); f
   <!-- ══ HEADER ══ -->
   <header class="site">
     <div class="logo-frame">
-      <img src="images/consulting_glyph_MASTER_website.png" alt="aamir.consulting logo"
-           onerror="this.remove();this.parentNode.insertAdjacentHTML('beforeend','<span class=logo-fallback>a.c</span>')">
+      <img src="images/logo.png" alt="aamir.consulting logo"
+           onerror="var p=this.parentNode;this.remove();p.insertAdjacentHTML('beforeend','<span class=logo-fallback>a.c</span>')">
     </div>
     <div class="brand">
       aamir.consulting
@@ -390,6 +570,7 @@ footer.site{padding:2.2rem 0 3rem; text-align:center; font-family:var(--mono); f
     <nav class="keys">
       <button class="key" data-goto="home">Home</button>
       <button class="key" data-goto="services">Services</button>
+      <button class="key" data-goto="portfolio">Portfolio</button>
       <button class="key" data-goto="contact">Contact</button>
     </nav>
   </header>
@@ -402,8 +583,8 @@ footer.site{padding:2.2rem 0 3rem; text-align:center; font-family:var(--mono); f
 
       <div class="col-portrait">
         <div class="portrait-frame">
-          <img src="images/consulting_portrait.webp" alt="Portrait of Aamir Ahmad"
-               onerror="this.remove();this.parentNode.insertAdjacentHTML('beforeend','<span class=logo-fallback>portrait</span>')">
+          <img src="images/portrait.webp" alt="Portrait of Aamir Ahmad"
+               onerror="var p=this.parentNode;this.remove();p.insertAdjacentHTML('beforeend','<span class=logo-fallback>portrait</span>')">
         </div>
       </div>
 
@@ -418,7 +599,7 @@ footer.site{padding:2.2rem 0 3rem; text-align:center; font-family:var(--mono); f
 
             <!-- ── SIDE A : the tape ── -->
             <div class="face front">
-              <svg viewBox="0 0 620 480" role="img" aria-label="Interactive cassette — drag a reel to wind the tape">
+              <svg viewBox="0 0 620 480" role="img" aria-label="Interactive cassette: drag a reel to wind the tape">
                 <defs>
                   <linearGradient id="shellGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0" stop-color="#f0e2c8"/><stop offset="1" stop-color="#c9b590"/>
@@ -567,6 +748,323 @@ footer.site{padding:2.2rem 0 3rem; text-align:center; font-family:var(--mono); f
     </div>
   </section>
 
+  <!-- ══ PORTFOLIO ══
+       Cards only. Each piece is a standalone file in portfolio/ —
+       delete one and this panel is the only thing to tidy up.
+       ═══════════════════════════════════════════════════════ -->
+  <section class="panel" id="portfolio">
+    <span class="panel-tab">Portfolio</span>
+
+    <p class="pf-lede">Projects in the context they were performed.</p>
+
+    <div class="pf-grid">
+
+      <a class="pf-card" href="portfolio/anomaly-detection.html">
+        <span class="pf-thumb art">
+          <svg class="ma pf-art" viewBox="0 96 400 196" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="ma-sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#07090e"/><stop offset="1" stop-color="#121722"/>
+              </linearGradient>
+              <linearGradient id="ma-ground" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#6b665d"/><stop offset=".35" stop-color="#4a463f"/><stop offset="1" stop-color="#26241f"/>
+              </linearGradient>
+              <radialGradient id="ma-glow"><stop offset="0" stop-color="#f07266" stop-opacity=".85"/><stop offset="1" stop-color="#f07266" stop-opacity="0"/></radialGradient>
+              <radialGradient id="ma-earth" cx=".35" cy=".35"><stop offset="0" stop-color="#8fe8d4"/><stop offset=".6" stop-color="#2f8f8a"/><stop offset="1" stop-color="#16434f"/></radialGradient>
+              <linearGradient id="ma-visor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd48a"/><stop offset=".45" stop-color="#ffb648"/><stop offset="1" stop-color="#6a3f10"/></linearGradient>
+              <linearGradient id="ma-cone-t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fe3c0" stop-opacity=".35"/><stop offset="1" stop-color="#6fe3c0" stop-opacity="0"/></linearGradient>
+              <linearGradient id="ma-cone-r" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f07266" stop-opacity=".5"/><stop offset="1" stop-color="#f07266" stop-opacity="0"/></linearGradient>
+              <g id="ma-plant-well">
+                <path d="M0 0 C-1 -10 1 -20 0 -32" stroke="#4ec27f" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                <ellipse cx="-6" cy="-12" rx="7" ry="3.2" transform="rotate(-28 -6 -12)" fill="#4ec27f"/>
+                <ellipse cx="6" cy="-19" rx="7" ry="3.2" transform="rotate(28 6 -19)" fill="#6fe3c0"/>
+                <ellipse cx="-5" cy="-27" rx="6" ry="2.8" transform="rotate(-40 -5 -27)" fill="#6fe3c0"/>
+                <ellipse cx="4" cy="-33" rx="5" ry="2.6" transform="rotate(35 4 -33)" fill="#4ec27f"/>
+              </g>
+              <g id="ma-plant-wilt">
+                <path d="M0 0 C1 -8 3 -16 9 -19 C13 -21 15 -17 15 -13" stroke="#8f8043" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                <ellipse cx="-4" cy="-6" rx="6" ry="2.6" transform="rotate(55 -4 -6)" fill="#7d6a38"/>
+                <ellipse cx="7" cy="-11" rx="6" ry="2.6" transform="rotate(70 7 -11)" fill="#9a7b3c"/>
+                <ellipse cx="15" cy="-9" rx="5" ry="2.3" transform="rotate(85 15 -9)" fill="#7d6a38"/>
+              </g>
+            </defs>
+  
+            <rect width="400" height="300" fill="url(#ma-sky)"/>
+            <g fill="#f3ead9">
+              <circle class="ma-twinkle" cx="34" cy="30" r="1.1"/><circle class="ma-twinkle" cx="80" cy="64" r=".8"/>
+              <circle class="ma-twinkle" cx="140" cy="22" r="1"/><circle class="ma-twinkle" cx="196" cy="54" r=".7"/>
+              <circle class="ma-twinkle" cx="236" cy="18" r="1.2"/><circle class="ma-twinkle" cx="270" cy="96" r=".8"/>
+              <circle class="ma-twinkle" cx="382" cy="120" r="1"/><circle class="ma-twinkle" cx="22" cy="118" r=".8"/>
+              <circle class="ma-twinkle" cx="160" cy="98" r=".7"/><circle class="ma-twinkle" cx="370" cy="24" r=".9"/>
+            </g>
+            <circle cx="322" cy="58" r="21" fill="url(#ma-earth)"/>
+            <path d="M322 37 a21 21 0 0 1 0 42 a15 21 0 0 0 0 -42z" fill="#07090e" opacity=".55"/>
+  
+            <!-- lunar surface -->
+            <path d="M0 238 Q60 228 130 240 T260 238 T400 232 V300 H0Z" fill="url(#ma-ground)"/>
+            <g fill="#2a2823" opacity=".8">
+              <ellipse cx="46" cy="264" rx="18" ry="4.5"/><ellipse cx="300" cy="276" rx="24" ry="5"/>
+              <ellipse cx="190" cy="286" rx="12" ry="3"/><ellipse cx="366" cy="252" rx="10" ry="2.6"/>
+            </g>
+            <g fill="#7a756b" opacity=".5">
+              <ellipse cx="46" cy="262.5" rx="16" ry="2.5"/><ellipse cx="300" cy="274.5" rx="21" ry="2.8"/>
+            </g>
+  
+            <!-- sensor mast, arm, heads and beacon -->
+            <rect x="104" y="118" width="6" height="106" fill="#5b636c"/>
+            <rect x="104" y="122" width="116" height="5" rx="2" fill="#5b636c"/>
+            <path d="M143 127 L125 222 L171 222 Z" fill="url(#ma-cone-t)"/>
+            <path d="M193 127 L175 222 L221 222 Z" fill="url(#ma-cone-t)"/>
+            <g class="ma-scan-red ma-anim">
+              <path d="M143 127 L125 222 L171 222 Z" fill="url(#ma-cone-r)"/>
+              <path d="M193 127 L175 222 L221 222 Z" fill="url(#ma-cone-r)"/>
+            </g>
+            <rect x="136" y="126" width="14" height="7" rx="2" fill="#2b3036" stroke="#7d8a96"/>
+            <rect x="186" y="126" width="14" height="7" rx="2" fill="#2b3036" stroke="#7d8a96"/>
+            <rect x="100" y="112" width="14" height="7" rx="1.5" fill="#3a4148"/>
+            <path d="M101 112 a6 7 0 0 1 12 0z" fill="#3b2a24"/>
+            <g class="ma-alarm ma-anim">
+              <g class="ma-blink">
+                <circle cx="107" cy="108" r="30" fill="url(#ma-glow)"/>
+                <path d="M101 112 a6 7 0 0 1 12 0z" fill="#f07266"/>
+                <g stroke="#f07266" stroke-width="1.6" stroke-linecap="round">
+                  <path d="M91 104 l-8 -4"/><path d="M123 104 l8 -4"/><path d="M107 96 v-9"/>
+                </g>
+              </g>
+            </g>
+  
+            <!-- grow tray -->
+            <rect x="96" y="222" width="140" height="22" rx="3" fill="#2a2d33" stroke="#4a5058"/>
+            <rect x="99" y="219" width="134" height="6" rx="2" fill="#4a2f1d"/>
+            <rect x="180" y="229" width="48" height="11" rx="2" fill="#0d1014" stroke="#3a4148"/>
+            <g font-family="ui-monospace, Menlo, monospace" font-size="6.4" letter-spacing=".8" text-anchor="middle">
+              <text class="ma-t-scan ma-anim" x="204" y="237" fill="#ffb648">SCANNING</text>
+              <g class="ma-t-stress ma-anim"><text class="ma-blink" x="204" y="237" fill="#f07266">STRESS</text></g>
+              <text class="ma-t-ok ma-anim" x="204" y="237" fill="#6fe3c0">HEALTHY</text>
+            </g>
+            <g transform="translate(0 220)">
+              <g class="ma-wilt ma-anim">
+                <use href="#ma-plant-wilt" x="128"/><use href="#ma-plant-wilt" x="160"/><use href="#ma-plant-wilt" x="192"/>
+              </g>
+              <g class="ma-well ma-anim">
+                <use href="#ma-plant-well" x="130"/><use href="#ma-plant-well" x="165"/><use href="#ma-plant-well" x="200"/>
+              </g>
+            </g>
+  
+            <!-- water -->
+            <g class="ma-water ma-anim" fill="#8fd8ff">
+              <g transform="translate(184 188)">
+                <circle class="ma-drop" cx="0" cy="0" r="1.7"/>
+                <circle class="ma-drop" cx="-5" cy="3" r="1.4"/>
+                <circle class="ma-drop" cx="4" cy="2" r="1.5"/>
+              </g>
+              <g transform="translate(180 194)">
+                <circle class="ma-drop" cx="0" cy="0" r="1.5"/>
+                <circle class="ma-drop" cx="-3" cy="2" r="1.3"/>
+                <circle class="ma-drop" cx="3" cy="1" r="1.4"/>
+              </g>
+            </g>
+  
+            <!-- astronaut (original design), drawn facing left, feet at 0,0 -->
+            <g transform="translate(256 240) scale(1.45)">
+              <g class="ma-walker ma-anim">
+                <g class="ma-face ma-anim">
+                  <rect class="ma-legB ma-anim" x="0.5" y="-19" width="7" height="19" rx="2.5" fill="#d9d4ca"/>
+                  <rect x="4" y="-50" width="12" height="22" rx="3" fill="#bdb7ab"/>
+                  <rect x="-10" y="-46" width="21" height="29" rx="7" fill="#eeeae2"/>
+                  <rect x="-6" y="-39" width="9" height="7" rx="1.5" fill="#2b3036"/>
+                  <circle cx="-3.5" cy="-35.5" r="1.1" fill="#6fe3c0"/><circle cx=".5" cy="-35.5" r="1.1" fill="#ffb648"/>
+                  <rect class="ma-legA ma-anim" x="-7.5" y="-19" width="7" height="19" rx="2.5" fill="#eeeae2"/>
+                  <rect x="-8.5" y="-3" width="9" height="4" rx="1.5" fill="#5b636c"/>
+                  <circle cx="0" cy="-55" r="11.5" fill="#eeeae2"/>
+                  <ellipse cx="-4.5" cy="-55" rx="7.5" ry="6.5" fill="url(#ma-visor)"/>
+                  <ellipse cx="-7" cy="-57.5" rx="2" ry="1.2" fill="#fff" opacity=".7"/>
+                  <g transform="translate(-20 -45)">
+                    <g class="ma-arm ma-anim">
+                      <path d="M16 3 L0 0" stroke="#eeeae2" stroke-width="6" stroke-linecap="round"/>
+                      <path d="M-1 -5 v11 a2 2 0 0 1 -2 2 h-12 a2 2 0 0 1 -2 -2 v-11z" fill="#7d8a96"/>
+                      <path d="M-9 -5 a6 6 0 0 1 12 0" stroke="#7d8a96" stroke-width="1.8" fill="none"/>
+                      <path d="M-16 0 L-28 -8" stroke="#7d8a96" stroke-width="2.6" stroke-linecap="round"/>
+                      <circle cx="-28.5" cy="-8.5" r="2" fill="#9aa6b1"/>
+                    </g>
+                  </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+  
+            
+          </svg>
+        </span>
+        <span class="pf-body">
+          <span class="pf-num">Piece 01</span>
+          <h3>Anomaly Detection for Space Agriculture</h3>
+          <p>
+            Sending anything into space, and losing it, is very expensive. Here is a machine
+            learning model that tells you if a plant is stressed in space, in time to act quickly to
+            save it. It also determines which metrics best predict that stress, so we only send up a
+            lightweight set of hardware that best detects that stress.
+          </p>
+          <span class="pf-chips">
+            <span>Early warning</span><span>Payload savings</span><span>Sensor selection</span><span>Mission risk</span>
+          </span>
+          <span class="pf-open">Open piece →</span>
+        </span>
+      </a>
+
+      <a class="pf-card" href="portfolio/geometry-of-confidence.html">
+        <span class="pf-thumb art">
+          <svg class="ar pf-art" viewBox="0 86 400 176" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="ar-sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#140f18"/><stop offset=".7" stop-color="#3a2620"/><stop offset="1" stop-color="#6a3f24"/>
+              </linearGradient>
+              <linearGradient id="ar-sea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#1f4b52"/><stop offset="1" stop-color="#0d2226"/>
+              </linearGradient>
+              <linearGradient id="ar-stone" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#9c8a6c"/><stop offset="1" stop-color="#4f4436"/>
+              </linearGradient>
+              <radialGradient id="ar-sun"><stop offset="0" stop-color="#fff1c9"/><stop offset=".45" stop-color="#ffb648"/><stop offset="1" stop-color="#ffb648" stop-opacity="0"/></radialGradient>
+              <radialGradient id="ar-hand"><stop offset="0" stop-color="#ffd48a" stop-opacity=".95"/><stop offset="1" stop-color="#ffb648" stop-opacity="0"/></radialGradient>
+              <linearGradient id="ar-mirror" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff6de"/><stop offset=".5" stop-color="#c9d3d8"/><stop offset="1" stop-color="#6f7f85"/>
+              </linearGradient>
+              <linearGradient id="ar-wood" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#8a5a32"/><stop offset="1" stop-color="#5e3b20"/>
+              </linearGradient>
+            </defs>
+  
+            <!-- sky, sun, sea -->
+            <rect width="400" height="300" fill="url(#ar-sky)"/>
+            <circle cx="150" cy="42" r="40" fill="url(#ar-sun)"/>
+            <circle cx="150" cy="42" r="13" fill="#fff1c9"/>
+            <rect y="196" width="400" height="104" fill="url(#ar-sea)"/>
+            <g stroke="#6fe3c0" stroke-opacity=".18" stroke-width="1.2" stroke-linecap="round">
+              <path d="M230 214 h26"/><path d="M290 226 h34"/><path d="M350 210 h22"/><path d="M250 240 h30"/><path d="M340 250 h28"/>
+            </g>
+  
+            <!-- Roman ship on the horizon -->
+            <g class="ar-ship ar-anim">
+              <path d="M306 196 h40 l-6 7 h-28 z" fill="#2a1d16"/>
+              <path d="M325 196 v-26" stroke="#2a1d16" stroke-width="1.6"/>
+              <path d="M326 172 q12 10 0 22 z" fill="#b5462f"/>
+              <path d="M324 172 q-11 10 0 22 z" fill="#8f3524"/>
+            </g>
+  
+            <!-- stone terrace and column -->
+            <path d="M0 232 H250 L262 300 H0 Z" fill="url(#ar-stone)"/>
+            <path d="M0 232 H250" stroke="#c9b590" stroke-opacity=".5"/>
+            <g fill="#b9a584">
+              <rect x="10" y="118" width="22" height="114"/>
+              <rect x="6" y="110" width="30" height="9" rx="1.5"/>
+              <rect x="6" y="228" width="30" height="6" rx="1.5"/>
+            </g>
+            <g stroke="#8a7a5e" stroke-width="1"><path d="M16 120 v108"/><path d="M21 120 v108"/><path d="M26 120 v108"/></g>
+  
+            <!-- sun ray and reflected beam (the test) -->
+            <path class="ar-ray ar-anim" d="M152 54 L197 176" stroke="#ffd48a" stroke-width="2" stroke-dasharray="4 4"/>
+            <g class="ar-beam ar-anim">
+              <path d="M203 180 L318 188" stroke="#ffb648" stroke-width="5" stroke-linecap="round" opacity=".35"/>
+              <path d="M203 180 L318 188" stroke="#fff1c9" stroke-width="1.8" stroke-linecap="round"/>
+            </g>
+  
+            <!-- the sun-laser: frame (subsystem 1) and mirror (subsystem 2) -->
+            <g stroke-linecap="round">
+              <path class="ar-p1 ar-anim" d="M172 244 L196 190" stroke="url(#ar-wood)" stroke-width="6"/>
+              <path class="ar-p2 ar-anim" d="M222 244 L198 190" stroke="url(#ar-wood)" stroke-width="6"/>
+              <path class="ar-p3 ar-anim" d="M180 226 H214" stroke="#6b4426" stroke-width="5"/>
+            </g>
+            <g class="ar-p4 ar-anim">
+              <rect x="193" y="184" width="8" height="8" rx="1.5" fill="#5b636c"/>
+              <ellipse cx="200" cy="170" rx="9" ry="26" fill="#6f7f85"/>
+              <ellipse cx="202" cy="170" rx="7" ry="23" fill="url(#ar-mirror)"/>
+              <ellipse cx="200" cy="160" rx="2" ry="7" fill="#fff" opacity=".8"/>
+            </g>
+            <g class="ar-spark ar-anim" stroke="#ffd48a" stroke-width="1.6" stroke-linecap="round">
+              <g class="ar-blink">
+                <path d="M188 190 l-6 -4"/><path d="M190 196 l-8 1"/><path d="M208 191 l6 -4"/><path d="M206 197 l8 1"/>
+              </g>
+            </g>
+  
+            <!-- Archimedes (original drawing), feet on the terrace -->
+            <g class="ar-waves ar-anim" fill="none" stroke="#ffb648" stroke-width="1.2">
+              <circle class="ar-wave" cx="72" cy="172" r="16"/>
+              <circle class="ar-wave" cx="72" cy="172" r="16"/>
+              <circle class="ar-wave" cx="72" cy="172" r="16"/>
+            </g>
+            <g>
+              <rect x="60" y="244" width="9" height="4" rx="1.5" fill="#4a2f1d"/>
+              <rect x="75" y="244" width="9" height="4" rx="1.5" fill="#4a2f1d"/>
+              <path d="M62 188 H84 L92 245 H52 Z" fill="#e8dcc0"/>
+              <path d="M62 190 L88 236" stroke="#b5462f" stroke-width="5"/>
+              <path d="M58 200 L52 245" stroke="#cdbf9f" stroke-width="1.2"/>
+              <!-- back arm -->
+              <g class="ar-armB ar-anim">
+                <path d="M66 194 L56 222" stroke="#e0d3b5" stroke-width="7" stroke-linecap="round"/>
+                <circle cx="56" cy="223" r="3.2" fill="#d9a77c"/>
+              </g>
+              <!-- head -->
+              <circle cx="70.5" cy="176" r="11" fill="#f3ead9"/>
+              <circle cx="73.5" cy="174" r="9.6" fill="#d9a77c"/>
+              <path d="M75 170 q4 -1 6 2" stroke="#f3ead9" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+              <path d="M65 177 q8 22 16 0 q-3 5 -8 5 q-5 0 -8 -5z" fill="#f3ead9"/>
+              <circle cx="77" cy="172" r="1.2" fill="#2a1d16"/>
+              <path d="M64 169 q9 -9 18 0" stroke="#4ec27f" stroke-width="2.2" fill="none" stroke-dasharray="2.4 1.4"/>
+              <!-- front arm, raised toward the machine -->
+              <g class="ar-armF ar-anim">
+                <path d="M78 194 L96 214" stroke="#eee4cc" stroke-width="7" stroke-linecap="round"/>
+                <circle cx="97" cy="215" r="3.4" fill="#d9a77c"/>
+                <circle class="ar-glow ar-anim" cx="98" cy="216" r="12" fill="url(#ar-hand)"/>
+              </g>
+            </g>
+            <!-- the telepathic stream from hand to machine -->
+            <g class="ar-stream ar-anim" fill="#ffd48a">
+              <circle class="ar-mote" cx="0" cy="0" r="1.6"/>
+              <circle class="ar-mote" cx="0" cy="0" r="1.3"/>
+              <circle class="ar-mote" cx="0" cy="0" r="1.5"/>
+              <circle class="ar-mote" cx="0" cy="0" r="1.2"/>
+            </g>
+  
+            <!-- checklist -->
+            <g transform="translate(258 92)">
+              <rect width="132" height="76" rx="6" fill="#0d1014" stroke="#6fe3c0" stroke-opacity=".7"/>
+              <text x="10" y="15" font-family="ui-monospace, Menlo, monospace" font-size="7.5" letter-spacing="1.4" fill="#8d8172">CHECKLIST</text>
+              <g font-family="ui-monospace, Menlo, monospace" font-size="8.5" fill="#f3ead9">
+                <rect x="10" y="24" width="10" height="10" rx="2" fill="none" stroke="#b9b2a6"/>
+                <text x="27" y="32.5">Frame</text>
+                <rect x="10" y="40" width="10" height="10" rx="2" fill="none" stroke="#b9b2a6"/>
+                <text x="27" y="48.5">Mirror</text>
+                <rect x="10" y="56" width="10" height="10" rx="2" fill="none" stroke="#b9b2a6"/>
+                <text x="27" y="64.5">Integrate &amp; test</text>
+              </g>
+              <g fill="none" stroke="#6fe3c0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path class="ar-c1 ar-anim" d="M11.5 29 l3 3.5 l6 -8" pathLength="1"/>
+                <path class="ar-c2 ar-anim" d="M11.5 45 l3 3.5 l6 -8" pathLength="1"/>
+                <path class="ar-c3 ar-anim" d="M11.5 61 l3 3.5 l6 -8" pathLength="1"/>
+              </g>
+            </g>
+  
+            
+          </svg>
+        </span>
+        <span class="pf-body">
+          <span class="pf-num">Piece 02</span>
+          <h3>The Geometry of Confidence</h3>
+          <p>
+            See which risks actually decide whether a project lands on time and on budget so
+            you can act decisively ahead of time to mitigate them.
+          </p>
+          <span class="pf-chips">
+            <span>Cost &amp; schedule</span><span>Risk priorities</span><span>Decision support</span><span>Program leadership</span>
+          </span>
+          <span class="pf-open">Open piece →</span>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
   <!-- ══ CONTACT ══ -->
   <section class="panel" id="contact">
     <span class="panel-tab">Contact</span>
@@ -616,7 +1114,7 @@ footer.site{padding:2.2rem 0 3rem; text-align:center; font-family:var(--mono); f
     </div>
   </section>
 
-  <footer class="site">© 2026 Aamir Ahmad · preview</footer>
+  <footer class="site">© 2026 Aamir Ahmad</footer>
 </div>
 
 <script>

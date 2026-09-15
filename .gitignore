@@ -6,5 +6,15 @@ contact-mailer-worker/node_modules/
 pitch.html
 pitch[0-9].html
 
-# design iterations kept for reference — local only, never deployed.
-consulting Archive/
+# old page versions, unused images and working files — local only, never deployed.
+_archive/
+
+# full-resolution camera originals for the symposium photos (~113MB).
+# the web-sized .webp versions next to them are what ship.
+images/portfolio/geometry-of-confidence/NASA*.png
+
+# review screenshots the desktop app saves here — never deployed.
+Claude outputs/
+
+# numbered drafts of portfolio pieces — local only, never deployed.
+portfolio/*-v[0-9].html

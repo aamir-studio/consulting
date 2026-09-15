@@ -1,0 +1,1666 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anomaly Detection for Space Agriculture | aamir.consulting</title>
+<meta name="description" content="Sending anything into space, and losing it, is very expensive. Here is a machine learning model that tells you if a plant is stressed in space, in time to act quickly to save it. It also determines which metrics best predict that stress, so we only send up a lightweight set of hardware that best detects the stress.">
+<meta name="theme-color" content="#0d0c0b">
+<meta property="og:title" content="Anomaly Detection for Space Agriculture">
+<meta property="og:description" content="A machine learning model that tells you a plant is stressed in time to save it, and names the metrics that best predict stress.">
+<meta property="og:type" content="article">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Palette lifted verbatim from index.html so the pages are one
+   machine. Self-contained: deleting this file affects nothing.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:        #0d0c0b;
+  --panel:      #1b1917;
+  --shell:      #e8d9bd;
+  --shell-dk:   #c9b590;
+  --tape:       #4a2f1d;
+  --phosphor:   #ffb648;
+  --phosphor-2: #6fe3c0;
+  --cream:      #f3ead9;
+
+  --edge: 1px solid #ffffff1f;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sans: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth; scroll-padding-top:5.5rem;}
+body{
+  background:
+    radial-gradient(120% 80% at 50% -10%, #241f1a 0%, transparent 60%),
+    var(--ink);
+  color:var(--cream);
+  font-family:var(--sans);
+  font-size:clamp(15px, 0.5vw + 13px, 17px);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:var(--phosphor); text-decoration:none; border-bottom:1px solid #ffb64855;}
+a:hover{border-bottom-color:var(--phosphor);}
+.wrap{width:min(1100px, 92vw); margin:0 auto;}
+
+/* ── PANEL CHROME ── */
+.panel{
+  position:relative;
+  border:var(--edge); border-radius:14px;
+  background:linear-gradient(180deg, #1f1c1a, #141210);
+  padding:clamp(2.2rem, 3.4vw, 3rem) clamp(1.1rem, 2.6vw, 2.2rem) clamp(1.8rem, 3vw, 2.4rem);
+  margin:clamp(1.6rem, 4vw, 3.4rem) 0;
+  box-shadow:0 30px 70px -40px #000;
+}
+.panel-tab{
+  position:absolute; top:-1px; left:-1px;
+  padding:.45rem 1.5rem .5rem;
+  border:var(--edge); border-top-left-radius:14px; border-bottom-right-radius:14px;
+  background:#0f0e0d;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.26em; text-transform:uppercase;
+  color:#bfae94;
+}
+
+/* ── HEADER ── */
+header.site{
+  display:flex; align-items:center; gap:clamp(.8rem,2vw,1.3rem);
+  flex-wrap:wrap; padding:clamp(1rem,2.6vw,1.7rem) 0 .6rem;
+}
+.logo-frame{
+  width:clamp(54px, 6vw, 76px); aspect-ratio:1;
+  border:var(--edge); border-radius:10px;
+  display:grid; place-items:center; overflow:hidden;
+  background:#100f0e; flex:none;
+}
+.logo-frame img{width:100%; height:100%; object-fit:contain;}
+.logo-fallback{font-family:var(--mono); font-size:.65rem; color:#8d8172; letter-spacing:.1em;}
+.brand{font-size:clamp(1.3rem, 3vw, 1.95rem); font-weight:600; letter-spacing:-.02em; line-height:1;}
+.brand a{color:inherit; border:0;}
+.brand small{
+  display:block; margin-top:.38rem;
+  font-family:var(--mono); font-weight:400; letter-spacing:.13em;
+  font-size:clamp(.58rem,1vw,.7rem); color:#a2937e; text-transform:lowercase;
+}
+nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-content:flex-end;}
+.key{
+  display:inline-block;
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
+  color:#e8dcc7; background:linear-gradient(180deg,#3a352f,#232019);
+  border:1px solid #ffffff22; border-bottom:3px solid #00000090;
+  border-radius:6px; padding:.55rem .95rem .5rem; cursor:pointer;
+  transition:transform .06s, border-bottom-width .06s, background .2s;
+}
+.key:hover{background:linear-gradient(180deg,#464038,#2a251e);}
+.key:active{transform:translateY(2px); border-bottom-width:1px;}
+.key[aria-current="page"]{
+  color:var(--phosphor); border-bottom-width:1px; transform:translateY(2px);
+  background:linear-gradient(180deg,#221f1a,#191612);
+  box-shadow:inset 0 2px 6px #0009;
+}
+
+/* ── HERO ── */
+.hero h1{
+  font-size:clamp(1.9rem, 5vw, 3.2rem); font-weight:600;
+  letter-spacing:-.025em; line-height:1.06; margin-bottom:.7rem;
+}
+.hero .dek{
+  font-size:clamp(1rem, 1.6vw, 1.15rem); color:#d6c8b1;
+  max-width:56ch; margin-bottom:clamp(1.4rem,3vw,2rem);
+}
+.spec{
+  display:grid; gap:1px;
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  background:#ffffff14; border:var(--edge); border-radius:10px; overflow:hidden;
+  margin-bottom:clamp(1.4rem,3vw,2rem);
+}
+.spec div{background:#151311; padding:.85rem 1rem .95rem;}
+.spec dt{
+  font-family:var(--mono); font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+  color:#8d8172; margin-bottom:.3rem;
+}
+.spec dd{font-size:.88rem; line-height:1.45; color:#e4d8c2;}
+.hero p.body{max-width:66ch; margin-bottom:.9rem;}
+.credit{
+  margin-top:1.3rem; padding:.9rem 1.1rem;
+  border-left:3px solid var(--phosphor-2); background:#6fe3c00d;
+  border-radius:0 8px 8px 0;
+  font-size:.86rem; color:#c9bda8; max-width:72ch;
+}
+
+/* ── EXECUTIVE SUMMARY BLOCKS ──
+   Four short panels before the rail: the title, then problem,
+   response, method. Each is meant to be complete on its own —
+   a reader who stops at any one of them is not left with half
+   a sentence.
+   ─────────────────────────────────────────────────────────────── */
+.sum h2{
+  font-size:clamp(1.45rem, 2.8vw, 1.9rem); font-weight:600;
+  letter-spacing:-.02em; line-height:1.1; margin-bottom:.5rem;
+  text-wrap:balance;
+}
+/* the specific line under the block's name — still part of the title */
+.hsub{
+  font-size:clamp(1rem, 1.5vw, 1.14rem); color:#d6c8b1; line-height:1.35;
+  max-width:40ch; margin-bottom:1.1rem !important; text-wrap:balance;
+}
+.sum p{max-width:68ch; margin-bottom:.9rem; font-size:clamp(.98rem,1.3vw,1.05rem);}
+.sum p:last-child{margin-bottom:0;}
+.claim{
+  font-size:clamp(1.05rem, 1.8vw, 1.25rem); color:#e4d8c2; line-height:1.5;
+  max-width:52ch; margin-bottom:1.2rem;
+}
+.stamp{
+  font-family:var(--mono); font-size:.64rem; letter-spacing:.2em;
+  text-transform:uppercase; color:#8d8172;
+}
+.stamp a{color:#c9bda8; text-decoration:underline; text-decoration-color:#6fe3c080; text-underline-offset:.2em;}
+.stamp a:hover{color:var(--phosphor-2);}
+
+/* ── TITLE ART: the moon-farm loop ──
+   One 14-second story, drawn inline: wilted crop → sensor alarm →
+   astronaut walks in and waters → crop recovers → alarm clears.
+   All motion is CSS on SVG groups, namespaced "ma-". Reduced motion
+   shows the recovered scene, still.
+   ─────────────────────────────────────────────────────────────── */
+.hero.has-art{display:grid; gap:clamp(1.2rem,3vw,2.4rem); align-items:center;
+  grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);}
+.hero.has-art .hero-text{min-width:0;}
+.hero.has-art h1{font-size:clamp(1.9rem, 3.7vw, 2.9rem);}
+@media (max-width:820px){ .hero.has-art{grid-template-columns:1fr;} }
+.hero-art{margin:0; min-width:0;}
+.hero-art .ma-screen{
+  border:var(--edge); border-radius:12px; padding:clamp(.4rem,1vw,.6rem);
+  background:linear-gradient(180deg,#26221b,#131110);
+  box-shadow:inset 0 1px 0 #ffffff14, 0 18px 40px -30px #000;
+}
+.hero-art svg{display:block; width:100%; height:auto; border-radius:8px;}
+.ma-bar{display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-top:.55rem;
+  font-family:var(--mono); font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:#8d8172;}
+.ma-key{
+  display:inline-flex; align-items:center; gap:.4rem; cursor:pointer;
+  font-family:var(--mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase;
+  color:#9d917f; background:linear-gradient(180deg,#232019,#151310);
+  border:var(--edge); border-bottom:3px solid #00000090; border-radius:6px; padding:.35rem .6rem .3rem;
+  transition:transform .06s, border-bottom-width .06s, color .15s;
+}
+.ma-key:hover{color:var(--cream);}
+.ma-key:active{transform:translateY(2px); border-bottom-width:1px;}
+.ma-key .led{width:6px; height:6px; border-radius:50%; background:var(--phosphor-2); box-shadow:0 0 6px var(--phosphor-2);}
+.ma-paused .ma-key .led{background:#3a342c; box-shadow:inset 0 0 2px #000;}
+
+.ma .ma-anim, .ma .ma-drop{transform-box:fill-box;}  /* only on animated parts: on a g with a transform attribute it would move the pivot */
+.ma-anim{animation-duration:14s; animation-iteration-count:infinite; animation-timing-function:linear;}
+.ma-paused .ma-anim, .ma-paused .ma-blink, .ma-paused .ma-drop, .ma-paused .ma-twinkle{animation-play-state:paused;}
+
+/* resting state = the recovered scene (what reduced motion shows) */
+.ma-wilt{opacity:0;}
+.ma-alarm{opacity:0;}
+.ma-scan-red{opacity:0;}
+.ma-t-scan, .ma-t-stress{opacity:0;}
+.ma-water{opacity:0;}
+
+.ma-wilt{animation-name:ma-wilt;}
+.ma-well{animation-name:ma-well; transform-origin:50% 100%;}
+.ma-alarm{animation-name:ma-alarm;}
+.ma-scan-red{animation-name:ma-alarm;}
+.ma-t-scan{animation-name:ma-tscan;}
+.ma-t-stress{animation-name:ma-alarm;}
+.ma-t-ok{animation-name:ma-tok;}
+.ma-walker{animation-name:ma-walk; animation-timing-function:linear;}
+.ma-face{animation-name:ma-face; transform-origin:50% 50%;}
+.ma-legA{animation-name:ma-legA; transform-origin:50% 0;}
+.ma-legB{animation-name:ma-legB; transform-origin:50% 0;}
+.ma .ma-arm{animation-name:ma-pour; transform-box:fill-box; transform-origin:30.5px 10.5px;} /* = the hand */
+.ma-water{animation-name:ma-water;}
+.ma-blink{animation:ma-blink .7s steps(2,jump-none) infinite alternate;}
+.ma-drop{animation:ma-drop .8s linear infinite;}
+.ma-drop:nth-child(2){animation-delay:-.27s;}
+.ma-drop:nth-child(3){animation-delay:-.53s;}
+.ma-twinkle{animation:ma-twinkle 3.2s ease-in-out infinite alternate;}
+.ma-twinkle:nth-child(2n){animation-delay:-1.1s;}
+.ma-twinkle:nth-child(3n){animation-delay:-2.3s;}
+
+@keyframes ma-wilt{0%{opacity:1} 52%{opacity:1} 62%{opacity:0} 86%{opacity:0} 100%{opacity:1}}
+@keyframes ma-well{0%{opacity:0; transform:scale(.8)} 52%{opacity:0; transform:scale(.8)}
+  62%{opacity:1; transform:scale(1.04)} 66%{transform:scale(1)} 86%{opacity:1; transform:scale(1)} 100%{opacity:0; transform:scale(.8)}}
+@keyframes ma-alarm{0%,11.9%{opacity:0} 12%,61.9%{opacity:1} 62%,100%{opacity:0}}
+@keyframes ma-tscan{0%,11.9%{opacity:1} 12%,100%{opacity:0}}
+@keyframes ma-tok{0%,61.9%{opacity:0} 62%,100%{opacity:1}}
+@keyframes ma-walk{0%,18%{transform:translateX(230px)} 40%,78%{transform:translateX(0)} 96%,100%{transform:translateX(230px)}}
+@keyframes ma-face{0%,77.9%{transform:scaleX(1)} 78%,100%{transform:scaleX(-1)}}
+@keyframes ma-pour{0%,42%{transform:rotate(0deg)} 46%,58%{transform:rotate(-30deg)} 62%,100%{transform:rotate(0deg)}}
+@keyframes ma-water{0%,45.9%{opacity:0} 46%,57.9%{opacity:1} 58%,100%{opacity:0}}
+@keyframes ma-blink{from{opacity:1} to{opacity:.15}}
+@keyframes ma-drop{from{transform:translateY(0); opacity:1} to{transform:translateY(30px); opacity:0}}
+@keyframes ma-twinkle{from{opacity:.25} to{opacity:.9}}
+@keyframes ma-legA{
+  0%{transform:rotate(0deg)} 18%{transform:rotate(0deg)} 20.75%{transform:rotate(22deg)} 23.5%{transform:rotate(-22deg)}
+  26.25%{transform:rotate(22deg)} 29%{transform:rotate(-22deg)} 31.75%{transform:rotate(22deg)} 34.5%{transform:rotate(-22deg)}
+  37.25%{transform:rotate(22deg)} 40%{transform:rotate(0deg)} 78%{transform:rotate(0deg)} 80.57%{transform:rotate(22deg)}
+  83.14%{transform:rotate(-22deg)} 85.71%{transform:rotate(22deg)} 88.29%{transform:rotate(-22deg)} 90.86%{transform:rotate(22deg)}
+  93.43%{transform:rotate(-22deg)} 96%{transform:rotate(0deg)} 100%{transform:rotate(0deg)}}
+@keyframes ma-legB{
+  0%{transform:rotate(0deg)} 18%{transform:rotate(0deg)} 20.75%{transform:rotate(-22deg)} 23.5%{transform:rotate(22deg)}
+  26.25%{transform:rotate(-22deg)} 29%{transform:rotate(22deg)} 31.75%{transform:rotate(-22deg)} 34.5%{transform:rotate(22deg)}
+  37.25%{transform:rotate(-22deg)} 40%{transform:rotate(0deg)} 78%{transform:rotate(0deg)} 80.57%{transform:rotate(-22deg)}
+  83.14%{transform:rotate(22deg)} 85.71%{transform:rotate(-22deg)} 88.29%{transform:rotate(22deg)} 90.86%{transform:rotate(-22deg)}
+  93.43%{transform:rotate(22deg)} 96%{transform:rotate(0deg)} 100%{transform:rotate(0deg)}}
+
+@media (prefers-reduced-motion:reduce){
+  .ma-anim, .ma-blink, .ma-drop, .ma-twinkle{animation:none !important;}
+  .ma-bar .ma-key{display:none;}
+}
+
+/* ── THE RAIL ── */
+.rail-dock{
+  position:sticky; top:0; z-index:40;
+  padding:.5rem 0 .6rem;
+  background:linear-gradient(180deg, #0d0c0bfa 60%, #0d0c0b00);
+  backdrop-filter:blur(6px);
+}
+.rail{
+  display:flex; gap:.3rem; overflow-x:auto; scrollbar-width:none;
+  border:var(--edge); border-radius:10px;
+  background:linear-gradient(180deg,#1a1815,#100f0d);
+  padding:.4rem;
+  box-shadow:inset 0 1px 0 #ffffff12, 0 10px 24px -18px #000;
+}
+.rail::-webkit-scrollbar{display:none;}
+.stage{
+  flex:1 0 auto; min-width:0;
+  display:flex; align-items:center; gap:.45rem;
+  padding:.45rem .7rem .4rem; border-radius:6px;
+  border:1px solid transparent; background:transparent;
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.14em; text-transform:uppercase;
+  color:#9a8d7b; cursor:pointer; white-space:nowrap;
+  transition:color .2s, background .2s, border-color .2s;
+}
+.stage:hover{color:#d8cbb4; background:#ffffff0a;}
+.led{
+  width:7px; height:7px; border-radius:50%; flex:none;
+  background:#3a342c; box-shadow:inset 0 0 2px #000;
+  transition:background .25s, box-shadow .25s;
+}
+.stage[aria-current="true"]{
+  color:var(--phosphor); background:#ffb6480f; border-color:#ffb64833;
+}
+.stage[aria-current="true"] .led{
+  background:var(--phosphor);
+  box-shadow:0 0 7px var(--phosphor), 0 0 14px #ffb64866;
+}
+.stage.done .led{background:#6fe3c088; box-shadow:0 0 4px #6fe3c055;}
+
+/* ── STEP PANELS ── */
+.step h2{
+  font-size:clamp(1.25rem, 2.4vw, 1.6rem); font-weight:600;
+  letter-spacing:-.015em; margin-bottom:.35rem;
+}
+.step .lede{
+  font-family:var(--mono); font-size:.76rem; letter-spacing:.06em;
+  color:var(--phosphor-2); margin-bottom:1.2rem;
+}
+.step h3{
+  font-size:1.02rem; font-weight:600; color:#f3ead9;
+  margin:2rem 0 .55rem;
+  padding-top:1.4rem; border-top:1px dashed #ffffff1a;
+}
+.step h3:first-of-type{border-top:0; padding-top:0; margin-top:1.4rem;}
+.step h3 .num{
+  font-family:var(--mono); font-size:.72rem; color:var(--phosphor);
+  letter-spacing:.1em; margin-right:.5rem;
+}
+.step p{max-width:70ch; margin-bottom:.8rem;}
+.step ul{max-width:70ch; margin:.2rem 0 1rem 1.1rem;}
+.step li{margin-bottom:.45rem;}
+.step li code, .step p code, .spec dd code, td code{
+  font-family:var(--mono); font-size:.86em;
+  background:#ffffff12; border-radius:4px; padding:.1em .38em;
+  color:#f0e3cb;
+}
+.note{
+  margin:1rem 0 1.2rem; padding:.85rem 1.05rem;
+  border:1px dashed #ffffff26; border-radius:8px;
+  background:#ffffff07; font-size:.9rem; color:#c9bda8; max-width:72ch;
+}
+.note b{color:var(--phosphor); font-weight:600; font-family:var(--mono);
+  font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;
+  display:block; margin-bottom:.35rem;}
+
+/* ── BUSINESS VALUE ──
+   One per step, and deliberately louder than the technical notes: a
+   bigger heading, an amber rule, and a running count of the sensor
+   candidates still on the manifest, so the value visibly builds.
+   ─────────────────────────────────────────────────────────────── */
+.value{
+  margin:1.6rem 0 .4rem; padding:clamp(1rem,2.2vw,1.35rem) clamp(1rem,2.4vw,1.5rem);
+  border:1px solid #ffb64838; border-left:4px solid var(--phosphor);
+  border-radius:0 12px 12px 0;
+  background:linear-gradient(135deg,#ffb64814,#ffb64805 60%);
+  max-width:74ch;
+}
+.value .kicker{
+  font-family:var(--mono); font-size:.64rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--phosphor); margin-bottom:.5rem !important;
+}
+.value .meter{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:.45rem;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; color:#9a8d7b;
+  margin-bottom:.7rem !important;
+}
+.value .meter .mk{text-transform:uppercase; letter-spacing:.16em; margin-right:.3rem;}
+.value .meter b{font-weight:600; color:#c9bda8; font-size:1.05rem;}
+.value .meter b.now{color:var(--phosphor-2); text-shadow:0 0 12px #6fe3c055;}
+.value .meter i{font-style:normal; color:#6f675b;}
+.value .meter em{font-style:normal; color:#9a8d7b; font-size:.68rem; letter-spacing:.06em;}
+.step .value h3.vh, .value h3.vh{
+  font-size:clamp(1.3rem,2.6vw,1.7rem); font-weight:600; line-height:1.15;
+  letter-spacing:-.015em; color:#f7efe0; text-wrap:balance;
+  margin:0 0 .55rem; padding:0; border:0;
+}
+.value p{font-size:clamp(.98rem,1.3vw,1.06rem); color:#e4d8c2; margin-bottom:0;}
+
+/* ── FIGURES ──
+   Two bezels. `.bezel` is for light-background art; `.bezel.dark` is
+   for the instrument-panel charts, which are already near-black and
+   would look wrong matted on white.
+   ─────────────────────────────────────────────────────────────── */
+figure{margin:1.5rem 0 1.7rem;}
+.bezel{
+  border:var(--edge); border-radius:12px;
+  background:linear-gradient(180deg,#232019,#151310);
+  padding:clamp(.5rem,1.2vw,.85rem);
+  box-shadow:inset 0 1px 0 #ffffff14, 0 18px 40px -30px #000;
+}
+.bezel img{
+  display:block; max-width:100%; width:auto; height:auto; margin:0 auto;
+  border-radius:7px; background:#fff;
+}
+.bezel.dark{background:linear-gradient(180deg,#26221b,#131110);}
+.bezel.dark img{background:var(--ink); box-shadow:0 0 0 1px #ffffff14;}
+.bezel .missing{
+  display:block; padding:2.5rem 1rem; text-align:center; border-radius:7px;
+  background:#100f0d; border:1px dashed #ffffff26;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; color:#8d8172;
+}
+figcaption{
+  /* Plain block flow, deliberately not flex or grid: a caption mixes bare
+     text with inline <strong>/<code>, and each of those would become its
+     own flex/grid item — which splits the sentence across cells and pushes
+     the page wider at phone widths. */
+  margin-top:.7rem; font-size:.84rem; color:#b3a690; max-width:78ch;
+}
+/* a caption that leads its figure (the sneak peeks) sits above the bezel */
+figcaption.top{margin-top:0; margin-bottom:.7rem;}
+figcaption .tag{
+  display:inline-block; margin-right:.55rem;
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--phosphor);
+  border:1px solid #ffb64840; border-radius:4px; padding:.2rem .45rem .15rem;
+}
+.figpair{display:grid; gap:1.1rem; grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr)); align-items:start;}
+.figpair figure{margin:0;}
+
+/* ── THE GEOMETRY DIAGRAMS ──
+   Inline SVG rather than image files: sharp at every size, and they
+   follow the palette instead of sitting on a white plate.
+   ─────────────────────────────────────────────────────────────── */
+.geo{display:grid; gap:1.1rem; grid-template-columns:repeat(auto-fit, minmax(min(100%, 280px), 1fr)); align-items:start; margin:1.5rem 0 1.7rem;}
+.geo figure{margin:0;}
+.svgbox{background:#12151b; border-radius:7px; padding:clamp(.6rem,1.4vw,1rem); box-shadow:0 0 0 1px #ffffff14;}
+.svgbox svg{display:block; width:100%; height:auto;}
+
+/* ── CODE READOUTS ──
+   Real text in a bezel, not a screenshot of a notebook: selectable,
+   sharp, and legible on a phone.
+   ─────────────────────────────────────────────────────────────── */
+.code{
+  background:#12151b; border-radius:7px; box-shadow:0 0 0 1px #ffffff14;
+  overflow-x:auto;
+}
+.code pre{
+  margin:0; padding:clamp(.75rem,1.6vw,1.05rem);
+  font-family:var(--mono); font-size:clamp(.68rem,1.1vw,.78rem); line-height:1.65;
+  color:#d8cdb8; white-space:pre;
+}
+.code .c{color:#6f7f85;}          /* comment */
+.code .k{color:#ffb648;}          /* keyword */
+.code .s{color:#6fe3c0;}          /* string */
+.code .o{color:#b3a690;}          /* output */
+.code .out{
+  border-top:1px dashed #ffffff1f; color:#8d8172;
+  display:block; margin-top:.55rem; padding-top:.55rem;
+}
+
+/* ── THE DIAL: the component choice, as a control ──
+   Namespaced away from the header's nav.keys on purpose.
+   ─────────────────────────────────────────────────────────────── */
+.rig{background:#12151b; border-radius:7px; padding:clamp(.8rem,1.8vw,1.2rem); box-shadow:0 0 0 1px #ffffff14;}
+.dial{display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:1rem;}
+.dialkey{
+  display:flex; align-items:center; gap:.45rem; cursor:pointer;
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase;
+  color:#9d917f; background:linear-gradient(180deg,#232019,#151310);
+  border:var(--edge); border-bottom:3px solid #00000090; border-radius:6px;
+  padding:.45rem .75rem .4rem;
+  transition:color .15s, border-color .15s, transform .06s, border-bottom-width .06s;
+}
+.dialkey:hover{color:var(--cream);}
+.dialkey:active{transform:translateY(2px); border-bottom-width:1px;}
+.dialkey .led{width:7px; height:7px; border-radius:50%; background:#3a342c; box-shadow:inset 0 0 2px #000;}
+.dialkey[aria-pressed="true"]{
+  color:var(--phosphor); border-color:#ffb64833; background:#ffb6480f;
+  border-bottom-width:1px; transform:translateY(2px);
+}
+.dialkey[aria-pressed="true"] .led{background:var(--phosphor); box-shadow:0 0 7px var(--phosphor), 0 0 14px #ffb64866;}
+.rig svg{display:block; width:100%; height:auto;}
+.readout{
+  display:flex; flex-wrap:wrap; gap:1.2rem; margin-top:.9rem;
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.06em;
+  text-transform:uppercase; color:#8d8172;
+}
+.readout b{color:var(--phosphor); font-weight:600;}
+.readout .verdict{color:var(--phosphor-2); text-transform:none; letter-spacing:.02em;}
+
+/* ── REFERENCES ── */
+.refs{list-style:none; margin:1.1rem 0 0; padding:0; max-width:82ch;}
+.refs li{padding:.6rem 0 .65rem; border-top:1px solid #ffffff12; font-size:.9rem; display:flex; gap:.7rem;}
+.refs li:first-child{border-top:0;}
+.refs .k{
+  flex:none; font-family:var(--mono); font-size:.62rem; letter-spacing:.14em;
+  color:#8d8172; text-transform:uppercase; padding-top:.25rem; width:5.5rem;
+}
+
+/* ── CTA + FOOT ── */
+.cta{text-align:center;}
+.cta h2{font-size:clamp(1.3rem,2.6vw,1.75rem); font-weight:600; margin-bottom:.6rem;}
+.cta p{max-width:54ch; margin:0 auto 1.4rem; color:#d6c8b1;}
+.cta .key{font-size:.74rem; padding:.7rem 1.4rem .65rem;}
+footer.site{
+  padding:1.2rem 0 3rem; display:flex; gap:1rem; flex-wrap:wrap;
+  align-items:center; justify-content:space-between;
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.14em;
+  text-transform:uppercase; color:#7e7364;
+}
+footer.site a{color:#9a8d7b; border-bottom-color:#ffffff1f;}
+
+@media (max-width:620px){
+  .stage{font-size:.58rem; padding:.4rem .55rem .35rem;}
+  html{scroll-padding-top:4.5rem;}
+  .readout{gap:.8rem; font-size:.64rem;}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *{animation:none !important; transition:none !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ══ HEADER ══ -->
+  <header class="site">
+    <div class="logo-frame">
+      <img src="../images/logo.png" alt="aamir.consulting logo"
+           onerror="var p=this.parentNode;this.remove();p.insertAdjacentHTML('beforeend','<span class=logo-fallback>a.c</span>')">
+    </div>
+    <div class="brand">
+      <a href="../index.html">aamir.consulting</a>
+      <small>math that moves the world in service of others</small>
+    </div>
+    <nav class="keys">
+      <a class="key" href="../index.html#home">Home</a>
+      <a class="key" href="../index.html#services">Services</a>
+      <a class="key" href="../index.html#portfolio" aria-current="page">Portfolio</a>
+      <a class="key" href="../index.html#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- ══ TITLE ══ -->
+  <section class="panel hero sum has-art">
+    <span class="panel-tab">Piece 01</span>
+    <div class="hero-text">
+    <h1>Anomaly Detection<br>for Space Agriculture</h1>
+    <p class="claim">
+      Sending anything into space, and losing it, is very expensive. Here is a machine learning
+      model that tells you if a plant is stressed in space, in time to act quickly to save it. It
+      also determines which metrics best predict that stress, so we only send up a lightweight set
+      of hardware that best detects that stress.
+    </p>
+    <p class="stamp">Work done for the <a href="https://public.ksc.nasa.gov/partnerships/plant-processing-area-ppa/" target="_blank" rel="noopener">Plant Processing Area (PPA)</a> at <a href="https://www.nasa.gov/kennedy/" target="_blank" rel="noopener">NASA&rsquo;s Kennedy Space Center (KSC)</a></p>
+    </div>
+
+    <figure class="hero-art" id="moonart">
+      <div class="ma-screen">
+        <svg class="ma" viewBox="0 0 400 300" role="img"
+             aria-labelledby="ma-title ma-desc">
+          <title id="ma-title">A crop sensor on the Moon</title>
+          <desc id="ma-desc">On the lunar surface a sensor watches a tray of wilting plants and sets off a red alarm. An astronaut walks over and waters them, the plants recover, and the alarm clears.</desc>
+          <defs>
+            <linearGradient id="ma-sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#07090e"/><stop offset="1" stop-color="#121722"/>
+            </linearGradient>
+            <linearGradient id="ma-ground" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#6b665d"/><stop offset=".35" stop-color="#4a463f"/><stop offset="1" stop-color="#26241f"/>
+            </linearGradient>
+            <radialGradient id="ma-glow"><stop offset="0" stop-color="#f07266" stop-opacity=".85"/><stop offset="1" stop-color="#f07266" stop-opacity="0"/></radialGradient>
+            <radialGradient id="ma-earth" cx=".35" cy=".35"><stop offset="0" stop-color="#8fe8d4"/><stop offset=".6" stop-color="#2f8f8a"/><stop offset="1" stop-color="#16434f"/></radialGradient>
+            <linearGradient id="ma-visor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd48a"/><stop offset=".45" stop-color="#ffb648"/><stop offset="1" stop-color="#6a3f10"/></linearGradient>
+            <linearGradient id="ma-cone-t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fe3c0" stop-opacity=".35"/><stop offset="1" stop-color="#6fe3c0" stop-opacity="0"/></linearGradient>
+            <linearGradient id="ma-cone-r" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f07266" stop-opacity=".5"/><stop offset="1" stop-color="#f07266" stop-opacity="0"/></linearGradient>
+            <g id="ma-plant-well">
+              <path d="M0 0 C-1 -10 1 -20 0 -32" stroke="#4ec27f" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <ellipse cx="-6" cy="-12" rx="7" ry="3.2" transform="rotate(-28 -6 -12)" fill="#4ec27f"/>
+              <ellipse cx="6" cy="-19" rx="7" ry="3.2" transform="rotate(28 6 -19)" fill="#6fe3c0"/>
+              <ellipse cx="-5" cy="-27" rx="6" ry="2.8" transform="rotate(-40 -5 -27)" fill="#6fe3c0"/>
+              <ellipse cx="4" cy="-33" rx="5" ry="2.6" transform="rotate(35 4 -33)" fill="#4ec27f"/>
+            </g>
+            <g id="ma-plant-wilt">
+              <path d="M0 0 C1 -8 3 -16 9 -19 C13 -21 15 -17 15 -13" stroke="#8f8043" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <ellipse cx="-4" cy="-6" rx="6" ry="2.6" transform="rotate(55 -4 -6)" fill="#7d6a38"/>
+              <ellipse cx="7" cy="-11" rx="6" ry="2.6" transform="rotate(70 7 -11)" fill="#9a7b3c"/>
+              <ellipse cx="15" cy="-9" rx="5" ry="2.3" transform="rotate(85 15 -9)" fill="#7d6a38"/>
+            </g>
+          </defs>
+
+          <rect width="400" height="300" fill="url(#ma-sky)"/>
+          <g fill="#f3ead9">
+            <circle class="ma-twinkle" cx="34" cy="30" r="1.1"/><circle class="ma-twinkle" cx="80" cy="64" r=".8"/>
+            <circle class="ma-twinkle" cx="140" cy="22" r="1"/><circle class="ma-twinkle" cx="196" cy="54" r=".7"/>
+            <circle class="ma-twinkle" cx="236" cy="18" r="1.2"/><circle class="ma-twinkle" cx="270" cy="96" r=".8"/>
+            <circle class="ma-twinkle" cx="382" cy="120" r="1"/><circle class="ma-twinkle" cx="22" cy="118" r=".8"/>
+            <circle class="ma-twinkle" cx="160" cy="98" r=".7"/><circle class="ma-twinkle" cx="370" cy="24" r=".9"/>
+          </g>
+          <circle cx="322" cy="58" r="21" fill="url(#ma-earth)"/>
+          <path d="M322 37 a21 21 0 0 1 0 42 a15 21 0 0 0 0 -42z" fill="#07090e" opacity=".55"/>
+
+          <!-- lunar surface -->
+          <path d="M0 238 Q60 228 130 240 T260 238 T400 232 V300 H0Z" fill="url(#ma-ground)"/>
+          <g fill="#2a2823" opacity=".8">
+            <ellipse cx="46" cy="264" rx="18" ry="4.5"/><ellipse cx="300" cy="276" rx="24" ry="5"/>
+            <ellipse cx="190" cy="286" rx="12" ry="3"/><ellipse cx="366" cy="252" rx="10" ry="2.6"/>
+          </g>
+          <g fill="#7a756b" opacity=".5">
+            <ellipse cx="46" cy="262.5" rx="16" ry="2.5"/><ellipse cx="300" cy="274.5" rx="21" ry="2.8"/>
+          </g>
+
+          <!-- sensor mast, arm, heads and beacon -->
+          <rect x="104" y="118" width="6" height="106" fill="#5b636c"/>
+          <rect x="104" y="122" width="116" height="5" rx="2" fill="#5b636c"/>
+          <path d="M143 127 L125 222 L171 222 Z" fill="url(#ma-cone-t)"/>
+          <path d="M193 127 L175 222 L221 222 Z" fill="url(#ma-cone-t)"/>
+          <g class="ma-scan-red ma-anim">
+            <path d="M143 127 L125 222 L171 222 Z" fill="url(#ma-cone-r)"/>
+            <path d="M193 127 L175 222 L221 222 Z" fill="url(#ma-cone-r)"/>
+          </g>
+          <rect x="136" y="126" width="14" height="7" rx="2" fill="#2b3036" stroke="#7d8a96"/>
+          <rect x="186" y="126" width="14" height="7" rx="2" fill="#2b3036" stroke="#7d8a96"/>
+          <rect x="100" y="112" width="14" height="7" rx="1.5" fill="#3a4148"/>
+          <path d="M101 112 a6 7 0 0 1 12 0z" fill="#3b2a24"/>
+          <g class="ma-alarm ma-anim">
+            <g class="ma-blink">
+              <circle cx="107" cy="108" r="30" fill="url(#ma-glow)"/>
+              <path d="M101 112 a6 7 0 0 1 12 0z" fill="#f07266"/>
+              <g stroke="#f07266" stroke-width="1.6" stroke-linecap="round">
+                <path d="M91 104 l-8 -4"/><path d="M123 104 l8 -4"/><path d="M107 96 v-9"/>
+              </g>
+            </g>
+          </g>
+
+          <!-- grow tray -->
+          <rect x="96" y="222" width="140" height="22" rx="3" fill="#2a2d33" stroke="#4a5058"/>
+          <rect x="99" y="219" width="134" height="6" rx="2" fill="#4a2f1d"/>
+          <rect x="180" y="229" width="48" height="11" rx="2" fill="#0d1014" stroke="#3a4148"/>
+          <g font-family="ui-monospace, Menlo, monospace" font-size="6.4" letter-spacing=".8" text-anchor="middle">
+            <text class="ma-t-scan ma-anim" x="204" y="237" fill="#ffb648">SCANNING</text>
+            <g class="ma-t-stress ma-anim"><text class="ma-blink" x="204" y="237" fill="#f07266">STRESS</text></g>
+            <text class="ma-t-ok ma-anim" x="204" y="237" fill="#6fe3c0">HEALTHY</text>
+          </g>
+          <g transform="translate(0 220)">
+            <g class="ma-wilt ma-anim">
+              <use href="#ma-plant-wilt" x="128"/><use href="#ma-plant-wilt" x="160"/><use href="#ma-plant-wilt" x="192"/>
+            </g>
+            <g class="ma-well ma-anim">
+              <use href="#ma-plant-well" x="130"/><use href="#ma-plant-well" x="165"/><use href="#ma-plant-well" x="200"/>
+            </g>
+          </g>
+
+          <!-- water -->
+          <g class="ma-water ma-anim" fill="#8fd8ff">
+            <g transform="translate(184 188)">
+              <circle class="ma-drop" cx="0" cy="0" r="1.7"/>
+              <circle class="ma-drop" cx="-5" cy="3" r="1.4"/>
+              <circle class="ma-drop" cx="4" cy="2" r="1.5"/>
+            </g>
+            <g transform="translate(180 194)">
+              <circle class="ma-drop" cx="0" cy="0" r="1.5"/>
+              <circle class="ma-drop" cx="-3" cy="2" r="1.3"/>
+              <circle class="ma-drop" cx="3" cy="1" r="1.4"/>
+            </g>
+          </g>
+
+          <!-- astronaut (original design), drawn facing left, feet at 0,0 -->
+          <g transform="translate(256 240) scale(1.45)">
+            <g class="ma-walker ma-anim">
+              <g class="ma-face ma-anim">
+                <rect class="ma-legB ma-anim" x="0.5" y="-19" width="7" height="19" rx="2.5" fill="#d9d4ca"/>
+                <rect x="4" y="-50" width="12" height="22" rx="3" fill="#bdb7ab"/>
+                <rect x="-10" y="-46" width="21" height="29" rx="7" fill="#eeeae2"/>
+                <rect x="-6" y="-39" width="9" height="7" rx="1.5" fill="#2b3036"/>
+                <circle cx="-3.5" cy="-35.5" r="1.1" fill="#6fe3c0"/><circle cx=".5" cy="-35.5" r="1.1" fill="#ffb648"/>
+                <rect class="ma-legA ma-anim" x="-7.5" y="-19" width="7" height="19" rx="2.5" fill="#eeeae2"/>
+                <rect x="-8.5" y="-3" width="9" height="4" rx="1.5" fill="#5b636c"/>
+                <circle cx="0" cy="-55" r="11.5" fill="#eeeae2"/>
+                <ellipse cx="-4.5" cy="-55" rx="7.5" ry="6.5" fill="url(#ma-visor)"/>
+                <ellipse cx="-7" cy="-57.5" rx="2" ry="1.2" fill="#fff" opacity=".7"/>
+                <g transform="translate(-20 -45)">
+                  <g class="ma-arm ma-anim">
+                    <path d="M16 3 L0 0" stroke="#eeeae2" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M-1 -5 v11 a2 2 0 0 1 -2 2 h-12 a2 2 0 0 1 -2 -2 v-11z" fill="#7d8a96"/>
+                    <path d="M-9 -5 a6 6 0 0 1 12 0" stroke="#7d8a96" stroke-width="1.8" fill="none"/>
+                    <path d="M-16 0 L-28 -8" stroke="#7d8a96" stroke-width="2.6" stroke-linecap="round"/>
+                    <circle cx="-28.5" cy="-8.5" r="2" fill="#9aa6b1"/>
+                  </g>
+                </g>
+                </g>
+              </g>
+            </g>
+          </g>
+
+          <rect x=".5" y=".5" width="399" height="299" rx="8" fill="none" stroke="#ffffff14"/>
+        </svg>
+      </div>
+      <figcaption>
+        <div class="ma-bar">
+          <span>Sensor · alarm · water · recovered</span>
+          <button class="ma-key" type="button" aria-pressed="false"><span class="led"></span><span class="ma-lbl">Pause</span></button>
+        </div>
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ══ PROBLEM ══ -->
+  <section class="panel sum">
+    <span class="panel-tab">Problem</span>
+    <h2>The Problem</h2>
+    <p class="hsub">How do you spot a failing crop early, with hardware light enough to fly?</p>
+    <p>
+      Losing a crop growout in orbit is expensive, and so is every gram of sensor you fly to see it
+      coming.
+    </p>
+  </section>
+
+  <!-- ══ RESPONSE ══ -->
+  <section class="panel sum">
+    <span class="panel-tab">Response</span>
+    <h2>The Response</h2>
+    <p class="hsub">Dissect the machine learning model trained to detect stress to figure out which sensors to fly.</p>
+    <p>
+      Train a model to spot a stressed plant from measurements of biomarkers, then read which
+      biomarkers the model relied on most to classify a plant as stressed, and fly only the sensors
+      that best detect those biomarkers.
+    </p>
+
+    <figure>
+      <figcaption class="top"><span class="tag">Sneak peek</span>
+        From the 149 metrics measured, we select the six that most signal stress.</figcaption>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f09-vip.webp"
+             alt="The metrics that best signal an anomaly: all 52 measurements ranked by importance, each with a 95 percent confidence interval; the six whose whole interval clears the line are drawn in teal, the rest in grey"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+    </figure>
+  </section>
+
+  <!-- ══ METHOD ══ -->
+  <section class="panel sum">
+    <span class="panel-tab">Method</span>
+    <h2>The Method</h2>
+    <p class="hsub">Adapt a machine learning model designed for cancer detection and direct it to detect plant stress.</p>
+    <p>
+      The worked example below is a published cancer study. It works for space agriculture as well,
+      because both problems need the same mathematical structure that the machine learning model
+      implements to detect anomalies and explain the underlying biological mechanisms that produce
+      those anomalies.
+    </p>
+
+    <dl class="spec" style="margin-top:1.6rem; margin-bottom:0;">
+      <div><dt>Framework</dt><dd>Metabolomics Workflow Tutorial 1 from the Centre for Integrative Metabolomics &amp; Computational Biology (CIMCB), by Mendez, Broadhurst et&nbsp;al., 2019</dd></div>
+      <div><dt>Worked example</dt><dd>140 urine samples, 149 measurements each, one yes-or-no answer to find</dd></div>
+    </dl>
+
+    <p class="credit">
+      This work was applied in the Plant Processing Area at Kennedy Space Center. The worked example
+      on this page is not that data, it is the openly published CIMCB tutorial.
+    </p>
+  </section>
+
+  <!-- ══ THE RAIL ══ -->
+  <div class="rail-dock">
+    <nav class="rail" id="rail" aria-label="Sections">
+      <button class="stage" data-target="s1"><span class="led"></span>Setup</button>
+      <button class="stage" data-target="s2"><span class="led"></span>Load</button>
+      <button class="stage" data-target="s3"><span class="led"></span>Filter</button>
+      <button class="stage" data-target="s4"><span class="led"></span>Drift</button>
+      <button class="stage" data-target="s5"><span class="led"></span>Compare</button>
+      <button class="stage" data-target="s6"><span class="led"></span>Train</button>
+      <button class="stage" data-target="s7"><span class="led"></span>Rank</button>
+      <button class="stage" data-target="s8"><span class="led"></span>Hold-out</button>
+    </nav>
+  </div>
+
+  <!-- ══ 1 · SETUP ══ -->
+  <section class="panel step" id="s1">
+    <span class="panel-tab">Step 01</span>
+    <h2>Import the packages</h2>
+    <p class="lede">Choosing the right tools to do the analysis</p>
+
+    <p>
+      Four imports carry the whole workflow: <code>numpy</code> and <code>pandas</code> for the
+      arrays and tables, <code>train_test_split</code> from scikit-learn to hold data back from the
+      model, and <code>cimcb_lite</code>, which supplies the metabolomics-specific plots and the
+      Partial Least Squares Discriminant Analysis (PLS-DA) model wrapper.
+    </p>
+
+    <figure>
+      <div class="code"><pre><span class="k">import</span> numpy <span class="k">as</span> np
+<span class="k">import</span> pandas <span class="k">as</span> pd
+
+<span class="k">from</span> sklearn.model_selection <span class="k">import</span> train_test_split
+
+<span class="k">import</span> cimcb_lite <span class="k">as</span> cb
+
+print(<span class="s">'All packages successfully loaded'</span>)
+<span class="out">All packages successfully loaded</span></pre></div>
+      <figcaption><span class="tag">Cell 01</span>
+        If this cell prints, the tools are in place.</figcaption>
+    </figure>
+
+    <aside class="value">
+      <p class="kicker">Business value · Step 01</p>
+      <h3 class="vh">The right tools for the analysis</h3>
+      <p>
+        Each tool is chosen for a job: <code>numpy</code> and <code>pandas</code> hold the
+        measurements, scikit-learn keeps part of the data back so the model can be tested
+        honestly, and <code>cimcb_lite</code> brings methods built and published for exactly this
+        kind of biomarker data. The right tools mean less custom code to build and maintain, and
+        methods that reviewers already trust.
+      </p>
+    </aside>
+  </section>
+
+  <!-- ══ 2 · LOAD ══ -->
+  <section class="panel step" id="s2">
+    <span class="panel-tab">Step 02</span>
+    <h2>Load the data sheet and the peak sheet</h2>
+    <p class="lede">Organising the data so every measurement can be judged on its own merits</p>
+
+    <p>
+      The data are nuclear magnetic resonance (NMR) spectroscopy measurements of urine, stored in an
+      Excel workbook. That workbook must carry two sheets, one named <code>Data</code> and one
+      named <code>Peak</code>.
+    </p>
+
+    <figure>
+      <div class="code"><pre><span class="c"># The path to the input file (Excel spreadsheet)</span>
+filename = <span class="s">'GastricCancer_NMR.xlsx'</span>
+
+<span class="c"># Load Peak and Data tables into two variables</span>
+dataTable, peakTable = cb.utils.load_dataXL(filename, DataSheet=<span class="s">'Data'</span>, PeakSheet=<span class="s">'Peak'</span>)
+<span class="out">Data Table &amp; Peak Table is suitable.
+TOTAL SAMPLES: 140    TOTAL PEAKS: 149</span></pre></div>
+      <figcaption><span class="tag">Cell 02</span>
+        Both sheets are read in one call, which is why the workbook's sheet names are not
+        negotiable.</figcaption>
+    </figure>
+
+    <h3><span class="num">2.1</span>The data sheet</h3>
+    <p>
+      Each row represents a urine sample. The columns record the outcome for that sample (whether
+      it is a quality-control (QC) sample, has gastric cancer, is a benign tumour, or is healthy),
+      along with the measured concentration of every metabolite, the small molecules the body's
+      chemistry produces. One hundred and forty rows: 43 gastric cancer, 40 benign, 40 healthy, and
+      17 pooled QC samples. A QC sample is the same pooled material measured again and again, so any
+      change in its readings comes from the instrument, not the biology.
+    </p>
+
+    <h3><span class="num">2.2</span>The peak sheet</h3>
+    <p>
+      The peak sheet's rows describe the metabolites themselves, rather than the samples: their
+      names, the percentage of samples for which a measurement is missing, and how much the
+      readings of that metabolite vary across the repeated QC samples.
+    </p>
+
+    <aside class="value">
+      <p class="kicker">Business value · Step 02</p>
+      <p class="meter"><span class="mk">Sensor candidates</span><b class="now">149</b><em>measured</em></p>
+      <h3 class="vh">Every candidate sensor gets its own report card</h3>
+      <p>
+        The peak sheet is a one-line record per measurement: how often it goes missing and how much
+        it wobbles. That record is what lets the next step judge each candidate sensor on its own
+        merits, instead of taking the whole instrument on faith.
+      </p>
+    </aside>
+  </section>
+
+  <!-- ══ 3 · FILTER ══ -->
+  <section class="panel step" id="s3">
+    <span class="panel-tab">Step 03</span>
+    <h2>Clean the peak sheet</h2>
+    <p class="lede">Dropping the measurements too unreliable to justify a sensor</p>
+
+    <p>We clean the peak sheet by imposing two conditions on every metabolite:</p>
+    <ul>
+      <li>its relative standard deviation (RSD) across the QC samples (how much its readings
+        wobble when nothing has changed) must be below <strong>20%</strong>;</li>
+      <li>it must not be missing a measurement in more than <strong>10%</strong> of the samples
+        in the data sheet.</li>
+    </ul>
+    <p>
+      A metabolite that fails either test is not evidence, it is noise with a name, and it is
+      dropped before it can influence anything downstream.
+    </p>
+
+    <figure>
+      <div class="code"><pre><span class="c"># Create a clean peak table</span>
+rsd      = peakTable[<span class="s">'QC_RSD'</span>]
+percMiss = peakTable[<span class="s">'Perc_missing'</span>]
+peakTableClean = peakTable[(rsd &lt; <span class="k">20</span>) &amp; (percMiss &lt; <span class="k">10</span>)]
+
+print(<span class="s">"Number of peaks remaining: {}"</span>.format(len(peakTableClean)))
+<span class="out">Number of peaks remaining: 52</span></pre></div>
+      <figcaption><span class="tag">Cell 03</span>
+        The two thresholds are explicit and in one place, so a programme can argue about them and
+        change them without touching the rest of the pipeline.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f01-quality-filter.webp"
+             alt="Scatter of all 149 metabolites, variability across the quality-control repeats on the horizontal axis against percentage of missing values on the vertical; the 52 inside both thresholds are teal, the 97 outside are grey"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+      <figcaption><span class="tag">Fig 01</span>
+        The same two conditions, drawn. Every measurement in the study is a point; the shaded
+        corner is the only place a measurement is allowed to survive. <strong>149 measured, 52
+        kept.</strong> Of the 97 discarded, 70 failed on variability alone, one on missing values
+        alone, and 26 on both. Everything after this runs on 52 measurements, not 149.</figcaption>
+    </figure>
+
+    <aside class="value">
+      <p class="kicker">Business value · Step 03</p>
+      <p class="meter"><span class="mk">Sensor candidates</span><b>149</b><i>→</i><b class="now">52</b></p>
+      <h3 class="vh">This step is the whole business case</h3>
+      <p>
+        A sensor that reports a number nobody can rely on still has to be built, powered, calibrated
+        and lifted. Deciding what to discard before you model anything is not just housekeeping. On a
+        manifest, it is the difference between flying an instrument and not. Here, 97 of 149
+        candidates are ruled out before any modelling starts.
+      </p>
+    </aside>
+  </section>
+
+  <!-- ══ 4 · DRIFT ══ -->
+  <section class="panel step" id="s4">
+    <span class="panel-tab">Step 04</span>
+    <h2>Quality assessment by principal component analysis (PCA)</h2>
+    <p class="lede">Preparing a data set worthy of training a machine learning model, and confirming the instrument can be trusted</p>
+
+    <p>
+      We build the data matrix <code>X</code> by removing from the data sheet the metabolite
+      columns that failed the cleaning conditions. A series of transformations then puts every
+      measurement on a comparable footing, ready for PCA:
+    </p>
+    <ul>
+      <li><code>X</code>: the data table with the rejected metabolite columns removed.</li>
+      <li><code>Xlog</code>: a logarithmic transformation of <code>X</code>, so a few very large
+        readings do not drown out the rest.</li>
+      <li><code>Xscale</code>: scaling applied to <code>Xlog</code>, so every metabolite counts
+        equally. The scaling method is a choice: <code>auto</code> by default, with
+        <code>pareto</code>, <code>vast</code>, <code>level</code> and <code>range</code> also
+        available.</li>
+      <li><code>Xknn</code>: <code>Xscale</code> is still missing readings for some samples, so
+        those gaps are filled in from the three most similar samples, a k-nearest-neighbour (kNN)
+        approach.</li>
+    </ul>
+
+    <figure>
+      <div class="code"><pre><span class="c"># Extract and scale the metabolite data from the dataTable</span>
+peaklist = peakTableClean[<span class="s">'Name'</span>]
+X        = dataTable[peaklist].values
+Xlog     = np.log10(X)
+Xscale   = cb.utils.scale(Xlog, method=<span class="s">'auto'</span>)
+Xknn     = cb.utils.knnimpute(Xscale, k=<span class="k">3</span>)
+
+print(<span class="s">"Xknn: {} rows &amp; {} columns"</span>.format(*Xknn.shape))
+<span class="out">Xknn: 140 rows &amp; 52 columns</span></pre></div>
+      <figcaption><span class="tag">Cell 04</span>
+        Four named tables rather than one overwritten variable, so each stage can be inspected when a
+        later plot looks wrong. 129 individual readings were missing and are filled in here.</figcaption>
+    </figure>
+
+    <p>
+      PCA condenses the 52 measurements into a few summary directions called principal components
+      (PCs). The first, PC1, captures the most variation between samples; PC2 captures the next
+      most. Plotting every sample against PC1 and PC2 gives the score plot, and the first thing to
+      look for in it is the QC samples.
+    </p>
+
+    <figure>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f02-pca-scores.webp"
+             alt="Score plot of the first two principal components, with patient samples spread widely and quality-control pools clustered tightly, each with a 95 percent confidence ellipse"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+      <figcaption><span class="tag">Fig 02</span>
+        Score plot, PC1 against PC2. PC1 carries 39.4% of the variation and PC2 a further 7.3%. The
+        QC pools are the same material measured repeatedly, so they should land on top of each
+        other. Here they do, which means the spread among the patient samples is real and not the
+        instrument wandering.</figcaption>
+    </figure>
+
+    <aside class="value">
+      <p class="kicker">Business value · Step 04</p>
+      <p class="meter"><span class="mk">Sensor candidates</span><b class="now">52</b><em>trustworthy</em></p>
+      <h3 class="vh">Proof the instrument is not the story</h3>
+      <p>
+        Run a reference sample through the rig at intervals and plot it alongside everything else.
+        If the reference drifts, the finding is about the equipment, not the plants. This panel
+        tells you which one you are looking at, and it costs nothing but discipline.
+      </p>
+    </aside>
+
+    <h3>The score plot</h3>
+    <p>
+      To explain the score plot we need PCA more generally. Each sample is described by the 52
+      metabolite concentrations that survived cleaning. Plotting a sample therefore means placing a
+      point in a coordinate system with 52 axes. Having plotted every sample there, we would like a
+      simpler two-dimensional picture for analysis.
+    </p>
+    <p>
+      That simpler picture is what PCA provides. Once the data sits in 52 dimensions we can
+      calculate its PCs: directions that account for the variation in the data, ordered by how
+      much each explains: PC1 the most, PC2 the second most, and so on.
+    </p>
+    <p>
+      Taking PC1 and PC2 out of the full 52-axis system gives a plane. Projecting every sample
+      point onto that plane produces the score plot.
+    </p>
+
+    <div class="geo">
+      <figure>
+        <div class="svgbox">
+          <svg viewBox="0 0 520 250" role="img" aria-label="A data matrix multiplied by a weight vector gives one score per sample">
+            <defs><marker id="ar1" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+              <path d="M0,0 L7,3.2 L0,6.4 z" fill="#ffb648"/></marker></defs>
+            <rect x="26" y="40" width="150" height="150" fill="#6fe3c012" stroke="#6fe3c0" stroke-width="1.4" rx="3"/>
+            <text x="101" y="30" fill="#f3ead9" font-size="12.5" font-family="monospace" text-anchor="middle">X</text>
+            <text x="101" y="112" fill="#8d8172" font-size="10.5" font-family="monospace" text-anchor="middle">140 samples</text>
+            <text x="101" y="128" fill="#8d8172" font-size="10.5" font-family="monospace" text-anchor="middle">×</text>
+            <text x="101" y="144" fill="#8d8172" font-size="10.5" font-family="monospace" text-anchor="middle">52 measurements</text>
+            <text x="196" y="122" fill="#f3ead9" font-size="15" font-family="monospace" text-anchor="middle">&#215;</text>
+            <rect x="216" y="40" width="30" height="150" fill="#ffb64812" stroke="#ffb648" stroke-width="1.4" rx="3"/>
+            <text x="231" y="30" fill="#ffb648" font-size="12.5" font-family="monospace" text-anchor="middle">w</text>
+            <text x="222" y="212" fill="#8d8172" font-size="10.5" font-family="monospace" text-anchor="middle">one weight</text>
+            <text x="222" y="228" fill="#8d8172" font-size="10.5" font-family="monospace" text-anchor="middle">per column</text>
+            <text x="266" y="122" fill="#f3ead9" font-size="15" font-family="monospace" text-anchor="middle">=</text>
+            <rect x="292" y="40" width="30" height="150" fill="#6fe3c024" stroke="#6fe3c0" stroke-width="1.4" rx="3"/>
+            <text x="307" y="30" fill="#6fe3c0" font-size="12.5" font-family="monospace" text-anchor="middle">t</text>
+            <text x="322" y="212" fill="#8d8172" font-size="10.5" font-family="monospace" text-anchor="middle">one score</text>
+            <text x="322" y="228" fill="#8d8172" font-size="10.5" font-family="monospace" text-anchor="middle">per sample</text>
+            <path d="M348 115 L404 115" stroke="#ffb648" stroke-width="1.4" marker-end="url(#ar1)"/>
+            <text x="436" y="104" fill="#f3ead9" font-size="11" font-family="monospace" text-anchor="middle">52 numbers</text>
+            <text x="436" y="120" fill="#f3ead9" font-size="11" font-family="monospace" text-anchor="middle">become</text>
+            <text x="436" y="136" fill="#ffb648" font-size="11" font-family="monospace" text-anchor="middle">one number</text>
+          </svg>
+        </div>
+        <figcaption><span class="tag">Fig A</span>One direction through the data, one number per sample.</figcaption>
+      </figure>
+      <figure>
+        <div class="svgbox">
+          <svg viewBox="0 0 520 300" role="img" aria-label="A two-dimensional plane sitting inside a higher-dimensional space">
+            <defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+              <path d="M0,0 L7,3.2 L0,6.4 z" fill="#6fe3c0"/></marker></defs>
+            <g opacity="0.45">
+              <circle cx="300" cy="62" r="2.4" fill="#8d8172"/><circle cx="380" cy="88" r="2.4" fill="#8d8172"/>
+              <circle cx="132" cy="98" r="2.4" fill="#8d8172"/><circle cx="212" cy="68" r="2.4" fill="#8d8172"/>
+              <circle cx="420" cy="62" r="2.4" fill="#8d8172"/><circle cx="98"  cy="142" r="2.4" fill="#8d8172"/>
+              <circle cx="352" cy="44" r="2.4" fill="#8d8172"/><circle cx="252" cy="38" r="2.4" fill="#8d8172"/>
+            </g>
+            <text x="260" y="24" fill="#8d8172" font-size="11" font-family="monospace" text-anchor="middle">52 dimensions of measured data</text>
+            <path d="M70 200 L300 118 L455 168 L225 250 Z" fill="#6fe3c014" stroke="#6fe3c0" stroke-width="1.4"/>
+            <circle cx="70" cy="200" r="3.2" fill="#6fe3c0"/>
+            <path d="M70 200 L168 165" stroke="#6fe3c0" stroke-width="1.8" marker-end="url(#ar2)"/>
+            <path d="M70 200 L136 224" stroke="#6fe3c0" stroke-width="1.8" marker-end="url(#ar2)"/>
+            <text x="176" y="157" fill="#6fe3c0" font-size="12" font-family="monospace">PC 1</text>
+            <text x="142" y="241" fill="#6fe3c0" font-size="12" font-family="monospace">PC 2</text>
+            <text x="262" y="285" fill="#f3ead9" font-size="11.5" font-family="monospace" text-anchor="middle">the plane worth looking at</text>
+          </svg>
+        </div>
+        <figcaption><span class="tag">Fig B</span>Two of those directions span a plane inside the larger space.</figcaption>
+      </figure>
+      <figure>
+        <div class="svgbox">
+          <svg viewBox="0 0 520 300" role="img" aria-label="A point in high-dimensional space dropped onto the plane below it">
+            <defs><marker id="ar3" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+              <path d="M0,0 L7,3.2 L0,6.4 z" fill="#6fe3c0"/></marker></defs>
+            <path d="M70 210 L300 128 L455 178 L225 260 Z" fill="#6fe3c014" stroke="#6fe3c0" stroke-width="1.4"/>
+            <path d="M70 210 L160 178" stroke="#6fe3c0" stroke-width="1.6" marker-end="url(#ar3)"/>
+            <path d="M70 210 L132 232" stroke="#6fe3c0" stroke-width="1.6" marker-end="url(#ar3)"/>
+            <text x="168" y="171" fill="#6fe3c0" font-size="11.5" font-family="monospace">PC 1</text>
+            <text x="138" y="249" fill="#6fe3c0" font-size="11.5" font-family="monospace">PC 2</text>
+            <line x1="272" y1="58" x2="262" y2="170" stroke="#ffb648" stroke-width="1.5" stroke-dasharray="5 4"/>
+            <circle cx="272" cy="58" r="5.5" fill="#ffb648"/>
+            <circle cx="262" cy="170" r="5.5" fill="#ffb648" stroke="#12151b" stroke-width="1.2"/>
+            <text x="288" y="52" fill="#f3ead9" font-size="11.5" font-family="monospace">one sample, 52 measurements</text>
+            <text x="278" y="192" fill="#ffb648" font-size="11.5" font-family="monospace">the same sample, 2 numbers</text>
+            <line x1="184" y1="114" x2="258" y2="114" stroke="#8d8172" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="178" y="107" fill="#8d8172" font-size="10.5" font-family="monospace" text-anchor="end">what is</text>
+            <text x="178" y="122" fill="#8d8172" font-size="10.5" font-family="monospace" text-anchor="end">discarded</text>
+          </svg>
+        </div>
+        <figcaption><span class="tag">Fig C</span>Every sample drops onto that plane along the shortest path. What the arrow measures is what you agreed to lose.</figcaption>
+      </figure>
+    </div>
+
+    <div class="note">
+      <b>The same move, in three dimensions</b>
+      Fifty-two axes cannot be drawn, but the operation can. A plane is chosen inside the larger
+      space, and each data point drops onto it along the shortest path. Everything PCA does here is
+      that picture, with 52 axes instead of three.
+    </div>
+
+    <h3>The loadings plot</h3>
+    <p>
+      PC1 can be viewed as the X axis and PC2 as the Y axis of a plane inside the full 52-axis
+      system. The loadings plot shows what those two new axes are made of. Each point is one of the
+      measured metabolites: its position on the X axis shows how much weight it carries on PC1, and
+      its position on the Y axis how much it carries on PC2. The further a point sits from the
+      origin, the more that measurement drives the differences between samples.
+    </p>
+
+    <figure>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f03-pca-loadings.webp"
+             alt="Loadings plot with each of the 52 metabolites as a point, the six furthest from the origin labelled by name"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+      <figcaption><span class="tag">Fig 03</span>
+        Where the variation comes from. The six measurements carrying the most weight are named
+        outright; five of them sit in one tight group, so their labels are pulled out to the side.
+        These are the first hints of which sensors will matter, before any model is trained.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ══ 5 · COMPARE ══ -->
+  <section class="panel step" id="s5">
+    <span class="panel-tab">Step 05</span>
+    <h2>Univariate statistics, before anything is learned</h2>
+    <p class="lede">Checking whether any single measurement already does the job on its own</p>
+    <p>
+      This section compares gastric cancer against healthy controls one metabolite at a time. It
+      runs before the machine learning deliberately: if a difference is visible in a single
+      measurement, that is worth knowing before a model gets the credit for finding it.
+    </p>
+    <p>
+      Eleven of the 52 separate the two groups on a t-test. After correcting for the fact that we
+      ran 52 tests and some will look significant by luck alone, seven survive. That is the bar
+      the model has to beat to be worth its complexity.
+    </p>
+
+    <aside class="value">
+      <p class="kicker">Business value · Step 05</p>
+      <p class="meter"><span class="mk">Sensor candidates</span><b>52</b><em>of which</em><b class="now">7</b><em>work alone</em></p>
+      <h3 class="vh">The cheapest sensor needs no model at all</h3>
+      <p>
+        A single measurement that separates the groups on its own is a sensor with no model attached,
+        no training set to maintain, and nothing to recalibrate in flight. If seven of those exist,
+        some payloads are finished at this step.
+      </p>
+    </aside>
+  </section>
+
+  <!-- ══ 6 · TRAIN ══ -->
+  <section class="panel step" id="s6">
+    <span class="panel-tab">Step 06</span>
+    <h2>Machine learning: partial least squares discriminant analysis (PLS-DA)</h2>
+    <p class="lede">Training a model that learns instead of memorising, and proving it is not luck</p>
+
+    <p>
+      PLS-DA looks for the few directions through the 52 measurements that best separate two
+      groups: here cancer and healthy; on a crop tray, stressed and healthy.
+    </p>
+
+    <h3><span class="num">6.1</span>Split the data into training and test sets</h3>
+    <p>
+      Before creating a model we split the data set into a training set and a test set, to avoid
+      overfitting. Overfitting is when a model learns one particular data set too closely: its
+      predictions fit that data well and fall apart when it meets anything new.
+    </p>
+    <p>
+      We split so that three quarters makes up the training set and one quarter the test set. The
+      makeup of each is determined by stratified random selection, which means both sets end up
+      with the same proportion of healthy samples to samples with gastric cancer.
+    </p>
+
+    <figure>
+      <div class="code"><pre><span class="c"># Split dataTable2 and Y into train and test (with stratification)</span>
+dataTrain, dataTest, Ytrain, Ytest = train_test_split(
+    dataTable2, Y, test_size=<span class="k">0.25</span>, stratify=Y, random_state=<span class="k">10</span>)
+
+print(<span class="s">"DataTrain = {} samples with {} positive cases."</span>.format(len(Ytrain), sum(Ytrain)))
+print(<span class="s">"DataTest  = {} samples with {} positive cases."</span>.format(len(Ytest),  sum(Ytest)))
+<span class="out">DataTrain = 62 samples with 32 positive cases.
+DataTest  = 21 samples with 11 positive cases.</span></pre></div>
+      <figcaption><span class="tag">Cell 05</span>
+        The 83 gastric cancer and healthy samples, split three to one. The random seed is fixed, so
+        this split, and every figure after it, reproduces exactly.</figcaption>
+    </figure>
+
+    <h3><span class="num">6.2</span>Find the optimal number of components</h3>
+    <p>
+      Now we need the right number of components (the directions the model builds) to train
+      with. Too few and the model misses the signal; too many and it memorises the training data.
+      To find the balance, we run k-fold cross-validation.
+    </p>
+    <p>
+      First we take the entire training set and have the program predict a value for each sample
+      in it. Those predictions are compared against the known values, and the coefficient of
+      determination (R²) measures how closely they agree. We calculate R² for a range of component
+      counts, up to six here.
+    </p>
+    <p>
+      Second, we split the training rows into k subsets of equal size, each called a fold. Then we
+      calculate Q², the same measure computed on data held out from training: k−1 folds train the
+      model and the remaining fold is the one predictions are recorded on. The folds rotate, so
+      every fold is held out exactly once. Here k&nbsp;=&nbsp;5, so four folds train and one is
+      predicted on.
+    </p>
+
+    <p>
+      Rather than assert the answer, here is the dial. Each key refits the model with that many
+      components and redraws what it predicts. The readout also reports the area under the curve
+      (AUC): a score from 0.5, which is guessing, to 1, which is perfect, for how well the model
+      ranks one group above the other. Section 6.3 shows where it comes from.
+    </p>
+
+    <figure>
+      <div class="bezel dark">
+        <div class="rig">
+          <div class="dial" id="dial" role="group" aria-label="Number of components"></div>
+          <svg id="rigsvg" viewBox="0 0 900 380" aria-label="Predicted score for every training sample, and the fitted and held-out scores across component counts"></svg>
+          <div class="readout" id="readout"></div>
+        </div>
+      </div>
+      <figcaption><span class="tag">Fig 04 · live</span>
+        Left, every training sample's predicted score against the 0.5 cut-off. Right, the fitted
+        score (R²) in amber and the held-out score (Q²) in teal across all six counts. Turn it up and
+        the left panel separates cleanly while the teal line falls away. That gap is the model
+        memorising these particular 62 samples. Held-out performance actually peaks at three
+        components; the tutorial takes two, because the gap between the two lines is narrower
+        there. Both are defensible, which is the point.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f04-r2-q2.webp"
+             alt="Fitted and held-out coefficient of determination plotted against number of components, each with a bootstrap confidence band, and the gap between them marked at six components"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+      <figcaption><span class="tag">Fig 05</span>
+        The same decision as a static figure, with 95% bootstrap bands. R² keeps climbing because
+        more components can always fit the training data better. Q² is the honest one, and it
+        turns over: past that point, extra complexity buys memory, not insight.</figcaption>
+    </figure>
+
+    <h3><span class="num">6.3</span>Train and evaluate the model</h3>
+    <p>
+      The program now trains the model on two components, which are called latent variables (LVs) once they
+      are being used this way, and tests the accuracy of its predictions. The following visuals are
+      how that performance is judged.
+    </p>
+
+    <figure>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f05-train-eval.webp"
+             alt="Three evaluation panels: predicted score by class as a violin plot, the two probability densities overlaid, and the receiver operating characteristic curve with a readout of the summary statistics"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+      <figcaption><span class="tag">Fig 06</span>
+        Evaluation on the training set at a cut-off of 0.5. AUC 0.97, accuracy 0.89, sensitivity
+        0.88, specificity 0.90.</figcaption>
+    </figure>
+
+    <p>
+      <strong>Class vs predicted score.</strong> The distribution of the model's predictions for
+      the two possible outcomes, 0 for healthy and 1 for cancerous. The line at 0.5 is the
+      cut-off: a score above it is called a 1, below it a 0. That cut-off is set in one line of code
+      and can be changed: 0.75, for instance, if a false alarm is more expensive than a missed
+      case.
+    </p>
+    <p>
+      <strong>Predicted score vs density.</strong> How the predictions are distributed. One curve is
+      the scores the model gave samples that were actually healthy; the other, samples that were
+      actually cancerous. Where the curves overlap is where the model is unsure.
+    </p>
+    <p>
+      <strong>1−specificity vs sensitivity.</strong> Sensitivity is the share of true cases the model
+      catches; specificity is the share of healthy samples it correctly clears. The receiver
+      operating characteristic (ROC) curve plots one against the other for every possible cut-off
+      between 0 and 1, and the AUC is the area under that curve.
+    </p>
+
+    <h3><span class="num">6.4</span>Permutation test</h3>
+    <p>
+      Now we attack the result. A permutation test shuffles which samples are labelled cancerous and
+      which healthy, then builds, trains and tests a new model on the shuffled labels. The number of
+      each label always matches the original; only which sample carries which label changes. If a
+      model trained on nonsense labels scores as well as the real one, the real one learned nothing.
+    </p>
+    <p>
+      We run 100 shuffles and record R² and Q² for each. This test uses eight folds rather than
+      five, so the real model's Q² reads slightly differently here than in 6.2.
+    </p>
+
+    <figure>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f06-permutation.webp"
+             alt="One hundred shuffled relabellings plotted by their correlation with the true labels against the variance they explain, with the real model marked by stars far to the right and above the cloud"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+      <figcaption><span class="tag">Fig 07</span>
+        The test that decides whether the model learned the biology or learned the data set. The
+        best that any shuffled relabelling managed on held-out data was 0.13, against the real
+        model's 0.51. None of the hundred came close, so the p-value is below 0.01: less than a
+        one-in-a-hundred chance that luck produced this result.</figcaption>
+    </figure>
+
+    <p>
+      The real model should sit isolated, high and to the right, with the shuffled models clustered
+      lower and to the left, where their labels are least like the real ones. That is what this
+      graph shows. If shuffled models scored just as well, the measurements we trained on would not
+      be meaningful for prediction in the first place.
+    </p>
+
+    <h3><span class="num">6.5</span>Latent variable projections</h3>
+    <p>
+      These graphs show how the two LVs work together to tell cancerous and healthy samples apart.
+      Suppose LV1 accounted for 50% of the variation in the data and LV2 also accounted for 50%.
+      That would not mean they account for 100% together, because the variation each one explains can
+      overlap. This is how that relationship becomes visible.
+    </p>
+
+    <figure>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f07-latent-projections.webp"
+             alt="Scatter of the training samples on the first two latent variables, healthy and cancerous drawn in different colours and separating along the diagonal"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+      <figcaption><span class="tag">Fig 08</span>
+        The two directions the model built, with the samples plotted on them. Separation runs
+        along the diagonal rather than along either axis alone, which is why the model needs both
+        and why neither one on its own would do.</figcaption>
+    </figure>
+
+    <aside class="value">
+      <p class="kicker">Business value · Step 06</p>
+      <p class="meter"><span class="mk">Sensor candidates</span><b>52</b><em>model verified</em></p>
+      <h3 class="vh">A model you can put your name to</h3>
+      <p>
+        Three checks stand between a promising curve and a decision: the size of the model is chosen on
+        data it did not train on, the result is tested against 100 shuffled versions of the labels,
+        and every score is read with its uncertainty attached. A model that passes all three is one
+        you can defend in a design review.
+      </p>
+    </aside>
+  </section>
+
+  <!-- ══ 7 · RANK ══ -->
+  <section class="panel step" id="s7">
+    <span class="panel-tab">Step 07</span>
+    <h2>Which measurements are doing the work</h2>
+    <p class="lede">Naming the measurements worth flying a sensor for</p>
+
+    <p>
+      Everything up to here established that the model is real. This is what it was for: the model
+      is now asked which of the 52 measurements it actually leaned on, and how sure we can be of
+      that answer. Two independent checks answer it: the regression coefficient, which says how
+      strongly each measurement pushes the prediction, and the variable importance in projection
+      (VIP) score, which says how much each one contributes to the directions the model built. Each
+      comes with a 95% confidence interval from 200 bootstrap resamples.
+    </p>
+
+    <figure>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f08-coefficients.webp"
+             alt="Every measurement's regression coefficient with a 95 percent bootstrap interval, sorted by magnitude, those whose interval crosses zero drawn in grey"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+      <figcaption><span class="tag">Fig 09</span>
+        The shortlist. A measurement whose whole interval sits on one side of zero reliably moves the
+        prediction, and is drawn in amber. <strong>Twenty of 52 qualify.</strong> The grey ones
+        cross zero: the data cannot even say which way they push, so they have not earned a place
+        on anything.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f09-vip.webp"
+             alt="The metrics that best signal an anomaly: variable importance in projection for every measurement with a 95 percent bootstrap interval, sorted by magnitude; the six whose whole interval sits above one are teal, the rest grey"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+      <figcaption><span class="tag">Fig 10</span>
+        The final cut. A VIP score above 1 marks a measurement as more important than average, and
+        here we keep only those whose <em>whole</em> interval clears that line.
+        <strong>Six of 52 qualify</strong>, and all six are also on the shortlist in Fig 09.</figcaption>
+    </figure>
+
+    <div class="note">
+      <b>Why both</b>
+      Two criteria, applied independently, are stronger than either alone. A measurement that
+      survives the coefficient test and VIP is a candidate worth spending bench time on; one that
+      survives only a single test is a lead, not a finding. Here the two agree on all six.
+    </div>
+
+    <aside class="value">
+      <p class="kicker">Business value · Step 07</p>
+      <p class="meter"><span class="mk">Sensor candidates</span><b>52</b><i>→</i><b>20</b><i>→</i><b class="now">6</b></p>
+      <h3 class="vh">What this is worth on a manifest</h3>
+      <p>
+        A ranked list is easy. A ranked list where every entry carries an interval is the thing you
+        can defend in a design review, because it says not only which measurements mattered but
+        how sure the data allows you to be, and therefore which instruments you can decline to fly
+        without arguing from taste. Here, that list is six sensors long.
+      </p>
+    </aside>
+  </section>
+
+  <!-- ══ 8 · HOLD-OUT ══ -->
+  <section class="panel step" id="s8">
+    <span class="panel-tab">Step 08</span>
+    <h2>Test the model on data it has never seen</h2>
+    <p class="lede">Proving the model holds up on samples it has never met</p>
+
+    <p>
+      The model has not seen <code>dataTest</code>, which holds the measurements for the samples
+      kept back during training, and it has not seen <code>Ytest</code>, the 0 or 1 classification
+      for each of them. Testing on those samples returns the same visuals produced in 6.3, now
+      with the held-out results alongside. The table adds the F1 score, a single number that
+      balances how many true cases are caught against how many alarms are false.
+    </p>
+
+    <figure>
+      <div class="bezel dark">
+        <img src="../images/portfolio/anomaly-detection/f10-test-eval.webp"
+             alt="Held-out samples by predicted score, the training and test receiver operating characteristic curves on the same axes, and a table comparing every summary statistic between train and test"
+             onerror="this.outerHTML='<span class=missing>figure unavailable</span>'">
+      </div>
+      <figcaption><span class="tag">Fig 11</span>
+        Train and test on the same axes. Reading the gap between them is the point of the whole
+        exercise: AUC holds up at 0.95 against 0.97, while accuracy drops from 0.89 to 0.76 on 21
+        samples. The ranking is sound; the precise accuracy figure is not something to quote
+        without saying how few samples it rests on.</figcaption>
+    </figure>
+
+    <aside class="value">
+      <p class="kicker">Business value · Step 08</p>
+      <p class="meter"><span class="mk">Sensor candidates</span><b class="now">6</b><em>confirmed on unseen samples</em></p>
+      <h3 class="vh">A claim that survives scrutiny</h3>
+      <p>
+        Twenty-one held-out samples is a small number, and a single sample changes accuracy by about
+        five points. The right claim from this data is that the method separates the two groups and
+        names the measurements that did it, not that the classifier is 76% accurate. Claiming the
+        second is how a promising pipeline gets a reputation it cannot keep.
+      </p>
+    </aside>
+  </section>
+
+  <!-- ══ REFERENCES ══ -->
+  <section class="panel step">
+    <span class="panel-tab">Sources</span>
+    <h2>Workflow and further reading</h2>
+    <p class="lede">the pipeline is published; so is the reasoning behind it</p>
+
+    <ul class="refs">
+      <li><span class="k">Workflow</span><span>
+        <a href="https://cimcb.github.io/MetabWorkflowTutorial/" target="_blank" rel="noopener noreferrer">CIMCB
+        Metabolomics Workflow Tutorial</a>, supplementary information for Mendez et&nbsp;al.
+        (2019), <em>Metabolomics</em>.
+        <a href="https://github.com/CIMCB/MetabWorkflowTutorial/blob/master/Tutorial1.ipynb" target="_blank" rel="noopener noreferrer">Tutorial&nbsp;1 notebook</a>
+        and <a href="https://github.com/CIMCB/MetabWorkflowTutorial" target="_blank" rel="noopener noreferrer">the data</a>.
+      </span></li>
+      <li><span class="k">PLS-DA</span><span>
+        <a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-3310-7" target="_blank" rel="noopener noreferrer">So
+        you think you can PLS-DA?</a>, by Ruiz-Perez &amp; Narasimhan, <em>BMC Bioinformatics</em>.
+      </span></li>
+      <li><span class="k">Score plots</span><span>
+        Interpreting score plots, and the geometric explanation of PCA, from <em>Process Improvement
+        using Data</em> (learnche.org), §6.5.6 and §6.5.2.
+      </span></li>
+      <li><span class="k">PCA</span><span>
+        How to interpret graphs in a principal component analysis, from <em>The DO Loop</em> (SAS).
+        Understanding scores and loadings, from <em>LearnPCA</em>.
+      </span></li>
+      <li><span class="k">ROC</span><span>
+        Classification: ROC curve and AUC, from Google for Developers.
+      </span></li>
+      <li><span class="k">Permutation</span><span>
+        Two walkthroughs of permutation testing, by Michael Berk and Victor Saenger,
+        <em>Towards Data Science</em>.
+      </span></li>
+      <li><span class="k">Background</span><span>
+        Numeracy, Maths and Statistics, from the Academic Skills Kit, Newcastle University.
+        Scatterplots and correlation, from the University of West Georgia.
+      </span></li>
+    </ul>
+  </section>
+
+  <!-- ══ CTA ══ -->
+  <section class="panel cta">
+    <span class="panel-tab">Next</span>
+    <h2>Facing a costly decision with more data than clarity?</h2>
+    <p>
+      Bring me the decision and the data behind it. I will tell you what matters, what you can cut,
+      and how confident you can be before you commit.
+    </p>
+    <a class="key" href="../index.html#contact">Start a conversation</a>
+  </section>
+
+  <footer class="site">
+    <span><a href="../index.html#portfolio">← All portfolio pieces</a></span>
+    <span>aamir.consulting</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ═══ TITLE ART — pause / play ═══ */
+  (function(){
+    var art = document.getElementById("moonart");
+    if (!art) return;
+    var key = art.querySelector(".ma-key"), lbl = art.querySelector(".ma-lbl");
+    key.addEventListener("click", function(){
+      var paused = art.classList.toggle("ma-paused");
+      key.setAttribute("aria-pressed", paused ? "true" : "false");
+      lbl.textContent = paused ? "Play" : "Pause";
+    });
+  })();
+  /* ═══════════════════════════════════════════════════════════
+     THE RAIL — eight stages, one lit at a time. The lit stage is
+     whichever step section currently owns the top of the viewport;
+     stages above it stay dimly green, the way a transport shows
+     tape already played.
+     ═══════════════════════════════════════════════════════════ */
+  var stages  = Array.prototype.slice.call(document.querySelectorAll(".stage"));
+  var rail    = document.getElementById("rail");
+  var targets = stages.map(function(s){ return document.getElementById(s.dataset.target); });
+
+  stages.forEach(function(s){
+    s.addEventListener("click", function(){
+      var el = document.getElementById(s.dataset.target);
+      if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+  });
+
+  var active = -1;
+  function light(){
+    var line = window.innerHeight * 0.3;   /* the playhead */
+    var next = 0;
+    for(var i = 0; i < targets.length; i++){
+      var el = targets[i];
+      if(el && el.getBoundingClientRect().top <= line) next = i;
+    }
+    if(next === active) return;
+    active = next;
+    stages.forEach(function(s, i){
+      s.setAttribute("aria-current", String(i === next));
+      s.classList.toggle("done", i < next);
+    });
+    var lit = stages[next];
+    if(rail.scrollWidth > rail.clientWidth + 4){
+      var want = lit.offsetLeft - (rail.clientWidth - lit.offsetWidth) / 2;
+      rail.scrollTo({left:Math.max(0, want), behavior:"smooth"});
+    }
+  }
+
+  var queued = false;
+  function onScroll(){
+    if(queued) return;
+    queued = true;
+    requestAnimationFrame(function(){ queued = false; light(); });
+  }
+  window.addEventListener("scroll", onScroll, {passive:true});
+  window.addEventListener("resize", onScroll);
+  light();
+
+  /* ═══════════════════════════════════════════════════════════
+     THE DIAL — the component-count choice, made operable. Six
+     keys, each a model fitted in advance and dumped to this
+     object, so the page stays build-free and offline.
+     ═══════════════════════════════════════════════════════════ */
+  var M = {"y":[0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,1,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,0,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,0,1,1,1,1,0],"r2":[0.3343,0.6672,0.7933,0.8303,0.863,0.8821],"q2":[0.2216,0.463,0.5034,0.4534,0.3566,0.1785],"models":[{"n":1,"ypred":[-0.0513,0.6134,0.6409,0.4394,0.483,0.7662,0.1593,0.3353,0.5812,0.4629,0.6173,0.8372,0.4917,0.3014,0.3653,0.3208,0.5554,0.8274,0.2642,-0.1119,0.7553,0.9887,0.8856,0.5782,0.4654,0.2686,0.4803,1.054,0.3795,0.6899,0.75,1.1666,0.5341,1.0038,0.5551,0.1437,0.4705,0.5113,0.4087,0.3083,0.3316,0.0486,-0.0265,-0.1039,0.4828,1.04,0.2754,0.4811,0.3155,0.9284,0.6282,0.8847,0.4527,0.5178,0.6995,0.4552,0.267,0.8062,0.6229,0.5048,0.9014,0.1899],"auc":0.832,"acc":0.774},{"n":2,"ypred":[0.071,0.4716,0.5343,0.4834,0.3232,0.36,-0.0007,0.4794,0.6269,0.9213,0.09,0.9693,0.0159,0.1343,-0.1554,0.4841,0.3727,1.0452,0.0658,-0.3292,0.9193,1.1725,0.6912,0.8121,0.9005,-0.2065,-0.0387,0.9834,0.7884,1.0607,0.9828,0.9947,0.7142,1.0219,0.1951,0.4597,-0.1632,0.7724,0.3531,0.5571,-0.1885,-0.0408,0.1279,0.3002,0.3762,0.8479,-0.0447,0.377,0.3305,0.7998,0.6374,1.0573,0.3333,0.8545,0.8301,0.9027,0.0301,0.9185,1.0971,0.7746,1.1423,0.6026],"auc":0.968,"acc":0.887},{"n":3,"ypred":[-0.1213,0.3015,0.406,0.234,0.2725,0.4655,0.1021,0.2693,0.8405,1.092,-0.0231,0.6854,0.1863,0.0979,-0.1691,0.9897,0.1874,1.0588,0.0739,-0.0183,0.9122,1.0898,0.952,0.8489,0.7918,-0.2095,-0.2358,1.244,0.8833,0.9612,1.0325,1.0963,0.6904,0.7934,-0.1804,0.7809,-0.0289,0.7551,0.1915,0.2976,-0.107,0.0828,0.2645,0.0848,0.2526,0.8602,-0.1319,0.5158,0.5537,0.8499,0.5302,1.09,0.3908,0.9785,1.2154,1.0328,-0.1889,0.9805,1.0123,0.7011,1.1059,0.3287],"auc":0.997,"acc":0.968},{"n":4,"ypred":[-0.1501,0.2181,0.337,0.2243,0.2085,0.2933,0.0606,0.1771,0.8547,1.0057,0.0539,0.687,0.1681,0.0411,-0.0473,1.0071,0.2925,1.0312,0.0558,-0.0938,0.912,1.1712,0.9678,1.0893,0.9562,-0.1283,-0.1951,1.0751,1.1119,0.8633,1.0068,1.0895,0.6552,0.7096,-0.0415,0.7255,0.0403,0.7212,0.1398,0.2701,-0.0603,0.1138,0.2362,0.0074,0.2177,0.9659,-0.2318,0.4663,0.6749,0.8432,0.6527,0.8573,0.4068,0.9962,1.1378,1.2203,-0.3452,1.164,0.9277,0.7892,1.0955,0.2999],"auc":0.999,"acc":0.984},{"n":5,"ypred":[-0.1319,0.2145,0.2429,0.308,0.0311,0.1489,0.1626,0.1604,0.7955,0.9694,0.1496,0.8582,0.082,-0.0498,-0.1756,0.9836,0.2962,1.025,0.0783,0.0356,0.825,1.1269,0.9983,0.9737,0.8689,-0.1175,-0.2745,0.9926,1.2126,0.8198,0.9318,1.2034,0.6251,0.9894,-0.0527,0.7623,0.0508,0.6895,0.0854,0.2567,-0.0102,0.1645,0.1487,0.0845,0.2135,0.9857,-0.2673,0.4152,0.8733,0.7834,0.6746,1.0459,0.5326,1.0947,1.1215,1.2133,-0.2671,1.1331,0.8478,0.8647,1.0575,0.1381],"auc":1.0,"acc":1.0},{"n":6,"ypred":[-0.1543,0.0976,0.2323,0.3464,-0.0663,0.0801,0.213,0.2184,0.8312,1.0474,0.199,0.9375,0.091,0.0494,-0.1005,0.8451,0.3029,1.1657,0.018,-0.0676,0.8372,1.0944,1.0449,0.9967,0.8754,-0.0135,-0.2864,0.9744,1.1793,0.8508,0.993,1.105,0.6612,0.8882,-0.1847,0.7414,0.0848,0.7112,0.0385,0.1357,0.0292,0.1117,0.0462,0.12,0.2063,0.8885,-0.2079,0.4156,0.8308,0.8742,0.6648,0.9913,0.6907,1.1281,1.1873,1.2445,-0.2003,1.0492,0.8859,0.9279,1.031,0.071],"auc":1.0,"acc":1.0}]};
+
+  var AM = "#ffb648", TE = "#6fe3c0", FR = "#4ad6c0", CR = "#f3ead9", MU = "#8d8172";
+  var cur = 2;
+  var svg = document.getElementById("rigsvg");
+  var dial = document.getElementById("dial");
+  var readout = document.getElementById("readout");
+  if(!svg || !dial) return;
+
+  function N(tag, attrs){
+    var e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for(var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  for(var i = 1; i <= 6; i++){
+    (function(n){
+      var b = document.createElement("button");
+      b.className = "dialkey";
+      b.type = "button";
+      b.setAttribute("aria-pressed", String(n === cur));
+      b.innerHTML = '<span class="led"></span>' + n + (n === 1 ? " component" : " components");
+      b.addEventListener("click", function(){ cur = n; drawDial(); });
+      dial.appendChild(b);
+    })(i);
+  }
+
+  function drawDial(){
+    var kids = Array.prototype.slice.call(dial.children);
+    kids.forEach(function(b, i){ b.setAttribute("aria-pressed", String(i + 1 === cur)); });
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+    var m = M.models[cur - 1], y = M.y;
+    var narrow = svg.clientWidth < 520;
+    var W = narrow ? 420 : 900, H = narrow ? 740 : 380;
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    var FS = narrow ? 1.55 : 1;
+    var A = narrow ? {x:44, y:26,  w:W - 58, h:300} : {x:62,  y:18, w:398, h:316};
+    var B = narrow ? {x:44, y:440, w:W - 58, h:250} : {x:530, y:18, w:350, h:316};
+
+    function tx(x, yy, t, fill, sz, anchor){
+      var e = N("text", {x:x, y:yy, fill:fill, "font-size":(sz || 11) * FS,
+        "font-family":"ui-monospace, Menlo, monospace",
+        "text-anchor":anchor || "start"});
+      e.textContent = t;
+      svg.appendChild(e);
+      return e;
+    }
+
+    /* ── panel A · one dot per training sample ── */
+    svg.appendChild(N("rect", {x:A.x, y:A.y, width:A.w, height:A.h, fill:"#161c21",
+      stroke:FR, "stroke-width":1.1, rx:2}));
+    var xs = m.ypred, lo = Math.min.apply(null, xs) - 0.15, hi = Math.max.apply(null, xs) + 0.15;
+    function X(v){ return A.x + (v - lo) / (hi - lo) * A.w; }
+    function Y(i){ return A.y + 12 + i * ((A.h - 24) / (y.length - 1)); }
+    svg.appendChild(N("line", {x1:X(0.5), y1:A.y, x2:X(0.5), y2:A.y + A.h, stroke:CR,
+      "stroke-width":1, "stroke-dasharray":"5 4", opacity:0.55}));
+    var idx = y.map(function(v, i){ return i; }).sort(function(a, b){
+      return (y[a] - y[b]) || (xs[a] - xs[b]);
+    });
+    idx.forEach(function(s, row){
+      svg.appendChild(N("circle", {cx:X(xs[s]), cy:Y(row), r:(narrow ? 2.6 : 3.1),
+        fill:(y[s] === 1 ? AM : TE), opacity:0.92}));
+    });
+    tx(A.x, A.y - 7, "PREDICTED SCORE PER SAMPLE", MU, 10);
+    tx(X(0.5) + 5, A.y + A.h + 15 * FS, "cut-off 0.5", CR, 9.5);
+    tx(A.x, A.y + A.h + 30 * FS, "healthy", TE, 10);
+    tx(A.x + (narrow ? 110 : 62), A.y + A.h + 30 * FS, "cancer", AM, 10);
+
+    /* ── panel B · fitted and held-out, across all six counts ── */
+    svg.appendChild(N("rect", {x:B.x, y:B.y, width:B.w, height:B.h, fill:"#161c21",
+      stroke:FR, "stroke-width":1.1, rx:2}));
+    function cx(i){ return B.x + 20 + i * ((B.w - 40) / 5); }
+    function cy(v){ return B.y + B.h - 10 - v * (B.h - 24) * 0.92; }
+    [0, 0.25, 0.5, 0.75, 1].forEach(function(g){
+      svg.appendChild(N("line", {x1:B.x, y1:cy(g), x2:B.x + B.w, y2:cy(g),
+        stroke:FR, opacity:0.13}));
+      tx(B.x - 6, cy(g) + 3.5 * FS, g.toFixed(2), MU, 9, "end");
+    });
+    function series(arr, col){
+      var d = "";
+      arr.forEach(function(v, i){ d += (i ? "L" : "M") + cx(i) + " " + cy(v); });
+      svg.appendChild(N("path", {d:d, fill:"none", stroke:col, "stroke-width":2,
+        "stroke-linejoin":"round"}));
+      arr.forEach(function(v, i){
+        svg.appendChild(N("circle", {cx:cx(i), cy:cy(v), r:(i === cur - 1 ? 5.5 : 3.6),
+          fill:(i === cur - 1 ? col : "#12151b"), stroke:col, "stroke-width":1.8}));
+      });
+    }
+    series(M.r2, AM);
+    series(M.q2, TE);
+    svg.appendChild(N("line", {x1:cx(cur - 1), y1:B.y, x2:cx(cur - 1), y2:B.y + B.h,
+      stroke:CR, "stroke-width":1, "stroke-dasharray":"4 4", opacity:0.45}));
+    for(var j = 0; j < 6; j++) tx(cx(j), B.y + B.h + 15 * FS, j + 1, MU, 9.5, "middle");
+    tx(B.x + B.w / 2, B.y + B.h + 30 * FS, "NUMBER OF COMPONENTS", CR, 9.5, "middle");
+    tx(B.x + 8, B.y - 7, "fitted", AM, 10);
+    tx(B.x + (narrow ? 90 : 56), B.y - 7, "held out", TE, 10);
+
+    var verdict = cur < 3 ? "still learning"
+                : cur === 3 ? "peak held-out score"
+                : "memorising: held-out score falling";
+    readout.innerHTML =
+      "<span>Components <b>" + m.n + "</b></span>" +
+      "<span>Fitted <b>" + M.r2[cur - 1].toFixed(2) + "</b></span>" +
+      "<span>Held out <b>" + M.q2[cur - 1].toFixed(2) + "</b></span>" +
+      "<span>AUC <b>" + m.auc.toFixed(2) + "</b></span>" +
+      "<span>Accuracy <b>" + m.acc.toFixed(2) + "</b></span>" +
+      '<span class="verdict">' + verdict + "</span>";
+  }
+
+  drawDial();
+  var dq;
+  window.addEventListener("resize", function(){
+    clearTimeout(dq);
+    dq = setTimeout(drawDial, 120);
+  });
+})();
+</script>
+</body>
+</html>
