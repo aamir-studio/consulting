@@ -1,0 +1,1246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Tutoring | aamir.consulting</title>
+<meta name="description" content="Math tutoring for undergraduate and graduate students in New York City and online. Statistics and linear algebra, and how they apply to biology, engineering and business.">
+<meta name="theme-color" content="#0d0c0b">
+<meta property="og:title" content="Math Tutoring | aamir.consulting">
+<meta property="og:description" content="Tutoring for math classes as well as subjects and research that apply it.">
+<meta property="og:type" content="website">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   PALETTE: same machine as the homepage.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:        #0d0c0b;
+  --panel:      #1b1917;
+  --shell:      #e8d9bd;
+  --shell-dk:   #c9b590;
+  --tape:       #4a2f1d;
+  --phosphor:   #ffb648;
+  --phosphor-2: #6fe3c0;
+  --cream:      #f3ead9;
+
+  /* paper versions, for the printed flyer */
+  --p-ink:      #1f1a15;
+  --p-soft:     #5e5244;
+  --p-amber:    #B933AD;
+  --p-teal:     #1d8a73;
+  --p-label:    #f6efe0;
+  --p-rule:     #d9ccb4;
+
+  --edge: 1px solid #ffffff1f;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sans: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:
+    radial-gradient(120% 80% at 50% -10%, #241f1a 0%, transparent 60%),
+    var(--ink);
+  color:var(--cream);
+  font-family:var(--sans);
+  font-size:clamp(15px, 0.5vw + 13px, 17px);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:var(--phosphor); text-decoration:none; border-bottom:1px solid #ffb64855;}
+a:hover{border-bottom-color:var(--phosphor);}
+.wrap{width:min(1100px, 92vw); margin:0 auto;}
+
+/* ── PANEL CHROME (as on the homepage) ── */
+.panel{
+  position:relative;
+  border:var(--edge); border-radius:14px;
+  background:linear-gradient(180deg, #1f1c1a, #141210);
+  padding:clamp(2.2rem, 3.4vw, 3rem) clamp(1.1rem, 2.6vw, 2.2rem) clamp(1.8rem, 3vw, 2.4rem);
+  margin:clamp(1.6rem, 4vw, 3.4rem) 0;
+  box-shadow:0 30px 70px -40px #000;
+}
+.panel-tab{
+  position:absolute; top:-1px; left:-1px;
+  padding:.45rem 1.5rem .5rem;
+  border:var(--edge); border-top-left-radius:14px; border-bottom-right-radius:14px;
+  background:#0f0e0d;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.26em; text-transform:uppercase;
+  color:#bfae94;
+}
+
+/* ── HEADER (as on the homepage) ── */
+header.site{
+  display:flex; align-items:center; gap:clamp(.8rem,2vw,1.3rem);
+  flex-wrap:wrap; padding:clamp(1rem,2.6vw,1.7rem) 0 .6rem;
+}
+.logo-frame{
+  border-bottom:var(--edge);
+  width:clamp(54px, 6vw, 76px); aspect-ratio:1;
+  border:var(--edge); border-radius:10px;
+  display:grid; place-items:center; overflow:hidden;
+  background:#100f0e; flex:none;
+}
+.logo-frame img{width:100%; height:100%; object-fit:contain;}
+.logo-fallback{font-family:var(--mono); font-size:.65rem; color:#8d8172; letter-spacing:.1em;}
+.brand{font-size:clamp(1.3rem, 3vw, 1.95rem); font-weight:600; letter-spacing:-.02em; line-height:1; color:var(--cream); border:0;}
+.brand:hover{border:0;}
+.brand a{color:inherit; border:0;}
+.brand a:hover{color:var(--phosphor); border:0;}
+.brand .brand-sub{color:var(--phosphor); font-weight:500;}
+.brand .brand-sub:hover{color:#ffd08a;}
+.brand small{
+  display:block; margin-top:.38rem;
+  font-family:var(--mono); font-weight:400; letter-spacing:.13em;
+  font-size:clamp(.58rem,1vw,.7rem); color:#a2937e; text-transform:lowercase;
+}
+nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-content:flex-end;}
+.key{
+  display:inline-block;
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; line-height:1.6;
+  color:#e8dcc7; background:linear-gradient(180deg,#3a352f,#232019);
+  border:1px solid #ffffff22; border-bottom:3px solid #00000090;
+  border-radius:6px; padding:.55rem .95rem .5rem; cursor:pointer;
+  transition:transform .06s, border-bottom-width .06s, background .2s;
+}
+.key:hover{background:linear-gradient(180deg,#464038,#2a251e); border-bottom-color:#00000090;}
+.key:active{transform:translateY(2px); border-bottom-width:1px;}
+
+/* ═══ HERO ═══ */
+.tx-hero{
+  display:grid; align-items:start;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.22fr);
+  gap:clamp(1.4rem, 3.4vw, 2.8rem);
+}
+@media (max-width:860px){ .tx-hero{grid-template-columns:1fr;} }
+.tx-hero h1{
+  font-size:clamp(2.2rem, 5.6vw, 3.6rem); font-weight:600; letter-spacing:-.03em; line-height:1.02;
+  text-wrap:balance; margin-bottom:.8rem;
+}
+.tx-claim{font-size:clamp(1.1rem, 2.2vw, 1.4rem); line-height:1.4; color:var(--cream); text-wrap:balance; margin-bottom:.9rem;}
+.tx-who{color:#c9bda9; max-width:44ch; margin-bottom:1.1rem;}
+.tx-stamp{
+  display:inline-block; font-family:var(--mono); font-size:.64rem; letter-spacing:.16em; text-transform:uppercase;
+  color:#bfae94; border:1px solid #ffffff22; border-radius:4px; padding:.35rem .6rem .3rem;
+  margin-bottom:1.4rem;
+}
+.tx-cta{display:flex; flex-wrap:wrap; gap:.6rem;}
+.tx-btn{
+  font-family:var(--mono); font-size:.74rem; letter-spacing:.18em; text-transform:uppercase;
+  color:#1a1610; background:linear-gradient(180deg,#ffd08a,#e5a13d);
+  border:0; border-bottom:3px solid #8a5c1a; border-radius:6px;
+  padding:.8rem 1.3rem .72rem; cursor:pointer;
+}
+.tx-btn:active{transform:translateY(2px); border-bottom-width:1px;}
+.tx-ctanote{margin-top:.8rem; color:#c9bda9; max-width:40ch; font-size:.95rem;}
+.tx-btn:focus-visible{outline:2px solid var(--phosphor); outline-offset:2px;}
+
+
+/* ═══ HERO ART: the flyer's mosaic panels, animated ═══ */
+.tx-hero{grid-template-columns:minmax(0,170px) auto minmax(0,170px) !important; justify-content:center; align-items:stretch !important; row-gap:1.6rem !important;}
+.hx-side{position:relative; min-height:0;}
+.hx-art{position:absolute; inset:0; width:100%; height:100%; display:block;}
+.hx-text{text-align:center; display:flex; flex-direction:column; justify-content:space-between;}
+.hx-text h1{margin-bottom:.5rem;}
+.hx-text .tx-claim{white-space:nowrap; text-align:center;}
+.hx-text .tx-who{max-width:none; contain:inline-size; text-align:center;}
+.hx-text .tx-stamp{align-self:center; margin-bottom:0;}
+.hx-cta{grid-column:1 / -1; text-align:center;}
+.hx-cta .tx-cta{justify-content:center;}
+.hx-cta .tx-ctanote{margin:.8rem auto 0;}
+@media (max-width:860px){
+  .tx-hero{grid-template-columns:repeat(2, minmax(0,1fr)) !important;}
+  .hx-text{grid-column:1 / -1; grid-row:1;}
+  .hx-text .tx-claim{white-space:normal;}
+  .hx-text .tx-who{contain:none; text-align:center;}
+  .hx-br{display:none;}
+  .hx-cta{grid-row:2;}
+  .hx-side{grid-row:3; aspect-ratio:110/200; max-height:260px;}
+}
+.hx-art *{transform-box:view-box;}
+.hx-stars rect:nth-child(odd){animation:hx-tw 2.6s steps(2,jump-none) infinite alternate;}
+.hx-stars rect:nth-child(3n){animation-delay:-1.3s;}
+.hx-bob{animation:hx-bob 2.4s ease-in-out infinite alternate;}
+.hx-flame{animation:hx-flame .25s steps(2,jump-none) infinite alternate;}
+.hx-trail rect{animation:hx-tw 1s steps(2,jump-none) infinite alternate;}
+.hx-trail rect:nth-child(2){animation-delay:-.33s;} .hx-trail rect:nth-child(3){animation-delay:-.66s;}
+.hx-ring{transform-origin:74px 30px; animation:hx-wob 6s ease-in-out infinite alternate;}
+.hx-helix{transform-origin:55px 140px; animation:hx-sway 4s ease-in-out infinite alternate;}
+.hx-drift{animation:hx-drift 5s ease-in-out infinite alternate;}
+.hx-spin{transform-origin:38px 86px; animation:hx-spin 6s linear infinite;}
+.hx-spin2{transform-origin:68px 106px; animation:hx-spin 4.2s linear infinite reverse;}
+.hx-bar{transform-origin:0 188px; animation:hx-grow 3.2s steps(6,end) infinite;}
+.hx-b1{animation-delay:.15s;} .hx-b2{animation-delay:.3s;} .hx-b3{animation-delay:.45s;}
+.hx-arrow{animation:hx-tw 1.6s steps(2,jump-none) infinite alternate;}
+@keyframes hx-tw{from{opacity:1} to{opacity:.25}}
+@keyframes hx-bob{from{transform:translateY(3px)} to{transform:translateY(-5px)}}
+@keyframes hx-flame{from{opacity:1} to{opacity:.35}}
+@keyframes hx-wob{from{transform:rotate(-4deg)} to{transform:rotate(4deg)}}
+@keyframes hx-sway{from{transform:translateY(-2px)} to{transform:translateY(2px)}}
+@keyframes hx-drift{from{transform:translate(-4px,2px)} to{transform:translate(4px,-2px)}}
+@keyframes hx-spin{to{transform:rotate(360deg)}}
+@keyframes hx-grow{0%{transform:scaleY(.2)} 60%,100%{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){ .hx-art *{animation:none !important;} }
+
+/* ═══ EXAMPLE PANEL ═══ */
+.tx-ex{display:grid; column-gap:clamp(1.4rem, 3.4vw, 2.8rem); grid-template-columns:minmax(0,.85fr) minmax(0,1.22fr); align-items:stretch;}
+.tx-ex-dev{display:contents;}
+.tx-ex-dev .tx-devwrap{grid-column:2; grid-row:1;}
+.tx-ex-dev .tx-story{grid-column:2; grid-row:2;}
+.tx-ex-dev .tx-hint{grid-column:2; grid-row:3;}
+.tx-ex-copy{grid-column:1; grid-row:1; display:flex; flex-direction:column; justify-content:flex-start; gap:2.4rem; padding-top:min(6.3vw, 5.1rem);}  /* first step level with the instrument's label strip */
+.tx-ex-step{border-left:3px solid #7ea6ff55; padding:.2rem 0 .3rem 1rem;}
+.tx-ex-h{font-family:var(--mono); font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:#7ea6ff; margin-bottom:.55rem;}
+.tx-ex-step p:not(.tx-ex-h){color:#d8ccb7; font-size:clamp(.98rem,1.5vw,1.08rem); line-height:1.6;}
+@media (max-width:860px){
+  .tx-ex{grid-template-columns:1fr; row-gap:1.6rem;}
+  .tx-ex-copy{grid-row:1; justify-content:flex-start; padding-top:0; gap:1.6rem;}
+  .tx-ex-dev .tx-devwrap, .tx-ex-dev .tx-story, .tx-ex-dev .tx-hint{grid-column:1; grid-row:auto;}
+}
+.tx-ex-copy .c-dot{color:#2fc4a0; font-weight:700;}
+.tx-ex-copy .c-line{color:#c77dff; font-weight:700;}
+.tx-ex-copy .c-axis{color:#ff4b42; font-weight:700; white-space:nowrap;}
+
+
+/* hover a coloured term: it, its twins in the copy, and its part of the plot light up */
+[data-hl]{cursor:help; border-radius:3px; transition:background .15s, box-shadow .15s;}
+.tx-ex[data-hl-on="dot"] [data-hl="dot"]{background:#2fc4a026; box-shadow:0 0 0 3px #2fc4a026;}
+.tx-ex[data-hl-on="line"] [data-hl="line"]{background:#c77dff26; box-shadow:0 0 0 3px #c77dff26;}
+.tx-ex[data-hl-on="x"] [data-hl="x"], .tx-ex[data-hl-on="y"] [data-hl="y"]{background:#ff4b4226; box-shadow:0 0 0 3px #ff4b4226;}
+.tx-screen .pl-pts circle, .tx-screen .pl-line, .tx-screen .pl-xl, .tx-screen .pl-yl{transition:r .2s, stroke-width .2s, opacity .2s, filter .2s;}
+.tx-ex[data-hl-on="dot"] .tx-screen .pl-pts circle{r:6.5px;}
+.tx-ex[data-hl-on="dot"] .tx-screen .pl-pts{filter:drop-shadow(0 0 6px #2fc4a0);}
+.tx-ex[data-hl-on="line"] .tx-screen .pl-line{stroke-width:5.5; filter:drop-shadow(0 0 7px #c77dff);}
+.tx-ex[data-hl-on="x"] .tx-screen .pl-xl, .tx-ex[data-hl-on="y"] .tx-screen .pl-yl{filter:drop-shadow(0 0 6px #ff4b42);}
+.tx-ex[data-hl-on="x"] .tx-screen .pl-yl, .tx-ex[data-hl-on="y"] .tx-screen .pl-xl{opacity:.3;}
+.tx-ex[data-hl-on] .tx-screen .pl-pts, .tx-ex[data-hl-on] .tx-screen .pl-line{opacity:.35;}
+.tx-ex[data-hl-on="dot"] .tx-screen .pl-pts, .tx-ex[data-hl-on="line"] .tx-screen .pl-line{opacity:1;}
+
+/* ═══ THE DEVICE ═══
+   A cream shell like Side B of the homepage cassette: field keys on top,
+   a label strip carrying the live equation, a scope screen, two knobs
+   and an error readout. Sizes run off the shell's own width (cqw).
+   ═══════════════════════════════════════════════════════════════ */
+.tx-devwrap{container-type:inline-size;}
+.tx-dev{
+  position:relative; user-select:none; -webkit-user-select:none;
+  border-radius:clamp(10px, 3cqw, 18px);
+  background:linear-gradient(180deg, #efe1c6, #c9b590);
+  box-shadow:inset 0 0 0 1px #00000030, inset 0 1px 0 #fff8, 0 30px 60px -36px #000;
+  padding:3.2cqw 4.2cqw 3.6cqw;
+  color:#3a2f22;
+}
+.tx-screw{
+  position:absolute; width:2.4cqw; aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #d8c8a8, #8c7a5c);
+  box-shadow:inset 0 0 0 1px #00000030;
+}
+.tx-screw::after{content:""; position:absolute; left:18%; right:18%; top:46%; height:1px; background:#00000045; transform:rotate(-35deg);}
+
+/* key deck */
+.tx-keywell{
+  display:flex; align-items:stretch; gap:1.3cqw;
+  padding:1.3cqw; border-radius:8px; background:#00000014;
+  box-shadow:inset 0 1px 2px #00000026, inset 0 -1px 0 #ffffff40;
+  margin-bottom:2.4cqw;
+}
+.tx-well-label{
+  align-self:center; padding:0 1.2cqw 0 .6cqw;
+  font-family:var(--mono); font-size:clamp(.5rem, 1.9cqw, .7rem); letter-spacing:.18em; color:#7a6851;
+}
+.tx-gap{flex:1;}
+.tx-key{
+  position:relative; min-width:12cqw;
+  font-family:var(--mono); font-size:clamp(.56rem, 2.2cqw, .78rem); letter-spacing:.12em; color:#4a3c2c;
+  padding:1.7cqw 2.2cqw 1.5cqw;
+  background:linear-gradient(180deg,#f4e9d4 0%, #e0cfae 62%, #cdb894 100%);
+  border:0; border-radius:3px 3px 2px 2px;
+  box-shadow:0 .28em 0 #a58f6b, 0 3px 4px -1px #00000055, inset 0 1px 0 #fffdf6;
+  cursor:pointer; transition:box-shadow .09s ease-out, background .12s, color .12s;
+  display:flex; align-items:center; justify-content:center; gap:.55em;
+}
+.tx-key:hover{background:linear-gradient(180deg,#fbf2e1 0%, #e8d8b8 62%, #d4bf9b 100%);}
+.tx-key:focus-visible{outline:2px solid var(--phosphor); outline-offset:2px;}
+.tx-key:active,
+.tx-key[aria-pressed="true"]{
+  background:linear-gradient(180deg,#c9b48e 0%, #bca682 58%, #cbb691 100%);
+  box-shadow:0 .28em 0 #a58f6b, 0 3px 4px -1px #00000055, inset 0 4px 7px -2px #00000055, inset 0 -2px 3px -1px #ffffff2e;
+  color:#2f2317;
+}
+.tx-key .lamp{
+  width:.62em; height:.62em; border-radius:50%; flex:none;
+  background:#6b5b45; box-shadow:inset 0 1px 1px #0006;
+  transition:background .15s, box-shadow .15s;
+}
+.tx-key[aria-pressed="true"] .lamp{background:var(--phosphor); box-shadow:0 0 6px var(--phosphor), inset 0 -1px 1px #0003;}
+.tx-key.tx-fit{color:#5a3a12;}
+
+/* label strip with the live equation */
+.tx-label{
+  display:flex; align-items:center; justify-content:space-between; gap:2cqw;
+  background:#f6efe0; border-radius:6px; box-shadow:inset 0 0 0 1px #00000018;
+  padding:1.5cqw 2.4cqw; margin-bottom:2.2cqw;
+  font-family:var(--mono); font-size:clamp(.56rem, 2.3cqw, .86rem); letter-spacing:.12em; color:#3a2f22;
+}
+.tx-label .brandmark{color:#7a6851;}
+.tx-label output{letter-spacing:.06em; font-weight:700; white-space:nowrap; color:#9b3fd6;}
+
+/* scope screen */
+.tx-screen{
+  position:relative; border-radius:clamp(6px, 1.8cqw, 12px); overflow:hidden;
+  background:#0a0908; box-shadow:inset 0 0 0 1px #00000060, inset 0 0 40px #000;
+}
+.tx-screen svg{display:block; width:100%; height:auto;}
+.tx-screen::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(160deg, #ffffff12 0%, transparent 42%);}
+.tx-screen .pl-line{filter:drop-shadow(0 0 3px #c77dffaa);}
+.tx-screen .pl-pts{filter:drop-shadow(0 0 3px #2fc4a088);}
+.pl-axis{transition:opacity .25s;}
+.pl-axis.flash{animation:tx-flash .5s ease-out;}
+@keyframes tx-flash{0%{opacity:.1} 100%{opacity:1}}
+
+/* knob bank */
+.tx-bank{
+  display:grid; grid-template-columns:1fr 1fr 1.5fr; align-items:center; gap:3cqw;
+  margin-top:3cqw; padding:0 1.5cqw;
+}
+.tx-knob-unit{display:flex; flex-direction:column; align-items:center; gap:1.2cqw;}
+.tx-knob{
+  width:clamp(44px, 14cqw, 72px); aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle at 34% 28%, #6a6157, #2b2620 70%);
+  border:1px solid #00000050;
+  box-shadow:0 3px 7px -2px #0009, inset 0 -3px 6px #0008, 0 0 0 3px #00000012;
+  position:relative; cursor:grab; touch-action:none;
+}
+.tx-knob:active{cursor:grabbing;}
+.tx-knob:focus-visible{outline:2px solid var(--phosphor); outline-offset:3px;}
+.tx-knob i{position:absolute; inset:0; border-radius:50%;}
+.tx-knob i::after{
+  content:""; position:absolute; left:50%; top:10%;
+  width:2px; height:32%; margin-left:-1px; border-radius:2px;
+  background:var(--phosphor); box-shadow:0 0 5px var(--phosphor);
+}
+.tx-klabel{
+  font-family:var(--mono); font-size:clamp(.5rem, 1.9cqw, .66rem);
+  letter-spacing:.14em; text-transform:uppercase; color:#7a6851; text-align:center; line-height:1.35;
+}
+.tx-klabel b{display:block; color:#3a2f22; font-weight:600; letter-spacing:.06em;}
+.tx-meter{display:flex; flex-direction:column; align-items:stretch; gap:1.4cqw;}
+.tx-lcd{
+  display:flex; align-items:baseline; justify-content:space-between; gap:2cqw;
+  background:#12100e; border-radius:6px; box-shadow:inset 0 0 0 1px #00000060, inset 0 2px 8px #000;
+  padding:1.6cqw 2.2cqw 1.4cqw;
+  font-family:var(--mono); color:var(--phosphor);
+}
+.tx-lcd span{font-size:clamp(.48rem, 1.8cqw, .64rem); letter-spacing:.18em; color:#a37a3a;}
+.tx-lcd output{font-size:clamp(.9rem, 4.2cqw, 1.5rem); letter-spacing:.12em; text-shadow:0 0 6px #ffb64866;}
+.tx-ledrow{
+  display:flex; align-items:center; gap:1.4cqw; justify-content:center;
+  font-family:var(--mono); font-size:clamp(.5rem, 1.9cqw, .66rem); letter-spacing:.16em; color:#7a6851;
+}
+.tx-led{width:clamp(8px, 2.2cqw, 12px); aspect-ratio:1; border-radius:50%; background:#3d4a44; box-shadow:inset 0 1px 1px #0008; transition:background .2s, box-shadow .2s;}
+.tx-led.on{background:var(--phosphor-2); box-shadow:0 0 8px var(--phosphor-2), inset 0 -1px 1px #0003;}
+.tx-ledrow.on{color:#2f5a4c;}
+
+.tx-story{
+  margin:1.1rem auto 0; max-width:46ch; min-height:3.2em;
+  text-align:center; color:var(--cream); font-size:clamp(.95rem,1.7vw,1.08rem); line-height:1.5;
+}
+.tx-story b{
+  display:inline-block; margin-right:.5em; vertical-align:.12em;
+  font-family:var(--mono); font-weight:400; font-size:.62em; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--phosphor); border:1px solid #ffb64866; border-radius:4px; padding:.15em .5em .1em;
+}
+.tx-hint{
+  margin:.5rem auto 0; max-width:52ch; text-align:center;
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; line-height:1.6; color:#8d8172;
+}
+
+/* ═══ SESSIONS ═══ */
+.tx-sess{display:grid; column-gap:clamp(1.4rem, 3vw, 2.4rem); grid-template-columns:minmax(0,1fr) minmax(0,340px); align-items:stretch;}
+.tx-aboutcol{display:contents;}
+.tx-aboutcol h2{grid-column:1 / -1; grid-row:1;}
+.tx-aboutcol .tx-tutor{grid-column:1; grid-row:2;}
+.tx-sess .tx-rates{grid-column:2; grid-row:2; margin-top:1rem;}
+.tx-sess .tx-rate{height:100%; justify-content:space-between;}
+.tx-sess .tx-rate .tx-key{margin-top:0;}
+@media (max-width:860px){ .tx-sess{grid-template-columns:1fr; row-gap:1.4rem;} .tx-sess .tx-rates{grid-column:1; grid-row:3; margin-top:0;} .tx-sess .tx-rate{height:auto;} }
+@media (max-width:860px){ .tx-sess{grid-template-columns:1fr;} }
+.tx-sess h2, .tx-book h2{font-size:clamp(1.4rem, 3.2vw, 2rem); font-weight:500; letter-spacing:-.02em; line-height:1.2; text-wrap:balance; margin-bottom:.5rem;}
+
+.tx-rates{display:grid; gap:clamp(.8rem, 2vw, 1.1rem); grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr));}
+.tx-rate{
+  display:flex; flex-direction:column;
+  border-radius:12px; padding:1rem 1.1rem 1.1rem;
+  background:linear-gradient(180deg, #efe1c6, #cdb894);
+  box-shadow:inset 0 0 0 1px #00000030, inset 0 1px 0 #fff8, 0 18px 40px -30px #000;
+  color:#3a2f22;
+}
+.tx-rate-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:.8rem;}
+.tx-side{font-family:var(--mono); font-size:.6rem; letter-spacing:.22em; color:#7a6851;}
+.tx-rate-label{
+  background:#f6efe0; border-radius:6px; box-shadow:inset 0 0 0 1px #00000018;
+  padding:.75rem .9rem .8rem; margin-bottom:.9rem;
+}
+.tx-rate h3{font-size:1.2rem; font-weight:600; letter-spacing:-.01em; line-height:1.2;}
+.tx-rate .where{font-family:var(--mono); font-size:.66rem; letter-spacing:.12em; color:#7a6851; text-transform:uppercase;}
+.tx-price{
+  display:flex; align-items:baseline; gap:.4rem;
+  background:#12100e; border-radius:6px; box-shadow:inset 0 0 0 1px #00000060, inset 0 2px 8px #000;
+  padding:.55rem .8rem .45rem; margin-bottom:.9rem;
+  font-family:var(--mono); color:var(--phosphor);
+}
+.tx-price strong{font-size:1.7rem; font-weight:500; letter-spacing:.04em; text-shadow:0 0 6px #ffb64866; line-height:1.1;}
+.tx-price span{font-size:.66rem; letter-spacing:.16em; color:#a37a3a; text-transform:uppercase;}
+.tx-rate .tx-key{margin-top:auto; min-width:0; padding:.7rem .9rem .62rem; font-size:.7rem;}
+
+/* ═══ BOOK ═══ */
+.tx-book{text-align:center; padding:1rem 0;}
+.tx-tutor{display:grid; grid-template-columns:clamp(120px, 34%, 220px) minmax(0,1fr); gap:1.2rem; align-items:stretch; margin:1rem 0 0;}
+.tx-tutor > div:last-child{display:flex; flex-direction:column; justify-content:space-between; gap:1rem;}
+.tx-tutor .tx-portrait{align-self:start;}
+.tx-bio{color:#d8ccb7; font-size:.92rem; line-height:1.55;}
+@media (max-width:560px){
+  .tx-tutor > div:last-child{display:contents;}
+  .tx-tutor .tx-bio{grid-column:1 / -1;}
+}
+
+.tx-portrait{aspect-ratio:3/4; border:var(--edge); border-radius:10px; overflow:hidden; background:#100f0e; display:grid; place-items:center;}
+.tx-portrait img{width:100%; height:100%; object-fit:cover; display:block;}
+.tx-name{font-size:1.05rem; font-weight:600; margin-bottom:.3rem;}
+.tx-name a{color:var(--cream); border-bottom:1px solid #ffb64855;}
+.tx-name a:hover{color:var(--phosphor); border-bottom-color:var(--phosphor);}
+.tx-cred{font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; line-height:1.7; color:#a2937e;}
+.tx-soon{font-family:var(--mono); font-size:.8rem; letter-spacing:.24em; text-transform:uppercase; color:var(--phosphor); margin-top:.6rem;}
+
+footer.site{
+  padding:1.2rem 0 3rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.18em; color:#6f6558;
+}
+.tx-printkey{
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;
+  color:#a2937e; background:none; border:1px solid #ffffff22; border-radius:5px; padding:.4rem .7rem .35rem; cursor:pointer;
+}
+.tx-printkey:hover{color:var(--phosphor); border-color:#ffb64866;}
+.tx-printkey[hidden]{display:none;}
+
+/* ═══ THE FLYER ═══
+   One US Letter sheet, built in inches and points. Hidden on screen
+   until tutoring.html#flyer (or the footer's Print flyer key); in print
+   it is the only thing on the page.
+   ═══════════════════════════════════════════════════════════════ */
+.fl-stage{display:none;}
+body.tx-preview .wrap{display:none;}
+body.tx-preview .fl-stage{display:block; padding:16px 16px 48px;}
+.fl-bar{
+  width:min(816px, 100%); margin:0 auto 14px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:.5rem;
+}
+.fl-bar p{flex:1 1 220px; font-family:var(--mono); font-size:.64rem; letter-spacing:.1em; color:#8d8172; line-height:1.5;}
+.fl-hold{margin:0 auto; position:relative;}
+
+.sheet{
+  width:8.5in; height:11in; overflow:hidden; position:relative;
+  transform-origin:0 0;
+  background:#fff; color:var(--p-ink);
+  font-family:var(--sans); font-size:10.5pt; line-height:1.4;
+  padding:.45in .55in 0;
+  display:flex; flex-direction:column;
+  box-shadow:0 30px 70px -30px #000;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+/* three equal thirds above the tear-off strip */
+.fl-thirds{flex:1; min-height:0; display:grid; grid-template-rows:repeat(3, minmax(0,1fr));}
+.fl-third{position:relative; display:flex; flex-direction:column; min-height:0; padding:.14in 0;}
+.fl-t1{padding-top:0;}
+.fl-t2, .fl-t3{border-top:1pt solid var(--p-rule); justify-content:center; gap:.1in;}
+.fl-mark{
+  position:absolute; top:0; left:0; transform:translateY(-50%);
+  background:#fff; padding-right:8pt;
+  font-family:var(--mono); font-size:7.2pt; letter-spacing:.24em; text-transform:uppercase; color:var(--p-soft);
+}
+
+.fl-top{display:flex; align-items:center; gap:.16in; padding-bottom:.14in; border-bottom:1.5pt solid var(--p-ink);}
+.fl-logo{width:.62in; height:.62in; flex:none; display:grid; place-items:center; overflow:hidden; border-radius:6pt; background:#100f0e;}
+.fl-logo img{width:100%; height:100%; object-fit:contain;}
+.fl-logo .logo-fallback{font-size:8pt; color:#bfae94;}
+.fl-brand{font-size:15pt; font-weight:600; letter-spacing:-.02em; line-height:1;}
+.fl-brand small{display:block; margin-top:4pt; font-family:var(--mono); font-weight:400; font-size:7pt; letter-spacing:.12em; color:var(--p-soft);}
+.fl-where{margin-left:auto; text-align:right; font-family:var(--mono); font-size:7.5pt; letter-spacing:.18em; text-transform:uppercase; line-height:1.55; color:var(--p-soft);}
+
+.fl-title{margin:auto 0;}
+.fl-h{font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; text-align:center; font-size:48pt; font-weight:700; letter-spacing:-.035em; line-height:1; margin-bottom:.08in;}
+.fl-claim{font-size:16pt; line-height:1.25; letter-spacing:-.01em; text-wrap:balance;}
+.fl-spec{margin-top:.08in; font-size:10.5pt; line-height:1.42; color:var(--p-soft);}
+
+.fl-demo{
+  display:grid; grid-template-columns:2.5in minmax(0,1fr); gap:.24in; align-items:center;
+  background:var(--p-label); border:1pt solid var(--p-rule); border-radius:10pt; padding:.14in .16in;
+}
+.fl-plot{background:#fff; border:1pt solid var(--p-rule); border-radius:6pt; overflow:hidden;}
+.fl-plot svg{display:block; width:100%; height:auto;}
+.fl-read-h{font-size:13pt; font-weight:600; letter-spacing:-.01em; line-height:1.2;}
+.fl-eq{font-family:var(--mono); font-size:.9em; font-weight:700; color:var(--p-amber); letter-spacing:.02em; white-space:nowrap;}
+.fl-read-h{margin-bottom:.08in;}
+.fl-read ul{list-style:none; display:grid; gap:.07in;}
+.fl-read li{font-size:9.2pt; line-height:1.32;}
+.fl-read li b{display:block; font-family:var(--mono); font-weight:600; font-size:6.8pt; letter-spacing:.2em; text-transform:uppercase; color:var(--p-teal);}
+
+.fl-xy{font-style:normal; font-weight:700; letter-spacing:.02em; text-transform:none; color:#c62828;}
+.fl-problem{font-size:10.5pt; line-height:1.4;}
+.fl-problem .c-dot{color:var(--p-teal); font-weight:700;}
+.fl-problem .c-line{color:var(--p-amber); font-weight:700;}
+.fl-problem .c-x, .fl-problem .c-y{color:#c62828; font-weight:700;}
+
+.fl-about{display:grid; grid-template-columns:1.2in minmax(0,1fr) auto; gap:.24in; align-items:center;
+  border:1.5pt solid var(--p-ink); border-radius:14pt; padding:.24in .28in;}
+.fl-alogo{width:1.2in; height:1.2in; border-radius:8pt; overflow:hidden;}
+.fl-alogo img{width:100%; height:100%; object-fit:cover; object-position:50% 25%; display:block;}
+.fl-name{font-size:16pt; font-weight:600;}
+.fl-cred{font-size:11pt; color:var(--p-soft); line-height:1.4;}
+.fl-qr{display:flex; align-items:center; gap:.12in;}
+.fl-qr p{font-family:var(--mono); font-size:7.6pt; letter-spacing:.1em; line-height:1.5; text-align:right;}
+.fl-qr p b{display:block; font-family:var(--sans); font-size:11pt; letter-spacing:0; font-weight:600;}
+.fl-qrbox{
+  width:1.12in; height:1.12in; flex:none; display:grid; place-items:center; text-align:center;
+  border:1.2pt dashed #8a7e6e; border-radius:4pt;
+  font-family:var(--mono); font-size:7pt; letter-spacing:.14em; line-height:1.5; text-transform:uppercase; color:#8a7e6e;
+}
+
+.fl-tabs{
+  margin:0 -.55in; height:1.62in; flex:none;
+  display:grid; grid-template-columns:repeat(8, 1fr);
+  border-top:1pt dashed #8a7e6e;
+}
+.fl-tab{
+  border-left:1pt dashed #8a7e6e;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4pt;
+  writing-mode:vertical-rl; transform:rotate(180deg);
+  padding:.26in 0 .06in;  /* rotated 180deg: the top padding lands at the paper edge, clear of printer margins */
+}
+.fl-tab:last-child{border-left:0;}
+.fl-tab b{font-size:9pt; font-weight:600; line-height:1.1;}
+.fl-tab span{font-family:var(--mono); font-size:6pt; letter-spacing:.02em; color:var(--p-soft); line-height:1.1;}
+
+
+/* ═══ METRO THEME: the printed flyer ═══ */
+.fl-thirds{display:flex; flex-direction:column; --gap:.041in;}
+.fl-thirds .fl-third{padding:0 !important; flex:none;}
+.fl-thirds .fl-t2{margin-top:var(--gap);}
+.fl-thirds .fl-t3{margin-top:.172in;}  /* = gap + the panel art letterbox, so all visible gaps match */
+.fl-t1 .fl-title{margin:var(--gap) 0 0 !important;}
+.fl-tab span{display:flex !important; align-items:center; gap:3pt;}
+.fl-tab .mt-ico{margin:0 !important;}
+.mt-ico{width:7.5pt; height:7.5pt; display:inline-block; vertical-align:middle; margin-inline-end:3pt; transform:rotate(90deg);}
+.fl-tab{align-items:center; justify-content:center; text-align:center; gap:3pt; padding:.12in 0;}
+.fl-tab b, .fl-tab span{display:block; text-align:center;}
+.fl-qr{align-items:stretch;}
+.mt-qrtext{display:flex; flex-direction:column; justify-content:space-between; text-align:right; padding:2pt 0;}
+.mt-qrtext p{white-space:nowrap;}
+.mt-link{display:inline-flex; align-items:center; gap:3pt;}
+.mt-qrtext .mt-ico{transform:none; margin:0; width:8pt; height:8pt;}
+.sheet .c-title{color:#0039A6; font-weight:700;}
+.mt-hero{display:grid; grid-template-columns:1.3in minmax(0,1fr) 1.3in; align-items:center; gap:.14in;}
+.mt-sub{width:fit-content; margin:0 auto;}
+.mt-sub .fl-claim{text-wrap:wrap; white-space:nowrap;}
+.mt-sub .fl-spec{font-size:10pt; margin-top:.1in;}
+.mt-sub .fl-spec{contain:inline-size; width:100%; text-align:justify; text-align-last:center; hyphens:none;}
+.mt-art{width:1.3in; height:2.62in; display:block;}
+.sheet, .sheet .fl-h, .sheet .fl-brand, .sheet .fl-tab b{font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;}
+.sheet{--p-ink:#000; --p-soft:#333;}
+.fl-top{position:relative; background:#000; color:#fff; border:0; border-radius:4pt; padding:.17in .2in .1in; margin:0 -.05in;}
+.fl-logo{width:.5in; height:.5in;}
+.fl-top::before{content:""; position:absolute; left:0; right:0; top:.07in; height:1.5pt; background:#fff;}
+.fl-top .fl-brand small, .fl-top .fl-where{color:#ddd;}
+.fl-top .fl-brand{font-weight:700;}
+.fl-logo{background:#fff;}
+.fl-h{letter-spacing:-.02em; margin-top:0; font-size:44pt !important;}
+.mt-bullets{display:flex; justify-content:center; gap:6pt; margin:.02in 0 .04in;}
+.mt-bullets i{width:.26in; height:.26in; border-radius:50%; display:grid; place-items:center; color:#fff; font-style:normal; font-weight:700; font-size:12pt; line-height:1; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;}
+.fl-claim{text-align:center; font-weight:700;}
+.fl-spec{text-align:center; color:#333;}
+.fl-t2, .fl-t3{border-top:3pt solid #000;}
+.fl-mark{background:#000; color:#fff; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:700; font-size:8pt; letter-spacing:.06em; text-transform:none; padding:3pt 9pt; border-radius:2pt;}
+.fl-demo{grid-template-columns:2.05in minmax(0,1fr); padding:.08in .14in;}
+.fl-t2 .fl-problem{font-size:9.6pt;}
+.fl-read-h{font-size:10.5pt;} .fl-read ul{gap:.04in;} .fl-read li{font-size:9pt;}
+.fl-third{padding:.1in 0;} .fl-t1{padding-top:0;}
+.fl-t2{padding-top:.16in;}
+.fl-about{position:relative; border:2.5pt solid #000; border-top-width:.32in; border-radius:10pt;}
+.fl-about-h{position:absolute; left:0; right:0; top:-.32in; height:.32in; display:grid; place-items:center; color:#fff; font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; font-weight:700; font-size:12pt; letter-spacing:.04em;}
+.fl-t2 .fl-mark, .fl-t3 .fl-mark{display:none;}
+.fl-t2, .fl-t3{border-top:0 !important;}
+.fl-exbox{position:relative; border:2.5pt solid #000; border-top-width:.32in; border-radius:10pt; padding:.1in .16in .12in; display:flex; flex-direction:column; gap:.07in;}
+.fl-exbox .fl-demo{margin-top:0; grid-template-columns:1.85in minmax(0,1fr); padding:.06in .12in; gap:.18in;}
+.fl-t2{padding:.06in 0 !important; justify-content:flex-end !important;}
+.fl-t3{justify-content:center !important;}
+.fl-exbox .fl-problem{font-size:9.3pt; line-height:1.35;}
+.fl-qr p{font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing:0;}
+.fl-tabs{border-top:1pt dashed #000;}
+.fl-tab{border-left-color:#000;}
+.fl-tab span{font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; color:#000;}
+
+@page{size:letter; margin:0;}
+@media print{
+  html, body{background:#fff !important;}
+  body{overflow:visible;}
+  .wrap, .fl-bar{display:none !important;}
+  .fl-stage{display:block !important; padding:0 !important;}
+  .fl-hold{width:auto !important; height:auto !important; margin:0 !important;}
+  .sheet{transform:none !important; box-shadow:none !important; break-after:avoid; page-break-after:avoid;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .tx-key, .tx-led{transition:none;}
+  *{animation:none !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ══ HEADER ══ -->
+  <header class="site">
+    <a class="logo-frame" href="index.html" aria-label="aamir.consulting home">
+      <img src="images/logo.png" alt="aamir.consulting logo"
+           onerror="var p=this.parentNode;this.remove();p.insertAdjacentHTML('beforeend','<span class=logo-fallback>a.c</span>')">
+    </a>
+    <div class="brand">
+      <a class="brand-home" href="index.html">aamir.consulting</a> <a class="brand-sub" href="tutoring.html" data-goto="top">/tutoring</a>
+      <small>math tutoring</small>
+    </div>
+    <nav class="keys">
+      <button class="key" data-goto="top">Home</button>
+      <button class="key" data-goto="sessions">About me</button>
+      <button class="key" data-goto="book">Booking</button>
+      <a class="key" href="index.html">Consulting</a>
+    </nav>
+  </header>
+
+  <!-- ══ TUTORING ══ -->
+  <section class="panel" id="tutoring">
+    <span class="panel-tab">Tutoring</span>
+
+    <div class="tx-hero">
+      <div class="hx-side">
+      <svg class="hx-art" viewBox="0 0 110 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs><clipPath id="hx-panel-l"><rect x="4" y="4" width="102" height="192" rx="8"/></clipPath><pattern id="hx-grout-l" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0V5H0" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width=".7"/></pattern></defs>
+    <g clip-path="url(#hx-panel-l)">
+      <rect width="110" height="200" fill="#0f2d6b"/><g fill="#fff" class="hx-stars"><rect x="36" y="46" width="1.8" height="2.4"/><rect x="67" y="27" width="1.8" height="1.8"/><rect x="8" y="59" width="2.4" height="1.8"/><rect x="34" y="74" width="2.4" height="2.4"/><rect x="28" y="21" width="2.4" height="1.8"/><rect x="9" y="90" width="2.4" height="2.4"/><rect x="30" y="29" width="2.4" height="2.4"/><rect x="86" y="55" width="1.8" height="2.4"/><rect x="91" y="57" width="1.8" height="1.8"/><rect x="37" y="68" width="2.4" height="1.8"/><rect x="76" y="46" width="1.8" height="2.4"/><rect x="79" y="47" width="1.8" height="2.4"/><rect x="60" y="84" width="2.4" height="2.4"/><rect x="63" y="28" width="1.8" height="2.4"/><rect x="39" y="13" width="1.8" height="1.8"/><rect x="65" y="88" width="2.4" height="2.4"/></g>
+      <circle cx="74" cy="30" r="12" fill="#FF6319"/>
+      <ellipse class="hx-ring" cx="74" cy="30" rx="21" ry="5" transform="rotate(-20 74 30)" fill="none" stroke="#FCCC0A" stroke-width="3"/>
+      <g fill="#A7A9AC" class="hx-trail"><rect x="20" y="88" width="2.4" height="2.4"/><rect x="24" y="80" width="2.4" height="2.4"/><rect x="28" y="72" width="2.4" height="2.4"/></g>
+      <g class="hx-bob"><g transform="translate(38 58) rotate(25)">
+        <path class="hx-flame" d="M-4 10L0 23L4 10Z" fill="#FCCC0A"/>
+        <path d="M-6 4L-12 13L-6 10Z M6 4L12 13L6 10Z" fill="#EE352E"/>
+        <path d="M0-18C6-12 7 0 6 10L-6 10C-7 0-6-12 0-18Z" fill="#fff"/>
+        <circle cx="0" cy="-5" r="3.2" fill="#00A1DE"/>
+      </g>
+      </g>
+      <g class="hx-helix"><g stroke="#fff" stroke-width="1.8"><line x1="60.7" y1="99" x2="49.3" y2="99"/><line x1="67.1" y1="105" x2="42.9" y2="105"/><line x1="68.9" y1="111" x2="41.1" y2="111"/><line x1="65.4" y1="117" x2="44.6" y2="117"/><line x1="57.9" y1="123" x2="52.1" y2="123"/><line x1="49.3" y1="129" x2="60.7" y2="129"/><line x1="42.9" y1="135" x2="67.1" y2="135"/><line x1="41.1" y1="141" x2="68.9" y2="141"/><line x1="44.6" y1="147" x2="65.4" y2="147"/><line x1="52.1" y1="153" x2="57.9" y2="153"/><line x1="60.7" y1="159" x2="49.3" y2="159"/><line x1="67.1" y1="165" x2="42.9" y2="165"/><line x1="68.9" y1="171" x2="41.1" y2="171"/><line x1="65.4" y1="177" x2="44.6" y2="177"/><line x1="57.9" y1="183" x2="52.1" y2="183"/></g>
+      <polyline points="55.0,95 56.5,96 57.9,97 59.3,98 60.7,99 62.0,100 63.2,101 64.4,102 65.4,103 66.3,104 67.1,105 67.8,106 68.3,107 68.7,108 68.9,109 69.0,110 68.9,111 68.7,112 68.3,113 67.8,114 67.1,115 66.3,116 65.4,117 64.4,118 63.2,119 62.0,120 60.7,121 59.3,122 57.9,123 56.5,124 55.0,125 53.5,126 52.1,127 50.7,128 49.3,129 48.0,130 46.8,131 45.6,132 44.6,133 43.7,134 42.9,135 42.2,136 41.7,137 41.3,138 41.1,139 41.0,140 41.1,141 41.3,142 41.7,143 42.2,144 42.9,145 43.7,146 44.6,147 45.6,148 46.8,149 48.0,150 49.3,151 50.7,152 52.1,153 53.5,154 55.0,155 56.5,156 57.9,157 59.3,158 60.7,159 62.0,160 63.2,161 64.4,162 65.4,163 66.3,164 67.1,165 67.8,166 68.3,167 68.7,168 68.9,169 69.0,170 68.9,171 68.7,172 68.3,173 67.8,174 67.1,175 66.3,176 65.4,177 64.4,178 63.2,179 62.0,180 60.7,181 59.3,182 57.9,183 56.5,184 55.0,185" fill="none" stroke="#6CBE45" stroke-width="4.5" stroke-linecap="round"/>
+      <polyline points="55.0,95 53.5,96 52.1,97 50.7,98 49.3,99 48.0,100 46.8,101 45.6,102 44.6,103 43.7,104 42.9,105 42.2,106 41.7,107 41.3,108 41.1,109 41.0,110 41.1,111 41.3,112 41.7,113 42.2,114 42.9,115 43.7,116 44.6,117 45.6,118 46.8,119 48.0,120 49.3,121 50.7,122 52.1,123 53.5,124 55.0,125 56.5,126 57.9,127 59.3,128 60.7,129 62.0,130 63.2,131 64.4,132 65.4,133 66.3,134 67.1,135 67.8,136 68.3,137 68.7,138 68.9,139 69.0,140 68.9,141 68.7,142 68.3,143 67.8,144 67.1,145 66.3,146 65.4,147 64.4,148 63.2,149 62.0,150 60.7,151 59.3,152 57.9,153 56.5,154 55.0,155 53.5,156 52.1,157 50.7,158 49.3,159 48.0,160 46.8,161 45.6,162 44.6,163 43.7,164 42.9,165 42.2,166 41.7,167 41.3,168 41.1,169 41.0,170 41.1,171 41.3,172 41.7,173 42.2,174 42.9,175 43.7,176 44.6,177 45.6,178 46.8,179 48.0,180 49.3,181 50.7,182 52.1,183 53.5,184 55.0,185" fill="none" stroke="#00A1DE" stroke-width="4.5" stroke-linecap="round"/>
+      </g>
+      <path d="M0 192Q30 184 55 190T110 188V200H0Z" fill="#4a2f1d"/>
+      <g transform="translate(20 191)"><path d="M0 0V-14" stroke="#6CBE45" stroke-width="2.2"/><ellipse cx="-5" cy="-9" rx="5" ry="2.4" transform="rotate(-30 -5 -9)" fill="#6CBE45"/><ellipse cx="5" cy="-13" rx="5" ry="2.4" transform="rotate(30 5 -13)" fill="#00933C"/></g>
+      <g transform="translate(90 190)"><path d="M0 0V-10" stroke="#6CBE45" stroke-width="2"/><ellipse cx="4" cy="-8" rx="4" ry="2" transform="rotate(30 4 -8)" fill="#00933C"/><ellipse cx="-4" cy="-5" rx="4" ry="2" transform="rotate(-30 -4 -5)" fill="#6CBE45"/></g>
+      <rect width="110" height="200" fill="url(#hx-grout-l)"/>
+    </g>
+    <rect x="2" y="2" width="106" height="196" rx="10" fill="none" stroke="#000" stroke-width="4"/>
+      <rect x="6.5" y="6.5" width="97" height="187" rx="7" fill="none" stroke="#FCCC0A" stroke-width="5" stroke-dasharray="5 1.4"/>
+  </svg>
+      </div>
+      <div class="hx-text">
+        <h1>Math Tutoring</h1>
+        <p class="tx-claim">Tutoring for math classes as well as<br class="hx-br"> subjects and research that apply it.</p>
+        <p class="tx-who">For students in math, biology, engineering, business and beyond who want to understand how the math they are learning applies to their field and communicate their results simply.</p>
+        <p class="tx-stamp">New York City and online</p>
+      </div>
+
+      <div class="hx-side">
+      <svg class="hx-art" viewBox="0 0 110 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs><clipPath id="hx-panel-r"><rect x="4" y="4" width="102" height="192" rx="8"/></clipPath><pattern id="hx-grout-r" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0V5H0" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width=".7"/></pattern></defs>
+    <g clip-path="url(#hx-panel-r)">
+      <rect width="110" height="200" fill="#13294b"/><g fill="#fff" class="hx-stars"><rect x="95" y="51" width="1.8" height="1.8"/><rect x="14" y="60" width="1.8" height="2.4"/><rect x="41" y="31" width="2.4" height="2.4"/><rect x="81" y="49" width="1.8" height="2.4"/><rect x="18" y="15" width="1.8" height="2.4"/><rect x="80" y="38" width="1.8" height="2.4"/><rect x="28" y="45" width="2.4" height="1.8"/><rect x="11" y="53" width="1.8" height="2.4"/><rect x="100" y="49" width="1.8" height="2.4"/><rect x="42" y="49" width="1.8" height="2.4"/><rect x="85" y="17" width="2.4" height="1.8"/><rect x="62" y="45" width="1.8" height="2.4"/><rect x="54" y="28" width="2.4" height="1.8"/><rect x="52" y="13" width="2.4" height="1.8"/><rect x="52" y="54" width="2.4" height="1.8"/><rect x="62" y="34" width="2.4" height="1.8"/></g>
+      <path d="M-10 70Q55 10 120 40" fill="none" stroke="#A7A9AC" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <g class="hx-drift"><g transform="translate(58 30) rotate(-20)"><rect x="-5" y="-4" width="10" height="8" fill="#fff"/><rect x="-19" y="-3" width="12" height="6" fill="#00A1DE"/><rect x="7" y="-3" width="12" height="6" fill="#00A1DE"/><path d="M0-4V-9" stroke="#fff" stroke-width="1.5"/><circle cx="0" cy="-10" r="1.8" fill="#EE352E"/></g>
+      </g>
+      <g class="hx-spin"><circle cx="38" cy="86" r="17" fill="none" stroke="#FF6319" stroke-width="7" stroke-dasharray="6.68 6.68"/>
+      <circle cx="38" cy="86" r="14" fill="#FF6319"/><circle cx="38" cy="86" r="5" fill="#13294b"/>
+      </g>
+      <g class="hx-spin2"><circle cx="68" cy="106" r="11" fill="none" stroke="#FCCC0A" stroke-width="6" stroke-dasharray="4.32 4.32"/>
+      <circle cx="68" cy="106" r="9" fill="#FCCC0A"/><circle cx="68" cy="106" r="3.5" fill="#13294b"/>
+      </g>
+      <g fill="#08142b"><rect x="0" y="170" width="14" height="30"/><rect x="14" y="160" width="10" height="40"/><rect x="40" y="150" width="12" height="50"/><rect x="44" y="140" width="4" height="10"/><rect x="45.3" y="132" width="1.4" height="8"/><rect x="70" y="164" width="16" height="36"/><rect x="92" y="156" width="18" height="44"/></g>
+      <rect x="18" y="168" width="11" height="20" fill="#FCCC0A" class="hx-bar hx-b0"/><rect x="33" y="156" width="11" height="32" fill="#6CBE45" class="hx-bar hx-b1"/><rect x="48" y="146" width="11" height="42" fill="#00933C" class="hx-bar hx-b2"/><rect x="63" y="132" width="11" height="56" fill="#EE352E" class="hx-bar hx-b3"/>
+      <g class="hx-arrow"><path d="M12 168L86 120" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M76 119L88 119L86 131" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <rect x="0" y="188" width="110" height="12" fill="#A7A9AC"/><rect x="0" y="188" width="110" height="2" fill="#FCCC0A"/>
+      <rect width="110" height="200" fill="url(#hx-grout-r)"/>
+    </g>
+    <rect x="2" y="2" width="106" height="196" rx="10" fill="none" stroke="#000" stroke-width="4"/>
+      <rect x="6.5" y="6.5" width="97" height="187" rx="7" fill="none" stroke="#EE352E" stroke-width="5" stroke-dasharray="5 1.4"/>
+  </svg>
+      </div>
+      <div class="hx-cta">
+        <div class="tx-cta">
+          <button class="tx-btn" data-goto="book">Book a free consultation</button>
+        </div>
+        <p class="tx-ctanote">Let's discuss your interests and see how we can work together to explore them.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SESSIONS ══ -->
+  <section class="panel" id="sessions">
+    <span class="panel-tab">About</span>
+
+    <div class="tx-sess">
+      <div class="tx-aboutcol">
+        <h2>About me</h2>
+        <div class="tx-tutor">
+          <div class="tx-portrait">
+            <img src="images/portrait.webp" alt="Portrait of Aamir Ahmad"
+                 onerror="var p=this.parentNode;p.removeChild(this);p.insertAdjacentHTML('beforeend','<span class=logo-fallback>portrait</span>')">
+          </div>
+          <div>
+            <div>
+              <p class="tx-name"><a href="https://www.linkedin.com/in/aamir-consulting" target="_blank" rel="noopener noreferrer">Aamir Ahmad</a></p>
+              <p class="tx-cred">M.S. in Applied Mathematics<br>Formerly at NASA</p>
+            </div>
+            <p class="tx-bio">I look forward to learning about you, your interests, and working with you. Math is an extension of our senses and we use it to move the world. Having a strong understanding of the fundamental concepts so we can maintain calm when tackling challenging, new applications is what leads to long lasting joy in learning and innovation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tx-rates">
+        <div class="tx-rate">
+          <div class="tx-rate-top"><span class="tx-side">RATE</span></div>
+          <div class="tx-rate-label">
+            <h3>One rate</h3>
+            <p class="where">In person in New York City or online</p>
+          </div>
+          <p class="tx-price"><strong>$200</strong><span>per hour</span></p>
+          <button class="tx-key" data-goto="book">Book a session</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ EXAMPLE ══ -->
+  <section class="panel" id="example">
+    <span class="panel-tab">An example</span>
+
+    <div class="tx-ex">
+      <div class="tx-ex-copy">
+        <div class="tx-ex-step">
+          <p class="tx-ex-h">A common problem</p>
+          <p>We collect <span class="c-dot" data-hl="dot">data points</span> to mark how changing something in an environment (<span class="c-axis" data-hl="x">x axis</span>) affects outcomes within that environment (<span class="c-axis" data-hl="y">y axis</span>).</p>
+        </div>
+        <div class="tx-ex-step">
+          <p class="tx-ex-h">How math helps</p>
+          <p>We find a <span class="c-line" data-hl="line">line</span> that best fits these <span class="c-dot" data-hl="dot">data points</span> so we can understand how our interactions affect the system generally.</p>
+        </div>
+        <div class="tx-ex-step">
+          <p class="tx-ex-h">Interpreting the solution</p>
+          <p>Switch fields on the instrument. The equation stays the same; only its meaning changes.</p>
+        </div>
+      </div>
+      <div class="tx-ex-dev">
+        <div class="tx-devwrap">
+          <div class="tx-dev" id="dev">
+            <span class="tx-screw" style="left:1.4cqw; top:1.4cqw;"></span>
+            <span class="tx-screw" style="right:1.4cqw; top:1.4cqw;"></span>
+            <span class="tx-screw" style="left:1.4cqw; bottom:1.4cqw;"></span>
+            <span class="tx-screw" style="right:1.4cqw; bottom:1.4cqw;"></span>
+
+            <div class="tx-keywell" role="group" aria-label="Field">
+              <span class="tx-well-label">FIELD</span>
+              <button class="tx-key" data-field="bio" aria-pressed="true"><span class="lamp"></span>BIO</button>
+              <button class="tx-key" data-field="eng" aria-pressed="false"><span class="lamp"></span>ENG</button>
+              <button class="tx-key" data-field="biz" aria-pressed="false"><span class="lamp"></span>BIZ</button>
+              <button class="tx-key" data-field="any" aria-pressed="false"><span class="lamp"></span>CUSTOM</button>
+              <span class="tx-gap"></span>
+              <button class="tx-key tx-fit" id="fitKey" aria-label="Fit the line">FIT</button>
+            </div>
+
+            <div class="tx-label">
+              <span class="brandmark">aamir.consulting/tutoring</span>
+              <output id="eq" aria-live="off">y = 7.0 + 0.5x</output>
+            </div>
+
+            <div class="tx-screen">
+              <svg id="plot" viewBox="0 0 400 250" role="img" aria-label="Scatter plot of twelve measurements with a straight line you can adjust"></svg>
+            </div>
+
+            <div class="tx-bank">
+              <div class="tx-knob-unit">
+                <div class="tx-knob" id="kSlope" role="slider" tabindex="0" aria-label="Slope"
+                     aria-valuemin="-1" aria-valuemax="3" aria-valuenow="0.5"><i></i></div>
+                <span class="tx-klabel">Slope<b id="vSlope">0.5</b></span>
+              </div>
+              <div class="tx-knob-unit">
+                <div class="tx-knob" id="kInt" role="slider" tabindex="0" aria-label="Intercept"
+                     aria-valuemin="-4" aria-valuemax="12" aria-valuenow="7"><i></i></div>
+                <span class="tx-klabel">Intercept<b id="vInt">7.0</b></span>
+              </div>
+              <div class="tx-meter">
+                <div class="tx-lcd"><span>ERROR</span><output id="sse">000.0</output></div>
+                <div class="tx-ledrow" id="ledRow"><i class="tx-led" id="led"></i>BEST FIT</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="tx-story" id="story" aria-live="polite"></p>
+        <p class="tx-hint" id="hint">Turn the knobs until the line fits, or press FIT. Then switch fields: the equation stays the same.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ BOOK ══ -->
+  <section class="panel" id="book">
+    <span class="panel-tab">Book</span>
+
+    <div class="tx-book">
+      <h2>Book a session</h2>
+      <p class="tx-soon">Coming soon</p>
+    </div>
+  </section>
+
+  <footer class="site">
+    <span>© 2026 Aamir Ahmad</span>
+    <button class="tx-printkey" id="flyerKey" type="button" hidden>Print flyer</button>
+  </footer>
+</div>
+
+<!-- ══ FLYER: one letter sheet ══ -->
+<div class="fl-stage" id="flStage">
+  <div class="fl-bar">
+    <button class="key" id="flBack" type="button">Back to page</button>
+    <button class="key" id="flPrint" type="button">Print</button>
+    <p>US Letter, 8.5 × 11 in. In the print dialog: margins None, background graphics on.</p>
+  </div>
+  <div class="fl-hold" id="flHold">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="mt-grout" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0V5H0" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width=".7"/></pattern>
+  <clipPath id="mt-panel"><rect x="4" y="4" width="102" height="192" rx="8"/></clipPath>
+</defs></svg>
+    <article class="sheet" id="sheet" aria-label="Printable flyer">
+      <div class="fl-thirds">
+
+        <!-- 1 / 3: title and specialty -->
+        <section class="fl-third fl-t1">
+          <header class="fl-top">
+            <div class="fl-logo">
+              <img src="images/logo.png" alt=""
+                   onerror="var p=this.parentNode;p.removeChild(this);p.insertAdjacentHTML('beforeend','<span class=logo-fallback>a.c</span>')">
+            </div>
+            <div class="fl-brand">aamir.consulting<small>math that moves the world in service of others</small></div>
+            <div class="fl-where">New York City<br>and online</div>
+          </header>
+          <div class="fl-title">
+            <div class="mt-hero">
+              <svg class="mt-art" viewBox="0 0 110 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <g clip-path="url(#mt-panel)">
+      <rect width="110" height="200" fill="#0f2d6b"/><g fill="#fff"><rect x="36" y="46" width="1.8" height="2.4"/><rect x="67" y="27" width="1.8" height="1.8"/><rect x="8" y="59" width="2.4" height="1.8"/><rect x="34" y="74" width="2.4" height="2.4"/><rect x="28" y="21" width="2.4" height="1.8"/><rect x="9" y="90" width="2.4" height="2.4"/><rect x="30" y="29" width="2.4" height="2.4"/><rect x="86" y="55" width="1.8" height="2.4"/><rect x="91" y="57" width="1.8" height="1.8"/><rect x="37" y="68" width="2.4" height="1.8"/><rect x="76" y="46" width="1.8" height="2.4"/><rect x="79" y="47" width="1.8" height="2.4"/><rect x="60" y="84" width="2.4" height="2.4"/><rect x="63" y="28" width="1.8" height="2.4"/><rect x="39" y="13" width="1.8" height="1.8"/><rect x="65" y="88" width="2.4" height="2.4"/></g>
+      <circle cx="74" cy="30" r="12" fill="#FF6319"/>
+      <ellipse cx="74" cy="30" rx="21" ry="5" transform="rotate(-20 74 30)" fill="none" stroke="#FCCC0A" stroke-width="3"/>
+      <g fill="#A7A9AC"><rect x="20" y="88" width="2.4" height="2.4"/><rect x="24" y="80" width="2.4" height="2.4"/><rect x="28" y="72" width="2.4" height="2.4"/></g>
+      <g transform="translate(38 58) rotate(25)">
+        <path d="M-4 10L0 23L4 10Z" fill="#FCCC0A"/>
+        <path d="M-6 4L-12 13L-6 10Z M6 4L12 13L6 10Z" fill="#EE352E"/>
+        <path d="M0-18C6-12 7 0 6 10L-6 10C-7 0-6-12 0-18Z" fill="#fff"/>
+        <circle cx="0" cy="-5" r="3.2" fill="#00A1DE"/>
+      </g>
+      <g stroke="#fff" stroke-width="1.8"><line x1="60.7" y1="99" x2="49.3" y2="99"/><line x1="67.1" y1="105" x2="42.9" y2="105"/><line x1="68.9" y1="111" x2="41.1" y2="111"/><line x1="65.4" y1="117" x2="44.6" y2="117"/><line x1="57.9" y1="123" x2="52.1" y2="123"/><line x1="49.3" y1="129" x2="60.7" y2="129"/><line x1="42.9" y1="135" x2="67.1" y2="135"/><line x1="41.1" y1="141" x2="68.9" y2="141"/><line x1="44.6" y1="147" x2="65.4" y2="147"/><line x1="52.1" y1="153" x2="57.9" y2="153"/><line x1="60.7" y1="159" x2="49.3" y2="159"/><line x1="67.1" y1="165" x2="42.9" y2="165"/><line x1="68.9" y1="171" x2="41.1" y2="171"/><line x1="65.4" y1="177" x2="44.6" y2="177"/><line x1="57.9" y1="183" x2="52.1" y2="183"/></g>
+      <polyline points="55.0,95 56.5,96 57.9,97 59.3,98 60.7,99 62.0,100 63.2,101 64.4,102 65.4,103 66.3,104 67.1,105 67.8,106 68.3,107 68.7,108 68.9,109 69.0,110 68.9,111 68.7,112 68.3,113 67.8,114 67.1,115 66.3,116 65.4,117 64.4,118 63.2,119 62.0,120 60.7,121 59.3,122 57.9,123 56.5,124 55.0,125 53.5,126 52.1,127 50.7,128 49.3,129 48.0,130 46.8,131 45.6,132 44.6,133 43.7,134 42.9,135 42.2,136 41.7,137 41.3,138 41.1,139 41.0,140 41.1,141 41.3,142 41.7,143 42.2,144 42.9,145 43.7,146 44.6,147 45.6,148 46.8,149 48.0,150 49.3,151 50.7,152 52.1,153 53.5,154 55.0,155 56.5,156 57.9,157 59.3,158 60.7,159 62.0,160 63.2,161 64.4,162 65.4,163 66.3,164 67.1,165 67.8,166 68.3,167 68.7,168 68.9,169 69.0,170 68.9,171 68.7,172 68.3,173 67.8,174 67.1,175 66.3,176 65.4,177 64.4,178 63.2,179 62.0,180 60.7,181 59.3,182 57.9,183 56.5,184 55.0,185" fill="none" stroke="#6CBE45" stroke-width="4.5" stroke-linecap="round"/>
+      <polyline points="55.0,95 53.5,96 52.1,97 50.7,98 49.3,99 48.0,100 46.8,101 45.6,102 44.6,103 43.7,104 42.9,105 42.2,106 41.7,107 41.3,108 41.1,109 41.0,110 41.1,111 41.3,112 41.7,113 42.2,114 42.9,115 43.7,116 44.6,117 45.6,118 46.8,119 48.0,120 49.3,121 50.7,122 52.1,123 53.5,124 55.0,125 56.5,126 57.9,127 59.3,128 60.7,129 62.0,130 63.2,131 64.4,132 65.4,133 66.3,134 67.1,135 67.8,136 68.3,137 68.7,138 68.9,139 69.0,140 68.9,141 68.7,142 68.3,143 67.8,144 67.1,145 66.3,146 65.4,147 64.4,148 63.2,149 62.0,150 60.7,151 59.3,152 57.9,153 56.5,154 55.0,155 53.5,156 52.1,157 50.7,158 49.3,159 48.0,160 46.8,161 45.6,162 44.6,163 43.7,164 42.9,165 42.2,166 41.7,167 41.3,168 41.1,169 41.0,170 41.1,171 41.3,172 41.7,173 42.2,174 42.9,175 43.7,176 44.6,177 45.6,178 46.8,179 48.0,180 49.3,181 50.7,182 52.1,183 53.5,184 55.0,185" fill="none" stroke="#00A1DE" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M0 192Q30 184 55 190T110 188V200H0Z" fill="#4a2f1d"/>
+      <g transform="translate(20 191)"><path d="M0 0V-14" stroke="#6CBE45" stroke-width="2.2"/><ellipse cx="-5" cy="-9" rx="5" ry="2.4" transform="rotate(-30 -5 -9)" fill="#6CBE45"/><ellipse cx="5" cy="-13" rx="5" ry="2.4" transform="rotate(30 5 -13)" fill="#00933C"/></g>
+      <g transform="translate(90 190)"><path d="M0 0V-10" stroke="#6CBE45" stroke-width="2"/><ellipse cx="4" cy="-8" rx="4" ry="2" transform="rotate(30 4 -8)" fill="#00933C"/><ellipse cx="-4" cy="-5" rx="4" ry="2" transform="rotate(-30 -4 -5)" fill="#6CBE45"/></g>
+      <rect width="110" height="200" fill="url(#mt-grout)"/>
+    </g>
+    <rect x="2" y="2" width="106" height="196" rx="10" fill="none" stroke="#000" stroke-width="4"/>
+      <rect x="6.5" y="6.5" width="97" height="187" rx="7" fill="none" stroke="#FCCC0A" stroke-width="5" stroke-dasharray="5 1.4"/>
+  </svg>
+              <div class="mt-mid">
+                <h1 class="fl-h">Math Tutoring</h1>
+                <div class="mt-bullets" aria-hidden="true"><i style="background:#EE352E">+</i><i style="background:#FF6319">&minus;</i><i style="background:#00933C">&times;</i><i style="background:#0039A6">&divide;</i><i style="background:#B933AD">=</i></div>
+                <div class="mt-sub">
+                <p class="fl-claim">Tutoring for math classes as well as<br>subjects and research that apply it.</p>
+                <p class="fl-spec">For students in math, biology, engineering, business and beyond who want to understand how the math they are learning applies to their field and communicate their results simply.</p>
+              </div>
+              </div>
+              <svg class="mt-art" viewBox="0 0 110 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <g clip-path="url(#mt-panel)">
+      <rect width="110" height="200" fill="#13294b"/><g fill="#fff"><rect x="95" y="51" width="1.8" height="1.8"/><rect x="14" y="60" width="1.8" height="2.4"/><rect x="41" y="31" width="2.4" height="2.4"/><rect x="81" y="49" width="1.8" height="2.4"/><rect x="18" y="15" width="1.8" height="2.4"/><rect x="80" y="38" width="1.8" height="2.4"/><rect x="28" y="45" width="2.4" height="1.8"/><rect x="11" y="53" width="1.8" height="2.4"/><rect x="100" y="49" width="1.8" height="2.4"/><rect x="42" y="49" width="1.8" height="2.4"/><rect x="85" y="17" width="2.4" height="1.8"/><rect x="62" y="45" width="1.8" height="2.4"/><rect x="54" y="28" width="2.4" height="1.8"/><rect x="52" y="13" width="2.4" height="1.8"/><rect x="52" y="54" width="2.4" height="1.8"/><rect x="62" y="34" width="2.4" height="1.8"/></g>
+      <path d="M-10 70Q55 10 120 40" fill="none" stroke="#A7A9AC" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <g transform="translate(58 30) rotate(-20)"><rect x="-5" y="-4" width="10" height="8" fill="#fff"/><rect x="-19" y="-3" width="12" height="6" fill="#00A1DE"/><rect x="7" y="-3" width="12" height="6" fill="#00A1DE"/><path d="M0-4V-9" stroke="#fff" stroke-width="1.5"/><circle cx="0" cy="-10" r="1.8" fill="#EE352E"/></g>
+      <circle cx="38" cy="86" r="17" fill="none" stroke="#FF6319" stroke-width="7" stroke-dasharray="6.68 6.68"/>
+      <circle cx="38" cy="86" r="14" fill="#FF6319"/><circle cx="38" cy="86" r="5" fill="#13294b"/>
+      <circle cx="68" cy="106" r="11" fill="none" stroke="#FCCC0A" stroke-width="6" stroke-dasharray="4.32 4.32"/>
+      <circle cx="68" cy="106" r="9" fill="#FCCC0A"/><circle cx="68" cy="106" r="3.5" fill="#13294b"/>
+      <g fill="#08142b"><rect x="0" y="170" width="14" height="30"/><rect x="14" y="160" width="10" height="40"/><rect x="40" y="150" width="12" height="50"/><rect x="44" y="140" width="4" height="10"/><rect x="45.3" y="132" width="1.4" height="8"/><rect x="70" y="164" width="16" height="36"/><rect x="92" y="156" width="18" height="44"/></g>
+      <rect x="18" y="168" width="11" height="20" fill="#FCCC0A"/><rect x="33" y="156" width="11" height="32" fill="#6CBE45"/><rect x="48" y="146" width="11" height="42" fill="#00933C"/><rect x="63" y="132" width="11" height="56" fill="#EE352E"/>
+      <path d="M12 168L86 120" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M76 119L88 119L86 131" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="0" y="188" width="110" height="12" fill="#A7A9AC"/><rect x="0" y="188" width="110" height="2" fill="#FCCC0A"/>
+      <rect width="110" height="200" fill="url(#mt-grout)"/>
+    </g>
+    <rect x="2" y="2" width="106" height="196" rx="10" fill="none" stroke="#000" stroke-width="4"/>
+      <rect x="6.5" y="6.5" width="97" height="187" rx="7" fill="none" stroke="#EE352E" stroke-width="5" stroke-dasharray="5 1.4"/>
+  </svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2 / 3: the example and the search terms -->
+        <section class="fl-third fl-t2">
+          <span class="fl-mark">The example</span>
+          <div class="fl-exbox">
+            <p class="fl-about-h">An example</p>
+          <p class="fl-problem"><b class="c-title">A common problem:</b> we collect <span class="c-dot">data points</span> to mark how changing something in an environment (<span class="c-x">x axis</span>) affects outcomes within that environment (<span class="c-y">y axis</span>).</p>
+          <p class="fl-problem"><b class="c-title">How math helps:</b> we find a <span class="c-line">line</span> that best fits these <span class="c-dot">data points</span> so we can understand how our interactions affect the system generally.</p>
+          <div class="fl-demo">
+            <div class="fl-plot"><svg id="flPlot" viewBox="0 0 400 250" aria-hidden="true"></svg></div>
+            <div class="fl-read">
+              <p class="fl-read-h"><span class="c-title">Interpreting the solution:</span> <span class="fl-eq" id="flEq"></span></p>
+              <ul>
+                <li><b>Biology <i class="fl-xy" data-flxy="bio"></i></b><span data-fl="bio"></span></li>
+                <li><b>Engineering <i class="fl-xy" data-flxy="eng"></i></b><span data-fl="eng"></span></li>
+                <li><b>Business <i class="fl-xy" data-flxy="biz"></i></b><span data-fl="biz"></span></li>
+              </ul>
+            </div>
+          </div>
+          </div>
+        </section>
+
+        <!-- 3 / 3: about me, rates, booking -->
+        <section class="fl-third fl-t3">
+          <span class="fl-mark">About me</span>
+          <div class="fl-about">
+            <p class="fl-about-h">About me</p>
+            <div class="fl-alogo">
+              <img src="images/portrait.webp" alt=""
+                   onerror="this.parentNode.style.visibility='hidden'">
+            </div>
+            <div>
+              <p class="fl-name">Aamir Ahmad</p>
+              <p class="fl-cred">M.S. in Applied Mathematics<br>Formerly at NASA</p>
+            </div>
+            <div class="fl-qr">
+              <div class="mt-qrtext">
+                <p><b>Scan to book</b><span class="mt-link"><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><ellipse cx="8" cy="8" rx="2.8" ry="6.5"/><path d="M1.5 8h13M2.6 4.6h10.8M2.6 11.4h10.8"/></g></svg>aamir.consulting/tutoring</span></p>
+                <p><b>Get in touch</b><span class="mt-link"><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.8 4l6.2 5 6.2-5"/></g></svg>aamir.tutoring@proton.me</span></p>
+              </div>
+              <!-- QR placeholder: generate a code for the final link and drop it in here -->
+              <div class="fl-qrbox"><span>QR code<br>goes here</span></div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="fl-tabs" aria-hidden="true">
+        <div class="fl-tab"><b>Math tutoring</b><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><ellipse cx="8" cy="8" rx="2.8" ry="6.5"/><path d="M1.5 8h13M2.6 4.6h10.8M2.6 11.4h10.8"/></g></svg>aamir.consulting/tutoring</span><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.8 4l6.2 5 6.2-5"/></g></svg>aamir.tutoring@proton.me</span></div>
+        <div class="fl-tab"><b>Math tutoring</b><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><ellipse cx="8" cy="8" rx="2.8" ry="6.5"/><path d="M1.5 8h13M2.6 4.6h10.8M2.6 11.4h10.8"/></g></svg>aamir.consulting/tutoring</span><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.8 4l6.2 5 6.2-5"/></g></svg>aamir.tutoring@proton.me</span></div>
+        <div class="fl-tab"><b>Math tutoring</b><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><ellipse cx="8" cy="8" rx="2.8" ry="6.5"/><path d="M1.5 8h13M2.6 4.6h10.8M2.6 11.4h10.8"/></g></svg>aamir.consulting/tutoring</span><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.8 4l6.2 5 6.2-5"/></g></svg>aamir.tutoring@proton.me</span></div>
+        <div class="fl-tab"><b>Math tutoring</b><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><ellipse cx="8" cy="8" rx="2.8" ry="6.5"/><path d="M1.5 8h13M2.6 4.6h10.8M2.6 11.4h10.8"/></g></svg>aamir.consulting/tutoring</span><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.8 4l6.2 5 6.2-5"/></g></svg>aamir.tutoring@proton.me</span></div>
+        <div class="fl-tab"><b>Math tutoring</b><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><ellipse cx="8" cy="8" rx="2.8" ry="6.5"/><path d="M1.5 8h13M2.6 4.6h10.8M2.6 11.4h10.8"/></g></svg>aamir.consulting/tutoring</span><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.8 4l6.2 5 6.2-5"/></g></svg>aamir.tutoring@proton.me</span></div>
+        <div class="fl-tab"><b>Math tutoring</b><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><ellipse cx="8" cy="8" rx="2.8" ry="6.5"/><path d="M1.5 8h13M2.6 4.6h10.8M2.6 11.4h10.8"/></g></svg>aamir.consulting/tutoring</span><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.8 4l6.2 5 6.2-5"/></g></svg>aamir.tutoring@proton.me</span></div>
+        <div class="fl-tab"><b>Math tutoring</b><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><ellipse cx="8" cy="8" rx="2.8" ry="6.5"/><path d="M1.5 8h13M2.6 4.6h10.8M2.6 11.4h10.8"/></g></svg>aamir.consulting/tutoring</span><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.8 4l6.2 5 6.2-5"/></g></svg>aamir.tutoring@proton.me</span></div>
+        <div class="fl-tab"><b>Math tutoring</b><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><ellipse cx="8" cy="8" rx="2.8" ry="6.5"/><path d="M1.5 8h13M2.6 4.6h10.8M2.6 11.4h10.8"/></g></svg>aamir.consulting/tutoring</span><span><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.8 4l6.2 5 6.2-5"/></g></svg>aamir.tutoring@proton.me</span></div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ═══════════════════════════════════════════════════════════
+   1. THE DATA: twelve measurements, precomputed. The same numbers
+   are read as three different experiments; only the labels change.
+   ═══════════════════════════════════════════════════════════ */
+const X = [0.8, 1.5, 2.3, 3.1, 3.8, 4.6, 5.2, 6.1, 6.9, 7.6, 8.4, 9.3];
+const Y = [5.2, 4.3, 7.3, 7.6, 10.4, 9.0, 11.5, 13.8, 13.1, 15.7, 15.2, 18.6];
+const N = X.length;
+const mx = X.reduce((a,b)=>a+b,0)/N, my = Y.reduce((a,b)=>a+b,0)/N;
+let sxx = 0, sxy = 0;
+for(let i=0;i<N;i++){ sxx += (X[i]-mx)**2; sxy += (X[i]-mx)*(Y[i]-my); }
+const M_STAR = sxy/sxx, B_STAR = my - M_STAR*mx;
+const sse = (m,b) => X.reduce((s,x,i)=>s + (Y[i]-(m*x+b))**2, 0);
+const SSE_STAR = sse(M_STAR, B_STAR);
+
+const f1 = v => Math.abs(v).toFixed(1);
+const FIELDS = {
+  bio:{
+    name:"Biology", x:"fertilizer (g)", y:"plant height (cm)",
+    slope:m => m >= 0 ? `Each extra gram of fertilizer adds ${f1(m)} cm of height.`
+                      : `Each extra gram of fertilizer takes ${f1(m)} cm off the height.`,
+    icpt:b  => b >= 0 ? `With none, plants reach ${f1(b)} cm.`
+                      : `With none, plants would be ${f1(b)} cm below zero, which cannot happen.`
+  },
+  eng:{
+    name:"Engineering", x:"load (kN)", y:"beam deflection (mm)",
+    slope:m => m >= 0 ? `Each extra kilonewton of load bends the beam ${f1(m)} mm more.`
+                      : `Each extra kilonewton of load lifts the beam ${f1(m)} mm.`,
+    icpt:b  => b >= 0 ? `Unloaded, it already sags ${f1(b)} mm.`
+                      : `Unloaded, it would bow upward ${f1(b)} mm.`
+  },
+  biz:{
+    name:"Business", x:"ad spend ($k)", y:"sales ($k)",
+    slope:m => m >= 0 ? `Each extra $1k on ads brings in $${f1(m)}k in sales.`
+                      : `Each extra $1k on ads loses $${f1(m)}k in sales.`,
+    icpt:b  => b >= 0 ? `With no ads, you still sell $${f1(b)}k.`
+                      : `With no ads, sales would be negative, which cannot happen.`
+  },
+  any:{
+    name:"Your field", x:"math is…", y:"…flexible",
+    slope:m => m >= 0 ? `Each step along x moves y up by ${f1(m)}.`
+                      : `Each step along x moves y down by ${f1(m)}.`,
+    icpt:b  => `At zero, y starts at ${b.toFixed(1)}. Bring your own x and y.`
+  }
+};
+const equation = (m,b) => `y = ${b.toFixed(1)} ${m < 0 ? "−" : "+"} ${f1(m)}x`;
+
+/* ═══════════════════════════════════════════════════════════
+   2. THE PLOT: one builder, two themes (scope screen, paper).
+   ═══════════════════════════════════════════════════════════ */
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent){
+  const e = document.createElementNS(NS, tag);
+  for(const k in attrs) e.setAttribute(k, attrs[k]);
+  if(parent) parent.appendChild(e);
+  return e;
+}
+const PX0 = 50, PX1 = 388, PY0 = 14, PY1 = 208;
+const sx = x => PX0 + x/10*(PX1-PX0);
+const sy = y => PY1 - y/20*(PY1-PY0);
+
+function buildPlot(svg, T){
+  svg.textContent = "";
+  el("rect", {x:0, y:0, width:400, height:250, fill:T.bg}, svg);
+  const cp = el("clipPath", {id:T.id+"-clip"}, el("defs", {}, svg));
+  el("rect", {x:PX0, y:PY0, width:PX1-PX0, height:PY1-PY0}, cp);
+
+  const grid = el("g", {stroke:T.grid, "stroke-width":1}, svg);
+  for(let x=0; x<=10; x+=2) el("line", {x1:sx(x), x2:sx(x), y1:PY0, y2:PY1}, grid);
+  for(let y=0; y<=20; y+=5) el("line", {x1:PX0, x2:PX1, y1:sy(y), y2:sy(y)}, grid);
+  el("path", {d:`M${PX0} ${PY0}V${PY1}H${PX1}`, fill:"none", stroke:T.axis, "stroke-width":1.4}, svg);
+
+  const tk = el("g", {fill:T.tick, "font-family":"ui-monospace, Menlo, monospace", "font-size":11}, svg);
+  for(let x=0; x<=10; x+=2){ const t = el("text", {x:sx(x), y:PY1+15, "text-anchor":"middle"}, tk); t.textContent = x; }
+  for(let y=0; y<=20; y+=5){ const t = el("text", {x:PX0-7, y:sy(y)+3.5, "text-anchor":"end"}, tk); t.textContent = y; }
+
+  const ax = el("g", {class:"pl-axis", fill:T.label, "font-family":"ui-monospace, Menlo, monospace", "font-size":T.labelSize || 13, "font-weight":T.labelWeight || 400, "letter-spacing":".3"}, svg);
+  const xl = el("text", {class:"pl-xl", x:(PX0+PX1)/2, y:244, "text-anchor":"middle"}, ax);
+  const yl = el("text", {class:"pl-yl", transform:`translate(${T.upright ? 22 : 15} ${(PY0+PY1)/2})${T.upright ? "" : " rotate(-90)"}`, "text-anchor":"middle", "dominant-baseline":T.upright ? "middle" : "auto"}, ax);
+
+  const res = el("g", {stroke:T.res, "stroke-width":1.5, "stroke-dasharray":"3 3", "clip-path":`url(#${T.id}-clip)`}, svg);
+  const resLines = X.map(() => el("line", {}, res));
+  const line = el("line", {class:"pl-line", stroke:T.line, "stroke-width":3, "stroke-linecap":"round", "clip-path":`url(#${T.id}-clip)`}, svg);
+  const pts = el("g", {class:"pl-pts", fill:T.pt, stroke:T.ptStroke, "stroke-width":T.ptStroke === "none" ? 0 : 1}, svg);
+  X.forEach((x,i) => el("circle", {cx:sx(x), cy:sy(Y[i]), r:4.4}, pts));
+
+  return {
+    ax,
+    labels(x, y){ xl.textContent = x; yl.textContent = y; },
+    set(m, b){
+      line.setAttribute("x1", sx(0));  line.setAttribute("y1", sy(b));
+      line.setAttribute("x2", sx(10)); line.setAttribute("y2", sy(m*10 + b));
+      resLines.forEach((l,i) => {
+        l.setAttribute("x1", sx(X[i])); l.setAttribute("x2", sx(X[i]));
+        l.setAttribute("y1", sy(Y[i])); l.setAttribute("y2", sy(m*X[i] + b));
+      });
+    }
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   3. THE DEVICE
+   ═══════════════════════════════════════════════════════════ */
+const plot = buildPlot(document.getElementById("plot"), {
+  id:"scr", bg:"#0a0908", grid:"#ffffff10", axis:"#ffffff30", tick:"#7d7163", label:"#ff4b42", labelWeight:700,
+  res:"#c77dff80", line:"#c77dff", pt:"#2fc4a0", ptStroke:"none"
+});
+const eqOut = document.getElementById("eq"), sseOut = document.getElementById("sse");
+const vSlope = document.getElementById("vSlope"), vInt = document.getElementById("vInt");
+const led = document.getElementById("led"), ledRow = document.getElementById("ledRow");
+const story = document.getElementById("story"), hint = document.getElementById("hint");
+const HINT = hint.textContent;
+
+const S = {m:0.5, b:7, field:"bio"};
+const RANGE = {m:[-1, 3, 0.05], b:[-4, 12, 0.1]};
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+function renderStory(){
+  const F = FIELDS[S.field];
+  story.innerHTML = "";
+  const tag = document.createElement("b"); tag.textContent = F.name;
+  story.append(tag, document.createTextNode(`${F.slope(S.m)} ${F.icpt(S.b)}`));
+}
+function render(){
+  plot.set(S.m, S.b);
+  eqOut.textContent = equation(S.m, S.b);
+  const e = sse(S.m, S.b);
+  sseOut.textContent = e.toFixed(1).padStart(5, "0");
+  vSlope.textContent = S.m.toFixed(2);
+  vInt.textContent = S.b.toFixed(1);
+  const best = e <= SSE_STAR*1.04 + 0.1;
+  led.classList.toggle("on", best);
+  ledRow.classList.toggle("on", best);
+  hint.textContent = best
+    ? "Best fit: no other line has less total error. That is linear regression. Now switch fields."
+    : HINT;
+  knobs.forEach(k => k.render());
+  renderStory();
+}
+
+/* knobs: drag up or right to turn clockwise; arrow keys step */
+let anim = null;
+function stopAnim(){ if(anim){ cancelAnimationFrame(anim); anim = null; } }
+function makeKnob(node, key){
+  const [min, max, step] = RANGE[key];
+  const ptr = node.querySelector("i");
+  let drag = null;
+  node.addEventListener("pointerdown", e => {
+    stopAnim();
+    drag = {x:e.clientX, y:e.clientY, v:S[key]};
+    node.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  node.addEventListener("pointermove", e => {
+    if(!drag) return;
+    const d = (drag.y - e.clientY) + (e.clientX - drag.x);
+    S[key] = clamp(drag.v + d*(max-min)/240, min, max);
+    render();
+  });
+  const end = () => { drag = null; };
+  node.addEventListener("pointerup", end);
+  node.addEventListener("pointercancel", end);
+  node.addEventListener("keydown", e => {
+    const k = {ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1, PageUp:5, PageDown:-5}[e.key];
+    if(k == null) return;
+    e.preventDefault(); stopAnim();
+    S[key] = clamp(S[key] + k*step, min, max);
+    render();
+  });
+  return {render(){
+    const v = S[key];
+    ptr.style.transform = `rotate(${-135 + 270*(v-min)/(max-min)}deg)`;
+    node.setAttribute("aria-valuenow", v.toFixed(2));
+    node.setAttribute("aria-valuetext", key === "m" ? `slope ${v.toFixed(2)}` : `intercept ${v.toFixed(1)}`);
+  }};
+}
+const knobs = [makeKnob(document.getElementById("kSlope"), "m"), makeKnob(document.getElementById("kInt"), "b")];
+
+/* FIT: glide to the least-squares line */
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+document.getElementById("fitKey").addEventListener("click", () => {
+  stopAnim();
+  if(reduce){ S.m = M_STAR; S.b = B_STAR; render(); return; }
+  const m0 = S.m, b0 = S.b, t0 = performance.now(), dur = 900;
+  const step = now => {
+    const t = Math.min(1, (now - t0)/dur), k = 1 - Math.pow(1 - t, 3);
+    S.m = m0 + (M_STAR - m0)*k; S.b = b0 + (B_STAR - b0)*k;
+    render();
+    anim = t < 1 ? requestAnimationFrame(step) : null;
+  };
+  anim = requestAnimationFrame(step);
+});
+
+/* field keys relabel the axes and the sentence, never the math */
+const fieldKeys = document.querySelectorAll("[data-field]");
+function setField(f){
+  S.field = f;
+  fieldKeys.forEach(k => k.setAttribute("aria-pressed", String(k.dataset.field === f)));
+  plot.labels(FIELDS[f].x, FIELDS[f].y);
+  plot.ax.classList.remove("flash"); void plot.ax.getBBox(); plot.ax.classList.add("flash");
+  renderStory();
+}
+fieldKeys.forEach(k => k.addEventListener("click", () => setField(k.dataset.field)));
+
+/* ═══════════════════════════════════════════════════════════
+   4. NAVIGATION
+   ═══════════════════════════════════════════════════════════ */
+document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", e => {
+  e.preventDefault();
+  const behavior = reduce ? "auto" : "smooth";
+  if(b.dataset.goto === "top"){ window.scrollTo({top:0, behavior}); return; }
+  document.getElementById(b.dataset.goto).scrollIntoView({behavior, block:"start"});
+}));
+
+
+/* hover links: a coloured term lights up its twins and its part of the plot */
+const exPanel = document.querySelector(".tx-ex");
+document.querySelectorAll("[data-hl]").forEach(t => {
+  t.setAttribute("tabindex","0");
+  const on = () => exPanel.setAttribute("data-hl-on", t.dataset.hl);
+  const off = () => exPanel.removeAttribute("data-hl-on");
+  t.addEventListener("mouseenter", on); t.addEventListener("mouseleave", off);
+  t.addEventListener("focus", on); t.addEventListener("blur", off);
+});
+
+/* ═══════════════════════════════════════════════════════════
+   5. THE FLYER: filled from the same numbers and sentences, shown
+   at #flyer, scaled to fit the window, printed at full size.
+   ═══════════════════════════════════════════════════════════ */
+const flPlot = buildPlot(document.getElementById("flPlot"), {
+  id:"pap", bg:"#ffffff", grid:"#e9e0cf", axis:"#8a7e6e", tick:"#8a7e6e", label:"#c62828", labelSize:17, labelWeight:700, upright:true,
+  res:"#B933AD99", line:"#B933AD", pt:"#1d8a73", ptStroke:"#ffffff"
+});
+flPlot.labels("x", "y");
+flPlot.set(M_STAR, B_STAR);
+document.getElementById("flEq").textContent = equation(M_STAR, B_STAR);
+document.querySelectorAll("[data-fl]").forEach(s => {
+  s.textContent = FIELDS[s.dataset.fl].slope(M_STAR);
+});
+document.querySelectorAll("[data-flxy]").forEach(s => {
+  const F = FIELDS[s.dataset.flxy];
+  s.textContent = `(x: ${F.x}, y: ${F.y})`;
+});
+
+const sheet = document.getElementById("sheet"), hold = document.getElementById("flHold");
+function fitSheet(){
+  if(!document.body.classList.contains("tx-preview")) return;
+  const w = hold.parentElement.clientWidth - 32;
+  const s = Math.min(1, w/816);
+  sheet.style.transform = `scale(${s})`;
+  hold.style.width = 816*s + "px"; hold.style.height = 1056*s + "px";
+}
+function preview(on){
+  document.body.classList.toggle("tx-preview", on);
+  if(on){ fitSheet(); window.scrollTo(0, 0); }
+}
+function syncHash(){ preview(location.hash === "#flyer"); }
+window.addEventListener("hashchange", syncHash);
+window.addEventListener("resize", fitSheet);
+document.getElementById("flyerKey").addEventListener("click", () => { location.hash = "flyer"; });
+/* the Print flyer key stays hidden from visitors; press F anywhere to show or hide it */
+document.addEventListener("keydown", e => {
+  if(e.key.toLowerCase() !== "f" || e.metaKey || e.ctrlKey || e.altKey) return;
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
+  const k = document.getElementById("flyerKey");
+  k.hidden = !k.hidden;
+  if(!k.hidden) k.scrollIntoView({behavior:"smooth", block:"center"});
+});
+document.getElementById("flBack").addEventListener("click", () => {
+  history.pushState("", document.title, location.pathname + location.search); preview(false);
+});
+document.getElementById("flPrint").addEventListener("click", () => window.print());
+
+/* boot */
+setField("bio");
+render();
+syncHash();
+})();
+</script>
+</body>
+</html>
