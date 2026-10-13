@@ -872,7 +872,7 @@ body.tx-preview .fl-stage{display:block; padding:16px 16px 48px;}
 
   <footer class="site">
     <span id="copyMark">© 2026 Aamir Ahmad</span>
-    <button class="tx-printkey" id="flyerKey" type="button" hidden>Print flyer (PDF)</button>
+    <button class="tx-printkey" id="flyerKey" type="button" hidden>Print flyer</button>
   </footer>
 </div>
 
@@ -880,9 +880,9 @@ body.tx-preview .fl-stage{display:block; padding:16px 16px 48px;}
 <div class="fl-stage" id="flStage">
   <div class="fl-bar">
     <button class="key" id="flBack" type="button">Back to page</button>
-    <a class="key" href="tutoring-flyer.pdf" target="_blank" rel="noopener">Open PDF</a>
-    <button class="key" id="flPrint" type="button">Print this view</button>
-    <p>The PDF is exactly US Letter, 8.5 × 11 in, and prints or saves as is. Printing this view also works: margins None, background graphics on.</p>
+    <button class="key" id="flPrint" type="button">Print</button>
+    <a class="key" href="tutoring-flyer.pdf" download="aamir-tutoring-flyer.pdf">Download PDF</a>
+    <p>Both use the same exact US Letter PDF, 8.5 × 11 in.</p>
   </div>
   <div class="fl-hold" id="flHold">
     <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -1280,10 +1280,9 @@ function preview(on){
 function syncHash(){ preview(location.hash === "#flyer"); }
 window.addEventListener("hashchange", syncHash);
 window.addEventListener("resize", fitSheet);
-/* Print flyer opens the ready-made Letter PDF: it prints and saves at exactly
-   8.5 x 11 in on any phone, tablet or computer. tutoring.html#flyer is the
-   live layout it is made from. */
-document.getElementById("flyerKey").addEventListener("click", () => { window.open("tutoring-flyer.pdf", "_blank", "noopener"); });
+/* Print flyer opens the flyer view; its Print and Download buttons use the
+   ready-made Letter PDF, which is made from this same layout. */
+document.getElementById("flyerKey").addEventListener("click", () => { location.hash = "flyer"; });
 /* the Print flyer key stays hidden from visitors; press F anywhere to show or hide it */
 document.addEventListener("keydown", e => {
   if(e.key.toLowerCase() !== "f" || e.metaKey || e.ctrlKey || e.altKey) return;
@@ -1306,7 +1305,22 @@ document.getElementById("copyMark").addEventListener("click", () => {
 document.getElementById("flBack").addEventListener("click", () => {
   history.pushState("", document.title, location.pathname + location.search); preview(false);
 });
-document.getElementById("flPrint").addEventListener("click", () => window.print());
+/* Print sends the exact Letter PDF to the printer. Desktop browsers print it
+   from a hidden frame; phones and tablets open it in their PDF viewer, which
+   has its own print and share buttons. */
+document.getElementById("flPrint").addEventListener("click", () => {
+  const touch = window.matchMedia("(hover: none)").matches;
+  if(touch){ window.open("tutoring-flyer.pdf", "_blank", "noopener"); return; }
+  let f = document.getElementById("flPdfFrame");
+  if(!f){
+    f = document.createElement("iframe");
+    f.id = "flPdfFrame"; f.src = "tutoring-flyer.pdf"; f.setAttribute("aria-hidden","true");
+    f.style.cssText = "position:fixed; right:0; bottom:0; width:1px; height:1px; border:0; opacity:0;";
+    document.body.appendChild(f);
+  }
+  const go = () => { try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(err){ window.open("tutoring-flyer.pdf", "_blank", "noopener"); } };
+  if(f.dataset.ready) go(); else f.addEventListener("load", () => { f.dataset.ready = "1"; setTimeout(go, 300); }, {once:true});
+});
 
 /* boot */
 setField("bio");
