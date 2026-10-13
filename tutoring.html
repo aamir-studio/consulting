@@ -1287,12 +1287,12 @@ document.addEventListener("keydown", e => {
   k.hidden = !k.hidden;
   if(!k.hidden) k.scrollIntoView({behavior:"smooth", block:"center"});
 });
-/* on phones there is no keyboard: tap the © line five times quickly to do the same */
+/* on phones there is no keyboard: tap the © line twice quickly to do the same */
 let taps = 0, tapTimer = null;
 document.getElementById("copyMark").addEventListener("click", () => {
   taps++; clearTimeout(tapTimer);
   tapTimer = setTimeout(() => { taps = 0; }, 1500);
-  if(taps >= 5){
+  if(taps >= 2){
     taps = 0;
     const k = document.getElementById("flyerKey");
     k.hidden = !k.hidden;
