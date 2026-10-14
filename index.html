@@ -548,6 +548,9 @@ button.send:active{transform:translateY(2px); border-bottom-width:1px;}
 .form-note{font-family:var(--mono); font-size:.64rem; letter-spacing:.12em; color:#8d8172; min-height:1.2em;}
 .opt{text-transform:none; letter-spacing:.04em; color:#7a6f61;}
 footer.site{padding:2.2rem 0 3rem; text-align:center; font-family:var(--mono); font-size:.66rem; letter-spacing:.18em; color:#6f6558;}
+#copyMark{cursor:default; user-select:none; -webkit-user-select:none;}
+.tutor-bridge{display:inline-block; margin-left:1.2rem; padding:.4rem .7rem .35rem; border:1px solid #ffb64866; border-radius:5px; color:var(--phosphor); text-transform:uppercase;}
+.tutor-bridge[hidden]{display:none;}
 @media (prefers-reduced-motion:reduce){
   .flip, .ab-knob, .mkey{transition:none;}
   *{animation:none !important;}
@@ -1115,7 +1118,10 @@ footer.site{padding:2.2rem 0 3rem; text-align:center; font-family:var(--mono); f
     </div>
   </section>
 
-  <footer class="site">© 2026 Aamir Ahmad</footer>
+  <footer class="site">
+    <span id="copyMark">© 2026 Aamir Ahmad</span>
+    <a class="tutor-bridge" id="tutorBridge" href="tutoring.html" hidden>Math tutoring →</a>
+  </footer>
 </div>
 
 <script>
@@ -1651,6 +1657,18 @@ setTransport(null);
 renderService(0);
 sizeCanvas();
 requestAnimationFrame(frame);
+})();
+</script>
+<script>
+/* hidden bridge: tap the © line twice quickly to show (or hide) a link to the tutoring page */
+(function(){
+  const mark = document.getElementById("copyMark"), link = document.getElementById("tutorBridge");
+  let taps = 0, timer = null;
+  mark.addEventListener("click", () => {
+    taps++; clearTimeout(timer);
+    timer = setTimeout(() => { taps = 0; }, 1500);
+    if(taps >= 2){ taps = 0; link.hidden = !link.hidden; }
+  });
 })();
 </script>
 </body>

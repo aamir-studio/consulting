@@ -881,7 +881,7 @@ body.tx-preview .fl-stage{display:block; padding:16px 16px 48px;}
   <div class="fl-bar">
     <button class="key" id="flBack" type="button">Back to page</button>
     <button class="key" id="flPrint" type="button">Print</button>
-    <a class="key" href="tutoring-flyer.pdf" download="aamir-tutoring-flyer.pdf">Download PDF</a>
+    <a class="key" href="downloads/tutoring-flyer.pdf" download="aamir-tutoring-flyer.pdf">Download PDF</a>
     <p>Both use the same exact US Letter PDF, 8.5 × 11 in.</p>
   </div>
   <div class="fl-hold" id="flHold">
@@ -1310,15 +1310,15 @@ document.getElementById("flBack").addEventListener("click", () => {
    has its own print and share buttons. */
 document.getElementById("flPrint").addEventListener("click", () => {
   const touch = window.matchMedia("(hover: none)").matches;
-  if(touch){ window.open("tutoring-flyer.pdf", "_blank", "noopener"); return; }
+  if(touch){ window.open("downloads/tutoring-flyer.pdf", "_blank", "noopener"); return; }
   let f = document.getElementById("flPdfFrame");
   if(!f){
     f = document.createElement("iframe");
-    f.id = "flPdfFrame"; f.src = "tutoring-flyer.pdf"; f.setAttribute("aria-hidden","true");
+    f.id = "flPdfFrame"; f.src = "downloads/tutoring-flyer.pdf"; f.setAttribute("aria-hidden","true");
     f.style.cssText = "position:fixed; right:0; bottom:0; width:1px; height:1px; border:0; opacity:0;";
     document.body.appendChild(f);
   }
-  const go = () => { try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(err){ window.open("tutoring-flyer.pdf", "_blank", "noopener"); } };
+  const go = () => { try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(err){ window.open("downloads/tutoring-flyer.pdf", "_blank", "noopener"); } };
   if(f.dataset.ready) go(); else f.addEventListener("load", () => { f.dataset.ready = "1"; setTimeout(go, 300); }, {once:true});
 });
 
