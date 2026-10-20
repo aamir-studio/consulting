@@ -603,6 +603,51 @@ body.tx-preview .fl-stage{display:block; padding:16px 16px 48px;}
   .tx-key, .tx-led{transition:none;}
   *{animation:none !important;}
 }
+
+/* ── FUN CARDS (as on the homepage) ── */
+.pf-lede{max-width:62ch; margin:1.2rem 0 clamp(1.4rem,3vw,2rem); color:#d6c8b1;}
+.pf-grid{
+  display:grid; gap:clamp(1rem,2.2vw,1.5rem);
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+.pf-card{
+  display:flex; flex-direction:column;
+  border:var(--edge); border-radius:12px; overflow:hidden;
+  background:linear-gradient(180deg,#232019,#151310);
+  box-shadow:inset 0 1px 0 #ffffff12, 0 18px 40px -34px #000;
+  color:inherit; border-bottom:var(--edge);
+  transition:transform .18s, box-shadow .18s, border-color .18s;
+}
+a.pf-card:hover{
+  transform:translateY(-3px); border-color:#ffb64840;
+  box-shadow:inset 0 1px 0 #ffffff1a, 0 26px 50px -34px #000;
+}
+.pf-thumb{
+  height:clamp(140px, 19vw, 200px); background:#fff; overflow:hidden;
+  border-bottom:var(--edge); display:grid; place-items:center;
+}
+.pf-body{padding:1.1rem clamp(1rem,2vw,1.3rem) 1.3rem; display:flex; flex-direction:column; flex:1;}
+.pf-num{
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.24em;
+  text-transform:uppercase; color:#8d8172; margin-bottom:.5rem;
+}
+.pf-card h3{font-size:1.1rem; font-weight:600; line-height:1.25; margin-bottom:.45rem;}
+.pf-card p{font-size:.9rem; color:#c2b59e; margin-bottom:.9rem;}
+.pf-chips{display:flex; flex-wrap:wrap; gap:.3rem; margin:auto 0 0;}
+.pf-chips span{
+  font-family:var(--mono); font-size:.58rem; letter-spacing:.12em; text-transform:uppercase;
+  color:#b3a690; border:1px solid #ffffff1f; border-radius:4px; padding:.24rem .45rem .19rem;
+}
+.pf-open{
+  margin-top:1rem; font-family:var(--mono); font-size:.66rem;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--phosphor);
+}
+/* Fun cards: a live window into each piece, shown with its lights down
+   (the same inversion each page uses for its own dark mode). */
+.pf-thumb.fun-win{position:relative; display:block;}
+.pf-thumb.fun-win canvas{position:absolute; inset:0; width:100%; height:100%; display:block; filter:invert(1);}
+.pf-thumb.night-kog{background:#090e19;}
+.pf-thumb.night-tcw{background:#000;}
 </style>
 </head>
 <body>
@@ -622,6 +667,7 @@ body.tx-preview .fl-stage{display:block; padding:16px 16px 48px;}
     <nav class="keys">
       <button class="key" data-goto="top">Home</button>
       <button class="key" data-goto="sessions">About me</button>
+      <button class="key" data-goto="fun">Fun</button>
       <button class="key" data-goto="book">Booking</button>
       <a class="key" href="index.html">Consulting</a>
     </nav>
@@ -859,6 +905,44 @@ body.tx-preview .fl-stage{display:block; padding:16px 16px 48px;}
     </div>
   </section>
 
+
+  <!-- ══ FUN ══ the newest pieces, kept in step with the homepage -->
+  <section class="panel" id="fun">
+    <span class="panel-tab">Fun</span>
+
+    <p class="pf-lede">Math brought closer to the senses. Each window opens into its own little world.<br>
+      See the complete collection on the <a href="fun/index.html">Fun</a> page.</p>
+
+    <div class="pf-grid">
+
+      <a class="pf-card" href="fun/the-closest-word.html">
+        <span class="pf-thumb fun-win night-tcw"><canvas id="h-tcw" aria-hidden="true"></canvas></span>
+        <span class="pf-body">
+          <span class="pf-num">Fun · No. 02</span>
+          <h3>The Closest Word</h3>
+          <p>Type any three letters. The machine finds the nearest real word.</p>
+          <span class="pf-chips">
+            <span>Three axes</span><span>Distance</span><span>Has a stamp</span>
+          </span>
+          <span class="pf-open">Step inside →</span>
+        </span>
+      </a>
+
+      <a class="pf-card" href="fun/keep-on-growing.html">
+        <span class="pf-thumb fun-win night-kog"><canvas id="h-kog" aria-hidden="true"></canvas></span>
+        <span class="pf-body">
+          <span class="pf-num">Fun · No. 01</span>
+          <h3>Keep on Growing</h3>
+          <p>Inspired by autumn leaves. Pick an angle and watch the tree grow.</p>
+          <span class="pf-chips">
+            <span>Fractals</span><span>Twelve months</span><span>Has a puppy</span>
+          </span>
+          <span class="pf-open">Step inside →</span>
+        </span>
+      </a>
+
+    </div>
+  </section>
 
   <!-- ══ BOOK ══ -->
   <section class="panel" id="book">
@@ -1326,6 +1410,144 @@ document.getElementById("flPrint").addEventListener("click", () => {
 setField("bio");
 render();
 syncHash();
+})();
+</script>
+<script>
+/* Window for No. 01: the tree grows month by month, then the angle drifts. */
+(() => {
+  const cv = document.getElementById('h-kog');
+  const ctx = cv.getContext('2d');
+  const SPLITS = 11, SHRINK = 0.72, STEP = 0.32;
+  const COLORS = ['#e0322b','#e95d26','#f07f1d','#ed9c16','#e8b708','#9db23c','#2fa84f',
+                  '#13919c','#1f6fd6','#3755bf','#3f3aa8','#663eb6','#8b3fc4'];
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, DPR = 1, t = still ? 999 : 0, last = 0, visible = true;
+
+  function grow(angleDeg) {
+    const half = angleDeg * Math.PI / 360, list = [];
+    (function stem(x, y, dir, len, depth) {
+      const x2 = x + Math.cos(dir) * len, y2 = y + Math.sin(dir) * len;
+      list.push([x, y, x2, y2, depth]);
+      if (depth === SPLITS) return;
+      stem(x2, y2, dir - half, len * SHRINK, depth + 1);
+      stem(x2, y2, dir + half, len * SHRINK, depth + 1);
+    })(0, 0, -Math.PI / 2, 1, 0);
+    return list;
+  }
+
+  function draw() {
+    const growT = SPLITS * STEP;
+    const shown = Math.min(SPLITS, t / STEP);
+    const drift = Math.max(0, t - growT - 1.2);
+    const angle = 40 + 50 * (1 - Math.cos(drift * 0.35)) / 2 * (still ? 0 : 1);
+    const segs = grow(angle);
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const [a, b, c, d] of segs) {
+      minX = Math.min(minX, a, c); maxX = Math.max(maxX, a, c);
+      minY = Math.min(minY, b, d); maxY = Math.max(maxY, b, d);
+    }
+    const ground = H - 18;
+    const s = Math.min((W - 24) / (maxX - minX), (ground - 12) / (maxY - minY));
+    const ox = W / 2 - (minX + maxX) / 2 * s, oy = ground - maxY * s;
+
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineCap = 'round';
+    for (let depth = 0; depth <= SPLITS; depth++) {
+      const f = depth === 0 ? 1 : Math.min(1, shown - depth + 1);
+      if (f <= 0) break;
+      ctx.strokeStyle = COLORS[Math.round(depth * 12 / SPLITS)];
+      ctx.lineWidth = Math.max(0.5, 2.2 * Math.pow(0.78, depth));
+      ctx.beginPath();
+      for (const [a, b, c, d, dd] of segs) {
+        if (dd !== depth) continue;
+        ctx.moveTo(ox + a * s, oy + b * s);
+        ctx.lineTo(ox + (a + (c - a) * f) * s, oy + (b + (d - b) * f) * s);
+      }
+      ctx.stroke();
+    }
+    ctx.strokeStyle = '#2a2622'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(0, ground); ctx.lineTo(W, ground); ctx.stroke();
+  }
+
+  function size() {
+    DPR = window.devicePixelRatio || 1;
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+    draw();
+  }
+
+  function frame(now) {
+    const dt = last ? Math.min(0.05, (now - last) / 1000) : 0; last = now;
+    if (visible) { t += dt; draw(); }
+    requestAnimationFrame(frame);
+  }
+
+  new ResizeObserver(size).observe(cv);
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(cv);
+  size();
+  if (!still) requestAnimationFrame(frame);
+})();
+</script>
+<script>
+/* Window for No. 02: three looping alphabet axes; the bands roll gibberish to the nearest word. */
+(() => {
+  const cv = document.getElementById('h-tcw');
+  const ctx = cv.getContext('2d');
+  const PAIRS = [['qxz','pay'],['zzz','bay'],['blr','air'],['mmm','mom'],['grw','fry'],['xqj','ark']];
+  const ix = w => [...w].map(c => c.charCodeAt(0) - 97);
+  const mod = i => ((i % 26) + 26) % 26, off = (a, b) => mod(b - a + 13) - 13;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, DPR = 1, t = 0, last = 0, visible = true;
+  const SEARCH = 0.7, WALK = 1.6, TYPE = 0.8, HOLD = 1.8, CYCLE = SEARCH + WALK + TYPE + HOLD;
+
+  function draw() {
+    const n = Math.floor(t / CYCLE) % PAIRS.length, u = still ? CYCLE - 0.01 : t % CYCLE;
+    const [q, w] = PAIRS[n], a = ix(q), b = ix(w), o = a.map((v, k) => off(v, b[k]));
+    const total = o.reduce((s, v) => s + Math.abs(v), 0);
+    let clicks = Math.floor(Math.max(0, Math.min(1, (u - SEARCH) / WALK)) * total);
+    const cur = a.slice();
+    for (let k = 0; k < 3 && clicks > 0; k++) {
+      const m = Math.min(Math.abs(o[k]), clicks);
+      cur[k] = mod(cur[k] + Math.sign(o[k]) * m); clicks -= m;
+    }
+    const x0 = 22, x1 = W - 22, top = 30, bottom = H - 58;
+    const X = i => x0 + i * (x1 - x0) / 25, Y = k => top + k * (bottom - top) / 2;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (let k = 0; k < 3; k++) {
+      ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(X(0), Y(k)); ctx.lineTo(X(25), Y(k)); ctx.stroke();
+      for (let i = 0; i < 26; i++) { ctx.beginPath(); ctx.moveTo(X(i), Y(k) - 2); ctx.lineTo(X(i), Y(k) + 2); ctx.stroke(); }
+    }
+    const line = v => { ctx.beginPath(); v.forEach((p, k) => k ? ctx.lineTo(X(p), Y(k)) : ctx.moveTo(X(p), Y(k))); ctx.stroke(); };
+    ctx.strokeStyle = '#999'; ctx.lineWidth = 1.1; ctx.setLineDash([3, 3]); line(a); ctx.setLineDash([]);
+    if (u > SEARCH) { ctx.strokeStyle = '#111'; ctx.lineWidth = 1.8; line(cur); }
+    ctx.fillStyle = '#111';
+    cur.forEach((p, k) => { ctx.beginPath(); ctx.arc(X(p), Y(k), 3.2, 0, Math.PI * 2); ctx.fill(); });
+    const text = q + '  →  ' + w;
+    const shown = u < SEARCH + WALK ? q : text.slice(0, q.length + Math.ceil((u - SEARCH - WALK) / TYPE * (text.length - q.length)));
+    ctx.font = '600 17px "American Typewriter", "Courier New", Courier, monospace';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText(shown, x0, H - 18);
+  }
+
+  function size() {
+    DPR = window.devicePixelRatio || 1;
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+    draw();
+  }
+  function frame(now) {
+    const dt = last ? Math.min(0.05, (now - last) / 1000) : 0; last = now;
+    if (visible) { t += dt; draw(); }
+    requestAnimationFrame(frame);
+  }
+  new ResizeObserver(size).observe(cv);
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(cv);
+  size();
+  if (!still) requestAnimationFrame(frame);
 })();
 </script>
 </body>
