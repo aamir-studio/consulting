@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Closest Word | aamir.consulting</title>
+<meta name="description" content="Type any three letters. The machine finds the nearest real word and shows you the neighbourhood around it.">
+<style>
+  :root { --ink:#111; --paper:#fff; --muted:#777; --faint:#bbb; --line:#ddd;
+    --type: "American Typewriter", "Courier Prime", "Courier New", Courier, ui-monospace, monospace;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --L: clamp(46px, 11vw, 66px); }
+  * { box-sizing:border-box; }
+  html, body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); }
+  body { min-height:100svh; display:flex; flex-direction:column; overflow-x:hidden; }
+
+  header { padding:clamp(16px,3vw,32px) clamp(16px,4vw,48px) 0;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+  .titles { min-width:0; }
+  .corner { flex:none; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .corner .logo { display:block; width:clamp(44px,5vw,60px); aspect-ratio:1; }
+  .corner .logo img { display:block; width:100%; height:100%; object-fit:contain; border-radius:6px; }
+  .logo-fallback { display:grid; place-items:center; width:100%; height:100%; font-family:var(--mono); font-size:12px; }
+  .corner .home { font-size:clamp(14px,1.6vw,17px); color:var(--muted); text-decoration:none; }
+  .corner .home:hover, .corner .home:focus-visible { color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
+  h1 { margin:0; font-family:var(--type); font-size:clamp(22px,3.2vw,34px); font-weight:600; letter-spacing:-0.01em; }
+  header p { margin:6px 0 0; color:var(--muted); font-size:clamp(14px,1.6vw,17px); }
+
+  main { flex:1; width:min(780px, 100%); margin:0 auto; padding:clamp(14px,2.4vw,28px) clamp(16px,4vw,32px) 0;
+    display:flex; flex-direction:column; }
+  section { min-width:0; }
+
+  /* ---- the stamp: a handle from the top and three rolling bands ---- */
+  .carriage { display:flex; align-items:flex-end; justify-content:center; gap:clamp(16px,4vw,36px); flex-wrap:wrap; }
+  .stamp { display:flex; flex-direction:column; align-items:center; }
+  .handle { width:clamp(150px,36vw,230px); height:clamp(46px,9vw,62px); display:block; color:var(--ink); }
+  .bands { position:relative; display:flex; border:2px solid var(--ink); border-radius:8px; padding:0 4px; cursor:text; background:#fff; }
+  .band { position:relative; width:clamp(54px,13vw,78px); height:calc(var(--L) * 1.75); overflow:hidden;
+    -webkit-mask-image:linear-gradient(transparent, #000 32%, #000 68%, transparent);
+            mask-image:linear-gradient(transparent, #000 32%, #000 68%, transparent); }
+  .band + .band { border-left:1px solid var(--line); }
+  .strip { position:absolute; left:0; right:0; top:calc(var(--L) * -1.625); }
+  .strip span { display:block; height:var(--L); line-height:var(--L); text-align:center;
+    font-family:var(--type); font-size:calc(var(--L) * 0.78); color:#c4c4c4; }
+  .strip span:nth-child(3) { color:var(--ink); }
+  .band.empty .strip { visibility:hidden; }
+  .band .gap { position:absolute; left:22%; right:22%; bottom:calc(var(--L) * 0.5); border-bottom:2px solid var(--ink); opacity:0; }
+  .band.empty .gap { opacity:.25; }
+  .band.empty.next .gap { opacity:1; animation:blink 1.1s steps(1) infinite; }
+  .band.head { background:linear-gradient(transparent 30%, #f1f1f1 30%, #f1f1f1 70%, transparent 70%); }
+  .bands.inked .strip span:nth-child(3) { font-weight:700; }
+  /* After a find: the old word greys out and the first band blinks, ready for new letters. */
+  .bands.ready { cursor:text; }
+  .bands.ready .strip span:nth-child(3) { color:#a8a8a8; transition:color .6s ease; }
+  .bands.ready .band:first-child .gap { opacity:1; animation:blink 1.1s steps(1) infinite; }
+  .bands.nope { animation:nope .36s ease; }
+  @keyframes nope { 20%,60% { transform:translateX(-7px); } 40%,80% { transform:translateX(7px); } }
+  .prompt { margin:8px 0 0; font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); min-height:1.3em; text-align:center; }
+  .prompt.go { color:var(--ink); }
+  .prompt.go::after { content:""; display:inline-block; width:.6em; margin-left:.35em; border-bottom:2px solid currentColor;
+    animation:blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+  /* The real input sits over the bands so phones open their keyboard. */
+  #typer { position:absolute; inset:0; width:100%; height:100%; opacity:0; border:0; padding:0;
+    font-size:16px; color:transparent; background:transparent; caret-color:transparent; cursor:text; }
+
+  .return { font:inherit; font-size:16px; font-weight:600; padding:12px 26px; border-radius:999px; margin-bottom:calc(var(--L) * 0.35);
+    border:2px solid var(--ink); background:var(--ink); color:var(--paper); cursor:pointer;
+    display:inline-flex; align-items:center; gap:10px; transition:transform .08s ease, opacity .2s; }
+  .return:active { transform:scale(.96); }
+  .return:disabled { cursor:default; opacity:.35; transform:none; }
+  .return:focus-visible { outline:3px solid var(--line); outline-offset:3px; }
+  .return svg { width:18px; height:14px; }
+
+  /* ---- the lamp: on is the light page, off is the dark one ---- */
+  .lamp { all:unset; flex:none; cursor:pointer; width:clamp(52px,11vw,84px); align-self:flex-end; color:#111;
+    margin-right:calc(clamp(16px,4vw,36px) * -0.4); transition:color .6s ease; -webkit-tap-highlight-color:transparent; }
+  .lamp svg { display:block; width:100%; overflow:visible; }
+  .lamp .head { transform-box:view-box; transform-origin:50px 30px; }
+  .lamp .bulb { fill:#fff; transition:fill .4s ease; }
+  .lamp .rays { transition:opacity .4s ease; }
+  .lamp:hover .rays { opacity:.6; }
+  .lamp:focus-visible { outline:2px dashed #999; outline-offset:4px; border-radius:6px; }
+  :root[data-theme="dark"] .lamp { color:#d8d8d8; }
+  :root[data-theme="dark"] .lamp .bulb { fill:#000; }
+  :root[data-theme="dark"] .lamp .rays { opacity:0; }
+  :root[data-theme="dark"] .lamp:hover .rays { opacity:.35; }
+
+  /* Dark mode is the machine inverted: ink turns to chalk, paper turns to night. */
+  html, body { transition:background-color .6s ease; }
+  :is(.stamp, .return, .states, .readout, .paper, .left, .right, .foot) { transition:filter .6s ease; }
+  :root[data-theme="dark"], :root[data-theme="dark"] body { background:#000; }
+  :root[data-theme="dark"] :is(.stamp, .return, .states, .readout, .paper, .left, .right, .foot) { filter:invert(1); }
+  :root[data-theme="dark"] h1 { color:#eee; }
+  :root[data-theme="dark"] header p, :root[data-theme="dark"] .corner .home { color:#8c8c8c; }
+  :root[data-theme="dark"] .corner .home:hover { color:#eee; }
+
+  /* ---- the four machine states ---- */
+  .states { display:flex; justify-content:center; gap:clamp(14px,3vw,28px); margin:clamp(16px,3vw,24px) 0 4px;
+    padding:0; list-style:none; font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); }
+  .states li::before { content:""; display:inline-block; width:6px; height:6px; margin-right:7px; border-radius:50%;
+    border:1px solid currentColor; vertical-align:1px; transition:background .2s; }
+  .states li { transition:color .2s; }
+  .states li.on { color:var(--ink); }
+  .states li.on::before { background:var(--ink); }
+  .readout { text-align:center; min-height:1.4em; margin:0; font-family:var(--mono); font-size:13px; color:var(--muted);
+    font-variant-numeric:tabular-nums; }
+
+  /* ---- the paper: each find is stamped in the middle, older ones ride off to the left ---- */
+  .paper { --ew: clamp(190px, 22vw, 260px); --eg: clamp(28px, 4vw, 56px);
+    position:relative; height:clamp(118px, 15vh, 140px); margin:clamp(10px,2vw,18px) calc(clamp(16px,4vw,32px) * -1) 0;
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line); overflow:hidden; }
+  .paper::before { content:""; position:absolute; left:50%; top:0; height:7px; border-left:1px solid var(--ink); z-index:1; }
+  .roll { position:absolute; top:0; bottom:0; right:calc(50% - var(--ew) / 2); display:flex; column-gap:var(--eg);
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 40%); mask-image:linear-gradient(90deg, transparent, #000 40%); }
+  .entry { flex:none; width:var(--ew); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+    font-family:var(--type); text-align:center; padding-top:8px; transition:opacity .5s ease; }
+  .entry:nth-last-child(2) { opacity:.55; }
+  .entry:nth-last-child(3) { opacity:.3; }
+  .entry:nth-last-child(n+4) { opacity:.14; }
+  .entry .from { font-size:15px; color:#444; min-height:1.35em; }
+  .entry .word { display:inline-block; min-height:1.2em; min-width:2.2em; font-size:clamp(26px,3vw,34px); font-weight:700; line-height:1.1;
+    border:2px solid var(--ink); border-radius:6px; padding:0 .32em .04em; letter-spacing:.04em; }
+  .entry .word:empty { border-color:transparent; }
+  .entry.intro .word { display:none; }
+  .entry .word.press { animation:press .3s cubic-bezier(.2,.9,.3,1.2); }
+  @keyframes press { from { transform:scale(1.35) rotate(var(--r)); opacity:0; filter:blur(1.5px); } to { transform:rotate(var(--r)); } }
+  .entry .dist { font-size:13.5px; color:#333; min-height:1.35em; }
+  .entry .note { font-size:12px; color:#666; min-height:1.25em; }
+  .entry.intro .from, .entry.intro .dist { font-size:15px; color:#555; }
+  .wd { white-space:nowrap; }
+  .ch { display:inline-block; white-space:pre; animation:strike .14s ease-out; }
+  @keyframes strike { from { transform:translateY(-6px) scale(1.12); opacity:.4; } }
+  .caret { display:inline-block; width:.55em; height:1em; vertical-align:-0.15em; border-bottom:2px solid var(--ink); animation:blink 1.1s steps(1) infinite; }
+
+  /* ---- the click axes ---- */
+  .axes { position:relative; height:clamp(150px, 25vw, 186px); margin:10px 0 0; }
+  canvas { display:block; }
+  #ax { position:absolute; inset:0; width:100%; height:100%; }
+  .cap, .boxes figcaption { display:block; text-align:center; margin:6px 0 0; font-size:13px; color:var(--muted); }
+  .boxes figcaption strong { color:var(--ink); font-family:var(--type); font-weight:600; }
+
+  /* ---- the two boxes ---- */
+  .boxes { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap:clamp(12px,3vw,28px);
+    margin:clamp(14px,3vw,24px) 0 0; }
+  .boxes figure { margin:0; display:flex; flex-direction:column; min-width:0; min-height:0; }
+  .boxwrap { position:relative; width:100%; max-width:360px; aspect-ratio:1; margin:0 auto; }
+  .box { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:100%; height:100%;
+    border:1px solid var(--line); border-radius:6px; touch-action:pan-y; cursor:grab; }
+  .box.dragging { cursor:grabbing; }
+
+  /* ---- desktop: the whole machine on one screen ---- */
+  @media (min-width:960px) and (min-height:600px) {
+    body { height:100svh; min-height:0; }
+    header { padding-top:clamp(12px,2vh,24px); }
+    header p br { display:none; }
+    main.machine { width:min(1440px, 100%); padding:0 clamp(24px,3vw,48px); min-height:0;
+      display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto auto minmax(0,1fr);
+      grid-template-areas:"top top" "paper paper" "left right"; column-gap:clamp(24px,3vw,56px); }
+    :root { --L: clamp(34px, 6.2vh, 62px); }
+    .handle { height:clamp(32px, 5.4vh, 58px); }
+    .top { grid-area:top; }
+    .states { margin-top:clamp(6px,1.2vh,16px); }
+    .paper { grid-area:paper; margin:clamp(4px,1vh,12px) calc(clamp(24px,3vw,48px) * -1) 0; height:clamp(100px, 14.5vh, 140px); }
+    .left { grid-area:left; display:flex; flex-direction:column; min-height:0; padding-top:clamp(10px,2vh,22px); }
+    .left .axes { flex:1; height:auto; min-height:110px; margin:0; }
+    .right { grid-area:right; min-height:0; padding-top:clamp(10px,2vh,22px); }
+    .right .boxes { height:100%; margin:0; grid-template-columns:1fr 1fr; gap:clamp(12px,1.6vw,24px); }
+    .boxwrap { flex:1; min-height:0; aspect-ratio:auto; max-width:none; }
+    .box { top:auto; bottom:0; transform:translateX(-50%); }   /* sit on the caption */
+    .foot { padding:6px 16px clamp(8px,1.4vh,16px); }
+  }
+
+  .foot { display:flex; justify-content:center; align-items:baseline; gap:20px; flex-wrap:wrap; padding:14px 16px clamp(20px,3vw,32px); }
+  .foot .hint { font-size:12px; color:var(--faint); }
+  .textbtn { all:unset; cursor:pointer; font-size:14px; color:var(--muted); }
+  .textbtn:hover, .textbtn:focus-visible { color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
+
+  @media (max-width:480px) { .states { font-size:10.5px; letter-spacing:.1em; } .states li::before { margin-right:5px; } }
+</style>
+</head>
+<body>
+  <header>
+    <div class="titles">
+      <h1>The Closest Word</h1>
+      <p>Type any three letters. <br>The machine finds the nearest real word.</p>
+    </div>
+    <div class="corner">
+      <a class="logo" href="../index.html" aria-label="aamir.consulting">
+        <img src="../images/logo.png" alt="aamir.consulting logo"
+             onerror="var p=this.parentNode;this.remove();p.insertAdjacentHTML('beforeend','<span class=logo-fallback>a.c</span>')">
+      </a>
+      <a class="home" href="index.html">Home</a>
+    </div>
+  </header>
+
+  <main class="machine">
+    <section class="top">
+      <div class="carriage">
+        <button class="lamp" id="lamp" type="button" aria-pressed="true" aria-label="Switch the lamp off for dark mode" title="Switch the lamp off">
+          <svg viewBox="0 0 92 120" aria-hidden="true">
+            <g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="76" y1="66" x2="82" y2="76"/><line x1="83" y1="60" x2="91" y2="65"/><line x1="69" y1="68" x2="70" y2="79"/>
+            </g>
+            <rect x="10" y="110" width="36" height="8" rx="3" fill="currentColor"/>
+            <g class="arm" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+              <path d="M28 110 L16 66 L50 30"/>
+            </g>
+            <circle cx="16" cy="66" r="3.6" fill="currentColor"/>
+            <g class="head">
+              <circle cx="50" cy="30" r="3.6" fill="currentColor"/>
+              <path d="M46 24 L58 17 L83 46 L63 58 Z" fill="currentColor"/>
+              <circle class="bulb" cx="73" cy="54" r="5.5" stroke="currentColor" stroke-width="2"/>
+              <g class="chain"><line x1="63" y1="57" x2="63" y2="70" stroke="currentColor" stroke-width="1.4"/><circle cx="63" cy="72" r="2.4" fill="currentColor"/></g>
+            </g>
+          </svg>
+        </button>
+        <div class="stamp" id="stamp">
+          <svg class="handle" viewBox="0 0 230 62" aria-hidden="true">
+            <ellipse cx="115" cy="13" rx="30" ry="10" fill="#111"/>
+            <rect x="108" y="20" width="14" height="24" rx="2" fill="#111"/>
+            <path d="M40 60 L56 44 H174 L190 60" fill="none" stroke="#111" stroke-width="2.2" stroke-linejoin="round"/>
+          </svg>
+          <div class="bands" id="bands">
+            <div class="band"><div class="strip"></div><span class="gap"></span></div>
+            <div class="band"><div class="strip"></div><span class="gap"></span></div>
+            <div class="band"><div class="strip"></div><span class="gap"></span></div>
+            <input id="typer" type="text" maxlength="3" autocomplete="off" autocorrect="off" autocapitalize="off"
+                   spellcheck="false" enterkeyhint="go" aria-label="Type three letters">
+          </div>
+          <p class="prompt" id="prompt" aria-live="polite">Type three letters</p>
+        </div>
+        <button class="return" id="go" type="button" disabled>
+          <span id="goLabel">Return</span>
+          <svg viewBox="0 0 18 14" aria-hidden="true"><path d="M16 1.5v5.5H3.5M7 3 2.5 7 7 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <ol class="states" aria-label="Machine state">
+        <li data-s="read">Read</li><li data-s="search">Search</li><li data-s="roll">Roll</li><li data-s="stamp">Stamp</li>
+      </ol>
+      <p class="readout" id="readout" aria-live="polite">&nbsp;</p>
+    </section>
+
+    <section class="paper" aria-label="Every word found so far, newest in the middle">
+      <div class="roll" id="roll" aria-live="polite"></div>
+    </section>
+
+    <section class="left">
+      <div class="axes">
+        <canvas id="ax" aria-label="Three alphabet axes, one per letter, each looping from z back to a. The path of clicks from your letters to the closest word is drawn across them."></canvas>
+      </div>
+      <p class="cap">The clicks: one axis per letter, z loops back to a</p>
+    </section>
+
+    <section class="right">
+      <div class="boxes">
+        <figure>
+          <div class="boxwrap"><canvas class="box" id="boxIn" aria-label="A rotatable box of letter space around what you typed, with the nine nearest words"></canvas></div>
+          <figcaption id="capIn">Around what you type</figcaption>
+        </figure>
+        <figure>
+          <div class="boxwrap"><canvas class="box" id="boxOut" aria-label="A rotatable box of letter space around the closest word, with its nine nearest neighbours"></canvas></div>
+          <figcaption id="capOut">Around the closest word</figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <div class="foot">
+    <button class="textbtn" id="fresh" type="button">New sheet</button>
+    <button class="textbtn" id="sound" type="button" aria-pressed="true">Sound on</button>
+    <span class="hint">Drag either box to turn both</span>
+  </div>
+
+<script>
+(() => {
+  /* The dictionary: common three-letter words, most common first.
+     Common words win ties. */
+  const WORDS = 'the and for you not are all new can but our one may out any see his who web now how its top day two buy her add she set way off car own end him big law art old why low man job too men box air yes hot say tax let act red key few age pay war yet sun run net put try fun due pro ago via bad far oil bit bay bar dog gas six zip bid inn win bed sea cut boy son bin van ads pop hit eye aid fat saw sub fan ten die pet guy cup fit ice bus bag nor bug mid tag fix ray dry ups won mom row eat tip ski fly hey tea sky toy hip dot cap ink pin raw hat wet ram fox arm pub hop gun kid pan sum oak vat sir spy sit wow fig tab leg gap era jet par mad pen joy ill lay pat ear toe den lie eve pad sad pot egg jam arc fed ban odd cry zoo tee cad hub ace chi ins flu rap tin rat gel thy pal mat tan pie bow cab dam tub tap pit ton bra cow rid rip sol bat lip sap aye rim pig lit duo fog yea fur tar rug ham jar wax nut bye lap apt gig fin mud dip hay nil dim wan mug din vet gal soy bud dew gum fry huh shy hex rue dub ivy ark goo cue peg mum hen ego nay cur mob gag ale hut rub gov imp wee ore nip hum pep gut yep hug boo tow adj rig jaw lag axe rib woo eta vie ape gee rag yum kin hog rum orb awe cub lug bib nod wig ohm rye lax pea hem rot gin urn ply ire tad sew fob bop boa aft dun ode bog coo coy dud eel eon ewe fad fen foe fro gab hah hue icy ilk jab jig jog jot jug lye mow nag nee oar pew pun pup rut sly sob sod sop ugh vex vow wad woe wry yak yew aha oat pox tug'.split(' ');
+  const SET = new Set(WORDS);
+  // Letters the machine will not stamp. Stored as ROT13.
+  const rot = w => w.replace(/[a-z]/g, c => String.fromCharCode((c.charCodeAt(0) - 84) % 26 + 97));
+  const BLOCK = new Set('nff snt stg phz xhz gvg frk shx shd spx shp xxx avt atn wvm wmm qpx qvx pbx pag jgs snc kkk xlf xzf fzq wnc jbc tlc ubr'.split(' ').map(rot));
+  const N = 3, A = 'abcdefghijklmnopqrstuvwxyz', TAU = Math.PI * 2;
+  const idx = w => [...w].map(c => c.charCodeAt(0) - 97);
+  const word = v => v.map(i => A[i]).join('');
+  const mod = i => ((i % 26) + 26) % 26;
+  // Each axis loops, so z sits next to a. The offset is the short way round, from -13 to 12.
+  const off = (a, b) => mod(b - a + 13) - 13;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const bands = [...document.querySelectorAll('.band')];
+  const strips = bands.map(b => b.querySelector('.strip'));
+  const bandsEl = document.getElementById('bands');
+  const goLabel = document.getElementById('goLabel'), prompt = document.getElementById('prompt');
+  const stampEl = document.getElementById('stamp');
+  const typer = document.getElementById('typer');
+  const go = document.getElementById('go');
+  const states = [...document.querySelectorAll('.states li')];
+  const readout = document.getElementById('readout');
+  const rollEl = document.getElementById('roll');
+  const capIn = document.getElementById('capIn'), capOut = document.getElementById('capOut');
+
+  let typed = '', busy = false, showing = false;
+  let from = null, cur = null, to = null, head = -1, reach = -1;
+  let ties = [], best = null;
+  let inPts = [], outPts = [], outA = 0, path = [];
+
+  /* ---------- sound: synthesized, nothing loaded ---------- */
+  let ac = null, noise = null, soundOn = true;
+  try { soundOn = localStorage.getItem('tcw-sound') !== 'off'; } catch (e) {}
+  const soundBtn = document.getElementById('sound');
+  function paintSound() { soundBtn.textContent = soundOn ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', String(soundOn)); }
+  paintSound();
+  soundBtn.addEventListener('click', () => {
+    soundOn = !soundOn; paintSound();
+    try { localStorage.setItem('tcw-sound', soundOn ? 'on' : 'off'); } catch (e) {}
+  });
+  function audio() {
+    if (!soundOn) return null;
+    if (!ac) {
+      try {
+        ac = new (window.AudioContext || window.webkitAudioContext)();
+        noise = ac.createBuffer(1, ac.sampleRate * 0.08, ac.sampleRate);
+        const d = noise.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+      } catch (e) { soundOn = false; return null; }
+    }
+    if (ac.state === 'suspended') ac.resume();
+    return ac;
+  }
+  function burst(freq, q, vol, len, type) {
+    const a = audio(); if (!a) return;
+    const t = a.currentTime, src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    src.buffer = noise; f.type = type || 'bandpass'; f.frequency.value = freq; f.Q.value = q;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    src.connect(f).connect(g).connect(a.destination); src.start(t); src.stop(t + len + 0.02);
+  }
+  function thump(freq, vol, len) {
+    const a = audio(); if (!a) return;
+    const t = a.currentTime, o = a.createOscillator(), g = a.createGain();
+    o.frequency.setValueAtTime(freq, t); o.frequency.exponentialRampToValueAtTime(freq * 0.5, t + len);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + len + 0.02);
+  }
+  const sKey = () => { burst(1800 + Math.random() * 1400, 1.2, 0.5, 0.05); thump(140, 0.25, 0.05); };
+  const sSpace = () => burst(900, 0.8, 0.22, 0.05);
+  const sTick = () => burst(5200, 2, 0.16, 0.018, 'highpass');
+  const sRoll = () => { burst(3200, 3, 0.14, 0.03); thump(320, 0.06, 0.03); };
+  const sStamp = () => { thump(70, 0.5, 0.16); burst(400, 0.7, 0.4, 0.09); };
+  function sBell() {
+    const a = audio(); if (!a) return;
+    const t = a.currentTime;
+    for (const [f, v] of [[2637, 0.16], [5274, 0.05], [3951, 0.04]]) {
+      const o = a.createOscillator(), g = a.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
+      o.connect(g).connect(a.destination); o.start(t); o.stop(t + 1.5);
+    }
+  }
+  const sReturn = () => { burst(600, 0.6, 0.35, 0.18); setTimeout(() => thump(90, 0.3, 0.08), 160); };
+  /* ---------- the lamp ---------- */
+  const lamp = document.getElementById('lamp');
+  function setTheme(dark, save) {
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    lamp.setAttribute('aria-pressed', String(!dark));
+    const label = dark ? 'Switch the lamp on for light mode' : 'Switch the lamp off for dark mode';
+    lamp.setAttribute('aria-label', label); lamp.title = dark ? 'Switch the lamp on' : 'Switch the lamp off';
+    if (save) try { localStorage.setItem('tcw-theme', dark ? 'dark' : 'light'); } catch (e) {}
+  }
+  let dark = false;
+  try {
+    const t = localStorage.getItem('tcw-theme');
+    dark = t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  } catch (e) {}
+  setTheme(dark, false);
+  lamp.addEventListener('click', () => {
+    dark = !dark; setTheme(dark, true);
+    burst(4200, 4, 0.22, 0.02, 'highpass'); setTimeout(() => thump(180, 0.12, 0.04), 40);   // the pull chain
+    const chain = lamp.querySelector('.chain'), head = lamp.querySelector('.head');
+    if (!still) {
+      chain.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(5px)' }, { transform: 'translateY(0)' }], { duration: 260, easing: 'ease-out' });
+      head.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(3deg)' }, { transform: 'rotate(0deg)' }],
+                   { duration: 420, easing: 'ease-out' });
+    }
+  });
+
+  // A mouse or tap press on a button lets go of focus, so Enter goes back to the machine.
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('button');
+    if (b && e.detail > 0) b.blur();
+  });
+
+  const sleep = ms => new Promise(r => setTimeout(r, still ? Math.min(ms, 30) : ms));
+
+  /* ---------- the stamp bands ---------- */
+  function fillStrip(k) {
+    const c = cur && k < typed.length ? cur[k] : 0;
+    strips[k].innerHTML = [-2, -1, 0, 1, 2].map(d => `<span>${A[mod(c + d)]}</span>`).join('');
+  }
+  function paintBands() {
+    bands.forEach((b, k) => {
+      b.classList.toggle('empty', k >= typed.length);
+      b.classList.toggle('next', !busy && !showing && k === typed.length);
+      b.classList.toggle('head', k === head);
+      fillStrip(k);
+    });
+    go.disabled = busy || (!showing && typed.length !== N);
+    goLabel.textContent = showing ? 'New word' : 'Return';
+    bandsEl.classList.toggle('ready', showing);
+    prompt.classList.toggle('go', !busy && (showing || typed.length < N));
+    prompt.textContent = busy ? '\u00a0'
+      : showing ? 'Type to go again'
+      : typed.length === N ? 'Press return'
+      : typed.length ? `${N - typed.length} more` : 'Type three letters';
+  }
+  // One click of a band: the new letter rolls in from the side it came from.
+  function rollBand(k, dir) {
+    fillStrip(k);
+    const L = strips[k].firstElementChild.offsetHeight;
+    if (!still) strips[k].animate([{ transform: `translateY(${dir * L}px)` }, { transform: 'translateY(0)' }],
+                                  { duration: 120, easing: 'cubic-bezier(.3,.7,.4,1)' });
+  }
+  function setState(s) { states.forEach(li => li.classList.toggle('on', li.dataset.s === s)); }
+
+  function setTyped(next) {
+    if (busy) return;
+    next = next.toLowerCase().replace(/[^a-z]/g, '').slice(0, N);
+    if (showing) {                    // a new letter clears the last answer
+      showing = false; typed = ''; to = null; best = null; ties = []; inPts = []; outPts = []; path = []; reach = -1;
+      bandsEl.classList.remove('inked');
+      capIn.textContent = 'Around what you type'; capOut.textContent = 'Around the closest word';
+    }
+    if (next.length === N && BLOCK.has(next)) {   // refuse it: shake, drop the last letter
+      next = next.slice(0, N - 1);
+      bandsEl.classList.remove('nope'); void bandsEl.offsetWidth; bandsEl.classList.add('nope');
+      thump(110, 0.3, 0.12);
+      typed = next; from = idx(typed); cur = from.slice();
+      paintBands();
+      prompt.classList.remove('go');
+      prompt.textContent = 'Not that one. Try another letter';
+      readout.innerHTML = '&nbsp;';
+      typer.value = typed;
+      return;
+    }
+    const grew = next.length > typed.length;
+    typed = next;
+    from = typed.length ? idx(typed) : null;
+    cur = from ? from.slice() : null;
+    readout.innerHTML = '&nbsp;';
+    setState(typed.length ? 'read' : '');
+    paintBands();
+    if (grew) { sKey(); rollBand(typed.length - 1, -1); }
+    if (typer.value !== typed) typer.value = typed;
+  }
+
+  typer.addEventListener('input', () => setTyped(typer.value));
+  typer.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); run(); } });
+  window.addEventListener('keydown', e => {
+    if (e.target === typer || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.closest && e.target.closest('button, a') && (e.key === 'Enter' || e.key === ' ')) return;
+    if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); setTyped(showing ? e.key : typed + e.key); }
+    else if (e.key === 'Backspace') { e.preventDefault(); setTyped(showing ? '' : typed.slice(0, -1)); }
+    else if (e.key === 'Enter') { e.preventDefault(); run(); }
+  });
+  bandsEl.addEventListener('pointerdown', () => typer.focus());
+  go.addEventListener('click', () => {
+    if (showing) { setTyped(''); typer.focus(); }   // "New word": clear the bands and wait for letters
+    else run();
+  });
+
+  /* ---------- the search ---------- */
+  // Straight-line distance through the looped space picks the word; clicks count the walk.
+  function measure(v, skip) {
+    const out = [];
+    WORDS.forEach((w, i) => {
+      if (w === skip) return;
+      const b = idx(w), o = v.map((a, k) => off(a, b[k]));
+      out.push({ w, b, o, e: Math.hypot(...o), c: o.reduce((s, x) => s + Math.abs(x), 0), i });
+    });
+    out.sort((x, y) => x.e - y.e || x.i - y.i);
+    return out;
+  }
+  const clicks = n => n + (n === 1 ? ' click' : ' clicks');
+  const dist = e => e.toFixed(2);
+
+  async function run() {
+    if (busy || showing || typed.length !== N) return;
+    busy = true; paintBands();
+    const q = typed, ranked = measure(from, q);
+    best = ranked[0];
+    const winners = ranked.filter(r => Math.abs(r.e - best.e) < 1e-9);
+    ties = winners.slice(1, 5);
+    inPts = ranked.slice(0, 9);
+    to = best.b; path = [[0, 0, 0]];
+    capIn.innerHTML = `Around <strong>${q}</strong>, what you typed`;
+
+    // Search: a sphere grows out from your letters until it touches a word.
+    setState('search');
+    const T = still ? 1 : Math.max(700, Math.min(1600, best.e * 380));
+    const t0 = performance.now();
+    let lastTick = -1;
+    while (true) {
+      const u = Math.min(1, (performance.now() - t0) / T);
+      reach = best.e * (1 - Math.pow(1 - u, 2));
+      if (Math.floor(reach * 4) !== lastTick) { lastTick = Math.floor(reach * 4); sTick(); }
+      readout.textContent = u < 1 ? `radius ${dist(reach)}: nothing yet` : `radius ${dist(best.e)}: found ${best.w}`;
+      if (u >= 1) break;
+      await sleep(16);
+    }
+    await sleep(380);
+
+    // Roll: each band rolls, left to right, the short way round to the word's letter.
+    setState('roll');
+    let n = 0;
+    const step = Math.max(110, Math.min(200, 1500 / Math.max(1, best.c)));
+    for (let k = 0; k < N; k++) {
+      head = k; paintBands(); await sleep(160);
+      const d = off(cur[k], to[k]), dir = Math.sign(d);
+      for (let s = 0; s < Math.abs(d); s++) {
+        cur[k] = mod(cur[k] + dir); n++;
+        const p = path[path.length - 1].slice(); p[k] += dir; path.push(p);
+        rollBand(k, dir);
+        readout.textContent = clicks(n);
+        sRoll();
+        await sleep(step);
+      }
+    }
+    head = -1; paintBands();
+    await sleep(200);
+
+    // Stamp: the paper advances, older finds ride off to the left, and the word is stamped in the middle.
+    setState('stamp');
+    await sheetFree;
+    const e = addEntry();
+    await sleep(420);
+    await typeInto(e.from, `${q} \u2192`);
+    if (!still) stampEl.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(12px)' }, { transform: 'translateY(0)' }],
+                                { duration: 320, easing: 'ease-in-out' });
+    await sleep(150);
+    sStamp();
+    bandsEl.classList.add('inked');
+    e.word.style.setProperty('--r', ((Math.random() - 0.5) * 4).toFixed(2) + 'deg');
+    e.word.style.transform = `rotate(${e.word.style.getPropertyValue('--r')})`;
+    e.word.textContent = best.w;
+    e.word.classList.add('press');
+    readout.textContent = `${best.w}: ${dist(best.e)} away, ${clicks(best.c)}`;
+    outPts = measure(to, best.w).slice(0, 9); outA = 0;
+    capOut.innerHTML = `Around <strong>${best.w}</strong>, the closest word`;
+    await sleep(360);
+    await typeInto(e.dist, `${dist(best.e)} away \u00b7 ${clicks(best.c)}`);
+    sBell();
+    await sleep(300);
+    if (SET.has(q)) await typeInto(e.note, `${q} is already a word`);
+    else if (ties.length) await typeInto(e.note, `also ${dist(best.e)}: ${ties.slice(0, 3).map(r => r.w).join(', ')}`);
+    e.note.after(caret); caret.remove();
+
+    setState('');
+    busy = false; showing = true;
+    typer.value = '';
+    paintBands();
+  }
+
+  /* ---------- the paper ---------- */
+  const caret = document.createElement('span');
+  caret.className = 'caret';
+  // A new entry lands in the middle; everything before it slides one place left.
+  function addEntry(cls) {
+    const el = document.createElement('div');
+    el.className = 'entry' + (cls ? ' ' + cls : '');
+    el.innerHTML = '<div class="from"></div><div class="word"></div><div class="dist"></div><div class="note"></div>';
+    const before = rollEl.children.length;
+    rollEl.appendChild(el);
+    while (rollEl.children.length > 8) rollEl.firstElementChild.remove();
+    if (before && !still) {
+      const shift = el.offsetWidth + parseFloat(getComputedStyle(rollEl).columnGap || 0);
+      rollEl.animate([{ transform: `translateX(${shift}px)` }, { transform: 'translateX(0)' }], { duration: 420, easing: 'cubic-bezier(.3,.7,.3,1)' });
+      sReturn();
+    }
+    return { el, from: el.children[0], word: el.children[1], dist: el.children[2], note: el.children[3] };
+  }
+  async function typeInto(target, text) {
+    target.appendChild(caret);
+    let wrap = null;
+    for (const c of text) {
+      if (c === ' ') { target.insertBefore(document.createTextNode(' '), caret); wrap = null; sSpace(); await sleep(35); continue; }
+      if (!wrap) { wrap = document.createElement('span'); wrap.className = 'wd'; target.insertBefore(wrap, caret); }
+      const s = document.createElement('span');
+      s.className = 'ch';
+      s.textContent = c;
+      // Typewriter ink is never quite even.
+      s.style.transform = `translateY(${(Math.random() - 0.5) * 1.6}px) rotate(${(Math.random() - 0.5) * 2.4}deg)`;
+      s.style.opacity = (0.78 + Math.random() * 0.22).toFixed(2);
+      wrap.appendChild(s);
+      sKey();
+      await sleep(55 + Math.random() * 45);
+    }
+  }
+  let sheetFree = Promise.resolve();
+  function intro() {
+    rollEl.innerHTML = '';
+    sheetFree = (async () => {
+      await sleep(500);
+      const e = addEntry('intro');
+      await typeInto(e.from, 'type three letters,');
+      await typeInto(e.dist, 'then press return.');
+    })();
+  }
+  document.getElementById('fresh').addEventListener('click', async () => {
+    if (busy) return;
+    await sheetFree;
+    sReturn();
+    setTyped('');
+    setTyped('');
+    setState(''); paintBands(); intro();
+  });
+
+  /* ---------- canvases ---------- */
+  function fitCanvas(c) {
+    const DPR = window.devicePixelRatio || 1, W = c.clientWidth, H = c.clientHeight;
+    if (c.width !== Math.round(W * DPR) || c.height !== Math.round(H * DPR)) { c.width = Math.round(W * DPR); c.height = Math.round(H * DPR); }
+    const g = c.getContext('2d'); g.setTransform(DPR, 0, 0, DPR, 0, 0); g.clearRect(0, 0, W, H);
+    return [g, W, H];
+  }
+  const MONO = px => `${px}px ui-monospace, "SF Mono", Menlo, monospace`;
+
+  /* The click axes: three looping rulers, one per letter. */
+  const ax = document.getElementById('ax');
+  function drawAxes() {
+    const [c, W, H] = fitCanvas(ax);
+    const fs = W < 420 ? 10 : W < 600 ? 11.5 : 13;
+    const x0 = 22 + fs, x1 = W - fs - 4, top = fs + 12, gap = (H - top - 14) / (N - 1);
+    const X = i => x0 + i * (x1 - x0) / 25, Y = k => top + k * gap, cell = (x1 - x0) / 25;
+    c.lineCap = 'round'; c.lineJoin = 'round'; c.textAlign = 'center';
+    if (from && reach >= 0) {                        // how far the search reaches on each axis, wrapping round
+      c.fillStyle = 'rgba(0,0,0,0.06)';
+      const r = Math.floor(reach + 1e-9);
+      for (let k = 0; k < N; k++) for (let o = -r; o <= r; o++) c.fillRect(X(mod(from[k] + o)) - cell / 2, Y(k) - 5, cell, 10);
+    }
+    for (let k = 0; k < N; k++) {
+      const y = Y(k);
+      c.strokeStyle = '#ccc'; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(X(0), y); c.lineTo(X(25), y); c.stroke();
+      for (let i = 0; i < 26; i++) {
+        const on = cur && k < cur.length && cur[k] === i, start = from && k < from.length && from[k] === i;
+        c.fillStyle = on ? '#111' : start ? '#777' : '#b5b5b5';
+        c.font = (on ? '700 ' : '') + MONO(fs);
+        c.fillText(A[i], X(i), y - 8);
+        c.beginPath(); c.moveTo(X(i), y - 2.5); c.lineTo(X(i), y + 2.5); c.stroke();
+      }
+      c.fillStyle = '#999'; c.textAlign = 'right'; c.font = MONO(fs - 1);
+      c.fillText(String(k + 1), x0 - 12, y + 4); c.textAlign = 'center';
+      // little arrows at the ends: z loops back to a
+      c.strokeStyle = '#bbb'; c.lineWidth = 1;
+      for (const [x, d] of [[X(0) - cell * 0.7, -1], [X(25) + cell * 0.7, 1]]) {
+        c.beginPath(); c.moveTo(x - d * 3, y - 3); c.lineTo(x, y); c.lineTo(x - d * 3, y + 3); c.stroke();
+      }
+    }
+    const line = v => { c.beginPath(); v.forEach((p, k) => k ? c.lineTo(X(p), Y(k)) : c.moveTo(X(p), Y(k))); c.stroke(); };
+    if (from && from.length === N) {
+      c.strokeStyle = '#888'; c.lineWidth = 1.2; c.setLineDash([4, 4]); line(from); c.setLineDash([]);
+      if (to) { c.strokeStyle = '#111'; c.lineWidth = 2; line(cur); }
+    }
+    if (from) for (let k = 0; k < from.length; k++) {
+      const y = Y(k);
+      c.strokeStyle = '#888'; c.fillStyle = '#fff'; c.lineWidth = 1.2;
+      c.beginPath(); c.arc(X(from[k]), y, 4, 0, TAU); c.fill(); c.stroke();
+      c.fillStyle = '#111';
+      c.beginPath(); c.arc(X(cur[k]), y, k === head ? 5.5 : 4, 0, TAU); c.fill();
+      if (k === head) { const x = X(cur[k]); c.beginPath(); c.moveTo(x - 6, y + 17); c.lineTo(x + 6, y + 17); c.lineTo(x, y + 10); c.closePath(); c.fill(); }
+    }
+  }
+
+  /* The boxes: a small cube of letter space centred on a point, with its nine nearest words. */
+  const boxIn = document.getElementById('boxIn'), boxOut = document.getElementById('boxOut');
+  // Keep each box square inside whatever room its cell has.
+  for (const cv of [boxIn, boxOut]) new ResizeObserver(([e]) => {
+    const z = Math.floor(Math.min(e.contentRect.width, e.contentRect.height));
+    cv.style.width = z + 'px'; cv.style.height = z + 'px';
+  }).observe(cv.parentElement);
+  let yaw = -0.6, pitch = 0.42, idle = 0, hIn = 3, hOut = 3;
+  function drawBox(cv, center, pts, opt) {
+    const [c, W, H] = fitCanvas(cv);
+    const h = opt.h, hi_ = Math.round(opt.hEnd), S = Math.min(W, H) * 0.24, cx = W / 2, cy = H / 2, cam = 5;
+    const cy_ = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+    // letters 1, 2, 3 run along x, up, and z
+    const P = v => {
+      const x = v[0] / h, y = v[1] / h, z = v[2] / h;
+      const x1 = x * cy_ + z * sy, z1 = -x * sy + z * cy_;
+      const y2 = y * cp - z1 * sp, z2 = y * sp + z1 * cp;
+      const f = cam / (cam + z2);
+      return [cx + x1 * S * f, cy - y2 * S * f, z2, f];
+    };
+    c.lineCap = 'round'; c.lineJoin = 'round';
+    // the cube
+    const corners = [];
+    for (const a of [-h, h]) for (const b of [-h, h]) for (const d of [-h, h]) corners.push([a, b, d]);
+    c.strokeStyle = '#d6d6d6'; c.lineWidth = 1;
+    for (let i = 0; i < 8; i++) for (let j = i + 1; j < 8; j++) {
+      const diff = corners[i].filter((v, k) => v !== corners[j][k]).length;
+      if (diff !== 1) continue;
+      const p = P(corners[i]), q = P(corners[j]);
+      c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke();
+    }
+    // the centre's three axis lines
+    c.strokeStyle = '#ececec';
+    for (let k = 0; k < 3; k++) {
+      const a = [0, 0, 0], b = [0, 0, 0]; a[k] = -h; b[k] = h;
+      const p = P(a), q = P(b); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(q[0], q[1]); c.stroke();
+    }
+    // letter ticks along the three edges that meet at the back-bottom-left corner
+    if (center) {
+      const fs = W < 300 ? 9 : 10, step = hi_ <= 4 ? 1 : 2, nudge = h * 0.16;
+      c.textAlign = 'center'; c.textBaseline = 'middle';
+      for (let k = 0; k < 3; k++) {
+        const out = [-nudge, -nudge, -nudge]; out[k] = 0;
+        for (let o = -hi_ + step; o <= hi_; o += step) {
+          const v = [-h, -h, -h]; v[k] = o * h / hi_;
+          const t = P(v.map((x, j) => x + out[j]));
+          c.fillStyle = o === 0 ? '#111' : '#aaa';
+          c.font = (o === 0 ? '700 ' : '') + MONO(fs);
+          c.fillText(A[mod(center[k] + o)], t[0], t[1]);
+        }
+        const v = [-h, -h, -h]; v[k] = h * 1.3;
+        const t = P(v.map((x, j) => x + out[j]));
+        c.fillStyle = '#bbb'; c.font = MONO(fs - 1);
+        c.fillText(['1st', '2nd', '3rd'][k], t[0], t[1]);
+      }
+      c.textBaseline = 'alphabetic';
+    }
+    if (!center) return;
+    const O = P([0, 0, 0]);
+    // the search sphere
+    if (opt.sphere > 0) {
+      c.fillStyle = 'rgba(0,0,0,0.045)'; c.strokeStyle = 'rgba(0,0,0,0.22)'; c.lineWidth = 1;
+      c.beginPath(); c.arc(O[0], O[1], opt.sphere / hi_ * S * O[3], 0, TAU); c.fill(); c.stroke();
+    }
+    // the straight line and the walked clicks
+    if (opt.target) {
+      const T = P(opt.target.map(x => x * h / hi_));
+      c.strokeStyle = '#888'; c.lineWidth = 1.2; c.setLineDash([4, 4]);
+      c.beginPath(); c.moveTo(O[0], O[1]); c.lineTo(T[0], T[1]); c.stroke(); c.setLineDash([]);
+    }
+    if (opt.path && opt.path.length > 1) {
+      c.strokeStyle = '#111'; c.lineWidth = 2;
+      c.beginPath(); opt.path.forEach((v, i) => { const p = P(v.map(x => x * h / hi_)); i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]); }); c.stroke();
+    }
+    // the words, far ones first
+    const items = pts.map(p => ({ p, s: P(p.o.map(x => x * h / hi_)), a: opt.alpha(p) })).filter(x => x.a > 0).sort((a, b) => b.s[2] - a.s[2]);
+    const fs = W < 300 ? 11 : 12.5, TYPE = getComputedStyle(document.body).getPropertyValue('--type');
+    for (const { p, s, a } of items) {
+      const hi = opt.highlight && p.w === opt.highlight;
+      c.globalAlpha = a;
+      c.strokeStyle = 'rgba(0,0,0,0.12)'; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(O[0], O[1]); c.lineTo(s[0], s[1]); c.stroke();
+      c.fillStyle = hi ? '#111' : '#666';
+      c.beginPath(); c.arc(s[0], s[1], (hi ? 4.2 : 3) * s[3], 0, TAU); c.fill();
+    }
+    // Labels: the centre first, then the highlight, then nearest first; a label that would overlap is left off.
+    const taken = [];
+    const place = (text, x, y, font) => {
+      c.font = font;
+      const w = c.measureText(text).width, r = [x - 1, y - 11, x + w + 1, y + 3];
+      if (taken.some(t => r[0] < t[2] && r[2] > t[0] && r[1] < t[3] && r[3] > t[1])) return false;
+      taken.push(r); c.fillText(text, x, y); return true;
+    };
+    c.textAlign = 'left';
+    c.fillStyle = '#111'; c.globalAlpha = 1;
+    place(opt.label, O[0] + 8, O[1] + 16, `700 ${(fs + 2) * O[3]}px ${TYPE}`);
+    const order = items.slice().sort((x, y) => (y.p.w === opt.highlight) - (x.p.w === opt.highlight) || x.s[2] - y.s[2]);
+    for (const { p, s, a } of order) {
+      const hi = opt.highlight && p.w === opt.highlight;
+      c.globalAlpha = a; c.fillStyle = hi ? '#111' : '#777';
+      place(p.w, s[0] + 6, s[1] - 5, `${hi ? '700 ' : ''}${fs * s[3]}px ${TYPE}`);
+    }
+    c.globalAlpha = 1;
+    // the centre itself
+    c.lineWidth = 1.6;
+    if (opt.hollow) { c.fillStyle = '#fff'; c.strokeStyle = '#111'; c.beginPath(); c.arc(O[0], O[1], 5.5 * O[3], 0, TAU); c.fill(); c.stroke(); }
+    else { c.fillStyle = '#111'; c.beginPath(); c.arc(O[0], O[1], 5.5 * O[3], 0, TAU); c.fill(); }
+  }
+  const extent = pts => Math.max(2, ...pts.map(p => Math.max(...p.o.map(Math.abs))));
+
+  // Dragging either box turns both, so the two neighbourhoods can be compared.
+  let drag = null;
+  for (const cv of [boxIn, boxOut]) {
+    cv.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, id: e.pointerId, el: cv }; cv.classList.add('dragging'); });
+  }
+  window.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    yaw += (e.clientX - drag.x) * 0.01;
+    if (e.pointerType === 'mouse') pitch = Math.max(-1.3, Math.min(1.3, pitch + (e.clientY - drag.y) * 0.01));
+    drag.x = e.clientX; drag.y = e.clientY; idle = 0;
+  });
+  const endDrag = () => { if (drag) drag.el.classList.remove('dragging'); drag = null; };
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('pointercancel', endDrag);
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    idle += dt;
+    if (!drag && idle > 3 && !still) yaw += dt * 0.22;   // drift gently until someone grabs it
+    drawAxes();
+    const tIn = inPts.length ? extent(inPts) : 3, tOut = outPts.length ? extent(outPts) : 3;
+    hIn += (tIn - hIn) * Math.min(1, dt * 4); hOut += (tOut - hOut) * Math.min(1, dt * 4);
+    const inDone = !busy && showing;
+    drawBox(boxIn, from && from.length === N ? from : null, inPts, {
+      h: hIn, hEnd: tIn, hollow: !SET.has(typed) || !!to, label: from && from.length === N ? word(from) : '',
+      sphere: busy && reach > 0 ? reach : 0, highlight: best && best.w,
+      target: to && best ? best.o : null, path,
+      alpha: p => inDone || reach >= p.e - 1e-9 ? 1 : 0 });
+    if (outPts.length) outA = Math.min(1, outA + dt * 1.6);
+    drawBox(boxOut, to && outPts.length ? to : null, outPts, {
+      h: hOut, hEnd: tOut, hollow: false, label: best ? best.w : '', sphere: 0, alpha: () => outA });
+    requestAnimationFrame(frame);
+  }
+
+  paintBands();
+  requestAnimationFrame(frame);
+  intro();
+})();
+</script>
+</body>
+</html>

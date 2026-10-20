@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keep on Growing | aamir.consulting</title>
+<meta name="description" content="Inspired by autumn leaves. Pick an angle and watch the tree grow, one split for each month.">
+<style>
+  /* Warm paper and charcoal ink. */
+  :root { --ink:#2a2622; --paper:#f6f1e6; --muted:#7a7368; --line:#e2dacb; --veil:rgba(246,241,230,.88); }
+  /* Dark mode is the light page inverted, tree included. */
+  :root[data-theme="dark"] { --ink:#d5d9dd; --paper:#090e19; --muted:#858c97; --line:#1d2534; --veil:rgba(9,14,25,.85); }
+  html, body, .grow-btn, .months li { transition:background-color .8s ease, color .8s ease, border-color .8s ease; }
+  #cv { transition:filter .8s ease; }
+  #fx { pointer-events:none; }
+  :root[data-theme="dark"] #cv { filter:invert(1); }
+  .orb { position:absolute; z-index:2; width:76px; height:76px; margin:-38px 0 0 -38px; padding:0;
+    border:0; border-radius:50%; background:transparent; cursor:pointer; }
+  .orb:focus-visible { outline:2px dashed var(--muted); outline-offset:-6px; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:var(--paper); color:var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  body { display:flex; flex-direction:column; min-height:100svh; }
+  header { padding:clamp(16px,3vw,32px) clamp(16px,4vw,48px) 0;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+  .titles { min-width:0; }
+  .corner { flex:none; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .corner .logo { display:block; width:clamp(44px,5vw,60px); aspect-ratio:1; }
+  .corner .logo img { display:block; width:100%; height:100%; object-fit:contain; border-radius:6px;
+    box-shadow:0 0 0 1px var(--line); }
+  .logo-fallback { display:grid; place-items:center; width:100%; height:100%;
+    font-family: ui-monospace, Menlo, monospace; font-size:12px; color:var(--ink); }
+  .corner .home { font-size:clamp(14px,1.6vw,17px); color:var(--muted); text-decoration:none; }
+  .corner .home:hover, .corner .home:focus-visible { color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
+  h1 { margin:0; font-size:clamp(22px,3.2vw,34px); font-weight:600; letter-spacing:-0.01em; }
+  header p { margin:6px 0 0; color:var(--muted); font-size:clamp(14px,1.6vw,17px); }
+
+  .stage { flex:1; position:relative; min-height:360px; overflow:hidden; }
+  canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+
+  /* Month stack: newest on top, older months sift down. */
+  .months { --lh:22px; position:absolute; top:12px; right:clamp(16px,4vw,48px);
+    margin:0; padding:0; list-style:none; width:120px; height:calc(var(--lh) * 12);
+    pointer-events:none; z-index:2; }
+  .months li { background:var(--veil); border-radius:4px; padding:0 2px; }
+  .months li { position:absolute; right:0; top:0; white-space:nowrap;
+    transition:transform .5s cubic-bezier(.2,.8,.2,1), opacity .5s ease; }
+  .months button { all:unset; position:relative; display:block; padding-left:24px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:14px;
+    line-height:var(--lh); color:var(--ink); text-align:right; }
+  .months.ready { pointer-events:auto; }
+  .months.ready button { cursor:pointer; }
+  .months .arrow { position:absolute; left:0; top:50%; width:19px; height:13px; margin-top:-7px;
+    opacity:0; transition:opacity .15s ease; }
+  .months.ready button:hover .arrow,
+  .months.ready button:focus-visible .arrow { opacity:1; animation:nudge .8s ease-in-out infinite; }
+  .months button[aria-pressed="true"] { font-weight:700; }
+  .months button[aria-pressed="true"] .arrow { opacity:1; }
+  @keyframes nudge { 0%,100% { transform:translateX(-3px); } 50% { transform:translateX(1px); } }
+  @media (max-width:600px) {
+    .months { --lh:19px; width:96px; }
+    .months button { font-size:12px; padding-left:22px; }
+  }
+
+  .hint { position:absolute; left:clamp(16px,4vw,48px); bottom:6px; font-size:12px; color:var(--muted);
+    transition:opacity 1s ease; pointer-events:none; }
+  .hint.gone { opacity:0; }
+  .hint .touch { display:none; }
+  @media (max-width:600px) { .hint { font-size:11px; line-height:1.25; bottom:2px; max-width:calc(100% - 150px); } }
+  .who { position:absolute; right:clamp(16px,4vw,48px); bottom:3px; display:flex; gap:2px; z-index:2;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:12px; }
+  .who button { font:inherit; color:var(--muted); background:transparent; border:1px solid transparent;
+    border-radius:999px; padding:1px 9px; cursor:pointer; transition:color .2s, border-color .2s; }
+  .who button:hover { color:var(--ink); }
+  .who button[aria-pressed="true"] { color:var(--ink); border-color:var(--ink); }
+  .who button:focus-visible { outline:2px dashed var(--muted); outline-offset:2px; }
+  @media (hover:none) { .hint .kb { display:none; } .hint .touch { display:inline; } }
+
+  .controls { padding:16px clamp(16px,4vw,48px) clamp(20px,3vw,32px);
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .dial { flex:1 1 260px; display:flex; align-items:center; gap:16px; min-width:0; }
+  .dial label { font-size:14px; color:var(--muted); white-space:nowrap; }
+  .dial input[type=range] { flex:1; accent-color:var(--ink); min-width:0; }
+  .readout { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:clamp(20px,2.4vw,26px);
+    min-width:4.5ch; text-align:right; font-variant-numeric:tabular-nums; }
+  .grow-btn { font:inherit; font-size:16px; font-weight:600; padding:12px 28px; border-radius:999px;
+    border:2px solid var(--ink); background:var(--ink); color:var(--paper); cursor:pointer;
+    transition:transform .08s ease; }
+  .grow-btn:active { transform:scale(.96); }
+  .grow-btn:disabled { cursor:default; opacity:.55; transform:none; }
+  .grow-btn:focus-visible { outline:3px solid var(--line); outline-offset:3px; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="titles">
+      <h1>Keep on Growing</h1>
+      <p>Inspired by autumn leaves.<br>Pick an angle and watch the tree grow.</p>
+    </div>
+    <div class="corner">
+      <a class="logo" href="../index.html" aria-label="aamir.consulting">
+        <img src="../images/logo.png" alt="aamir.consulting logo"
+             onerror="var p=this.parentNode;this.remove();p.insertAdjacentHTML('beforeend','<span class=logo-fallback>a.c</span>')">
+      </a>
+      <a class="home" href="index.html">Home</a>
+    </div>
+  </header>
+
+  <div class="stage" id="stage">
+    <canvas id="fx" aria-hidden="true"></canvas>
+    <canvas id="cv" aria-label="A branching pattern that grows from a single vertical line, with a puppy, a cat and a little covered porch below"></canvas>
+    <ol class="months" id="months" aria-label="Months"></ol>
+    <button class="orb" id="orb" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"></button>
+    <div class="hint" id="hint">
+      <span class="kb">Arrow keys or WASD to move. W jumps, S lies down, E swaps pets.</span>
+      <span class="touch">Tap to walk. Tap your pet to jump, the other to swap.</span>
+    </div>
+    <div class="who" id="who" role="group" aria-label="Play as">
+      <button type="button" data-who="dog" aria-pressed="true">Puppy</button>
+      <button type="button" data-who="cat" aria-pressed="false">Cat</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="dial">
+      <label for="angle">Angle</label>
+      <input id="angle" type="range" min="0" max="180" step="1" value="40">
+      <span class="readout" id="out">40°</span>
+    </div>
+    <button class="grow-btn" id="grow" type="button">Grow</button>
+  </div>
+
+<script>
+(() => {
+  const SPLITS = 12;      // one per month
+  const SHRINK = 0.72;    // each new stem is this fraction of its parent
+  const STEP_MS = 420;    // time to draw one month
+  const FADE = 1.6;       // seconds for one month's weather to fade into the next
+  const INK = '#2a2622', PAPER = '#f6f1e6', TAU = Math.PI * 2;
+  const MONTHS = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+  // Red trunk to violet tips: ROYGBIV in twelve even steps (blended in OKLab, precomputed).
+  const COLORS = ['#e0322b','#e95d26','#f07f1d','#ed9c16','#e8b708','#9db23c','#2fa84f',
+                  '#13919c','#1f6fd6','#3755bf','#3f3aa8','#663eb6','#8b3fc4'];
+  // The weather each month brings, drawn in black and white.
+  const VIBES = [
+    { snow:1.0 },                  // January
+    { snow:0.6 },                  // February
+    { wind:0.8, rain:0.3 },        // March
+    { rain:1.0 },                  // April
+    { petals:1.0 },                // May
+    {},                            // June: just the sun at its fullest
+    { fireflies:0.5 },             // July
+    { fireflies:1.0 },             // August
+    { leaves:0.4 },                // September
+    { leaves:1.0 },                // October
+    { leaves:0.6, wind:1.0 },      // November
+    { snow:0.35 },                 // December
+  ];
+  // How strong the sun (or the moon) is in each month: the sun peaks at midsummer,
+  // the moon at midwinter. Before a month is picked, both sit in the middle.
+  const summer = m => 0.5 + 0.5 * Math.cos(TAU * (m - 5.5) / 12);
+  const sunStrength = () => vibe < 0 ? 0.7 : 0.35 + 0.65 * summer(vibe);
+  const moonStrength = () => vibe < 0 ? 0.7 : 0.35 + 0.65 * (1 - summer(vibe));
+
+  const stage = document.getElementById('stage');
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const tcv = document.createElement('canvas');   // the tree, cached between frames
+  const tctx = tcv.getContext('2d');
+  const fx = document.getElementById('fx');
+  const fctx = fx.getContext('2d');
+  const slider = document.getElementById('angle');
+  const out = document.getElementById('out');
+  const btn = document.getElementById('grow');
+  const listEl = document.getElementById('months');
+  const hint = document.getElementById('hint');
+
+  let W = 0, H = 0, DPR = 1;
+  let segs = [], fit = null, treeDirty = true;
+  let shown = 1, partial = 0, growing = false, growStart = 0;
+  let items = [], vibe = -1;
+  let falling = [], resting = [], flies = [], acc = {};
+  let stars = [];
+  let clock = 0;
+
+  /* ---------- the tree ---------- */
+
+  // Every segment as [x1, y1, x2, y2, depth], trunk pointing up from (0, 0).
+  function grow(angleDeg) {
+    const half = angleDeg * Math.PI / 360;
+    const list = [];
+    (function stem(x, y, dir, len, depth) {
+      const x2 = x + Math.cos(dir) * len, y2 = y + Math.sin(dir) * len;
+      list.push([x, y, x2, y2, depth]);
+      if (depth === SPLITS) return;
+      stem(x2, y2, dir - half, len * SHRINK, depth + 1);
+      stem(x2, y2, dir + half, len * SHRINK, depth + 1);
+    })(0, 0, -Math.PI / 2, 1, 0);
+    return list;
+  }
+
+  // Frame the finished tree above the ground, clear of the month list.
+  function computeFit() {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const [a, b, c, d] of segs) {
+      minX = Math.min(minX, a, c); maxX = Math.max(maxX, a, c);
+      minY = Math.min(minY, b, d); maxY = Math.max(maxY, b, d);
+    }
+    const bw = Math.max(maxX - minX, 1e-6), bh = Math.max(maxY - minY, 1e-6);
+    const gutter = W < 600 ? 104 : 140;
+    const x0 = Math.max(16, Math.min(W, H) * 0.04), x1 = W - gutter;
+    const y0 = 16, y1 = H - 30;
+    const s = Math.min((x1 - x0) / bw, (y1 - y0) / bh);
+    const half = bw * s / 2;
+    const cx = Math.max(x0 + half, Math.min(W / 2, x1 - half));
+    const ox = cx - (minX + maxX) / 2 * s;
+    const oy = y1 - maxY * s;
+    return { s, ox, oy, ground: oy };
+  }
+
+  function drawTree() {
+    fit = computeFit();
+    const { s, ox, oy } = fit;
+    tctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    tctx.clearRect(0, 0, W, H);
+    tctx.lineCap = 'round';
+    const base = Math.max(1.5, Math.min(W, H) / 120);
+    const last = partial > 0 ? shown + 1 : shown;
+    for (let depth = 0; depth <= Math.min(last, SPLITS); depth++) {
+      const t = depth <= shown ? 1 : partial;
+      tctx.strokeStyle = COLORS[depth];
+      tctx.lineWidth = Math.max(0.5, base * Math.pow(0.78, depth));
+      tctx.beginPath();
+      for (const [a, b, c, d, k] of segs) {
+        if (k !== depth) continue;
+        tctx.moveTo(ox + a * s, oy + b * s);
+        tctx.lineTo(ox + (a + (c - a) * t) * s, oy + (b + (d - b) * t) * s);
+      }
+      tctx.stroke();
+    }
+    treeDirty = false;
+  }
+
+  /* ---------- months ---------- */
+
+  const ARROW = '<svg class="arrow" viewBox="0 0 19 13" aria-hidden="true">' +
+    '<path d="M1.5 9.5 C4 3, 9.5 2, 15.5 6.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
+    '<path d="M11.6 3.6 L15.8 6.7 L11.2 8.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function placeItems() {
+    items.forEach((el, k) => {
+      el.style.transform = `translateY(calc(var(--lh) * ${k}))`;
+      el.style.opacity = 1;
+    });
+  }
+
+  function addMonth(i) {
+    const li = document.createElement('li');
+    li.innerHTML = `<button type="button" tabindex="-1" aria-pressed="false" data-m="${i}">${ARROW}${MONTHS[i]}</button>`;
+    li.style.transform = 'translateY(calc(var(--lh) * -1))';
+    li.style.opacity = 0;
+    listEl.prepend(li);
+    items.unshift(li);
+    requestAnimationFrame(() => requestAnimationFrame(placeItems));
+  }
+
+  function setReady(on) {
+    listEl.classList.toggle('ready', on);
+    listEl.querySelectorAll('button').forEach(b => { b.tabIndex = on ? 0 : -1; });
+  }
+
+  function setVibe(i) {
+    vibe = i;
+    // The last month's weather fades away instead of lingering.
+    for (const q of falling) if (q.out == null) q.out = FADE;
+    for (const q of resting) if (q.out == null) q.out = FADE;
+    listEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.m === i)));
+    acc = {};
+    const v = VIBES[i] || {};
+    flies = [];
+    const n = Math.round(18 * (v.fireflies || 0));
+    for (let k = 0; k < n; k++) flies.push(newFly(true));
+  }
+
+  listEl.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b || !listEl.classList.contains('ready')) return;
+    setVibe(+b.dataset.m);
+  });
+
+  /* ---------- growing ---------- */
+
+  function startOver() {
+    growing = false; shown = 1; partial = 0;
+    btn.textContent = 'Grow'; btn.disabled = false;
+    listEl.innerHTML = ''; items = [];
+    addMonth(0);
+    setReady(false);
+    setVibe(-1);
+    falling = []; resting = [];
+    treeDirty = true;
+  }
+
+  function play() {
+    growing = true; growStart = performance.now();
+    btn.textContent = 'Growing'; btn.disabled = true;
+  }
+
+  function stepGrowth(now) {
+    const p = (now - growStart) / STEP_MS;
+    if (p >= 1) {
+      shown++; partial = 0; growStart = now;
+      addMonth(shown - 1);
+      if (shown >= SPLITS) {
+        growing = false;
+        btn.textContent = 'Start again'; btn.disabled = false;
+        setReady(true);
+      }
+    } else {
+      partial = 1 - Math.pow(1 - p, 2);  // ease out
+    }
+    treeDirty = true;
+  }
+
+  /* ---------- weather ---------- */
+
+  const rnd = (a, b) => a + Math.random() * (b - a);
+
+  // Even spacing: each new drop lands at the next step of the golden-ratio sequence,
+  // which spreads them evenly across the width without visible rows or clumps.
+  const seq = {};
+  function evenly(type, step = 0.6180339887) {
+    seq[type] = ((seq[type] ?? Math.random()) + step) % 1;
+    return seq[type];
+  }
+  // Fireflies roam the whole open sky, not just the canopy (which can be a single thin line).
+  function skyBox() {
+    const g = fit ? fit.ground : H - 30;
+    return { x0: 24, x1: Math.max(25, W - 24), y0: H * 0.12, y1: Math.max(H * 0.12 + 1, g - 10) };
+  }
+
+  function newFly(scatter) {
+    const b = skyBox();
+    // Two unrelated steps (the R2 sequence) so x and y don't line up into a diagonal.
+    return { x: b.x0 + evenly('fly', 0.7548776662) * (b.x1 - b.x0),
+             y: b.y0 + evenly('flyY', 0.5698402910) * (b.y1 - b.y0),
+             vx: rnd(-5, 5), vy: rnd(-5, 5), ph: rnd(0, TAU), sp: rnd(1, 2),
+             age: scatter ? rnd(0, 1) : 0 };
+  }
+
+  // Everything drifts in from the top edge, at evenly spaced spots across the width.
+  function spawn(type) {
+    const x = -20 + evenly(type) * (W + 40);
+    if (type === 'snow') {
+      falling.push({ type, x, y: -8, vx: 0, vy: rnd(18, 34), fall: 0,
+                     sz: rnd(2, 4), rot: rnd(0, TAU), spin: rnd(-0.8, 0.8), ph: rnd(0, TAU) });
+    } else if (type === 'rain') {
+      const v = VIBES[vibe];
+      falling.push({ type, x: x - W * 0.1, y: -20, vx: v.wind ? 40 : 18, vy: rnd(420, 540), len: rnd(9, 14) });
+    } else if (type === 'petals' || type === 'leaves') {
+      const fall = type === 'leaves' ? rnd(26, 46) : rnd(14, 24);
+      falling.push({ type, x, y: -10, vx: 0, vy: fall, fall,
+                     sz: type === 'leaves' ? rnd(4.5, 7.5) : rnd(2.5, 3.8),
+                     rot: rnd(0, TAU), spin: rnd(-2, 2), ph: rnd(0, TAU), amp: rnd(12, 28) });
+    }
+  }
+
+  function updateWeather(dt) {
+    const v = VIBES[vibe] || {};
+    const scale = Math.max(0.5, W / 1000);
+    const rates = { snow: 6, rain: 22, petals: 2.5, leaves: 3 };
+    for (const t in rates) {
+      if (!v[t]) continue;
+      acc[t] = (acc[t] || 0) + rates[t] * v[t] * scale * dt;
+      while (acc[t] >= 1 && falling.length < 700) { spawn(t); acc[t] -= 1; }
+      if (acc[t] >= 1) acc[t] = 0;
+    }
+    const g = fit.ground, windPush = v.wind ? 12 * v.wind : 0;   // a gentle breeze, felt only in the drift
+
+    const P = porch();
+    for (let i = falling.length - 1; i >= 0; i--) {
+      const p = falling[i];
+      if (p.out != null && (p.out -= dt) <= 0) { falling.splice(i, 1); continue; }
+      // The porch roof keeps the weather off: snow and rain stop there, leaves settle on it.
+      const roofY = P.g - P.roofTop;
+      if (p.x > -2 && p.x < P.roofX1 + 2 && p.y >= roofY - 1 && p.y < roofY + P.roofT + 10) {
+        if (p.type === 'snow' || p.type === 'rain') { falling.splice(i, 1); continue; }
+        if (p.vy > 0) {
+          p.restY = roofY - 1.5; p.y = p.restY; p.rot = rnd(-0.25, 0.25); p.life = rnd(12, 18);
+          resting.push(p); falling.splice(i, 1); continue;
+        }
+      }
+      if (p.type === 'snow') {
+        p.x += (Math.sin(clock * 1.0 + p.ph) * 12 + windPush * 0.5) * dt;
+        p.y += p.vy * dt; p.rot += p.spin * dt;
+        if (p.y > g) falling.splice(i, 1);
+      } else if (p.type === 'rain') {
+        p.x += p.vx * dt; p.y += p.vy * dt;
+        if (p.y > g) falling.splice(i, 1);
+      } else {
+        p.vy = Math.min(p.vy + 260 * dt, p.fall);
+        p.x += (Math.sin(clock * 1.3 + p.ph) * p.amp + windPush + p.vx) * dt;
+        p.vx *= Math.pow(0.4, dt);
+        p.y += p.vy * dt; p.rot += p.spin * dt;
+        if (p.y >= g - 1.5) {
+          p.y = g - 1.5; p.rot = rnd(-0.25, 0.25); p.life = rnd(12, 18);
+          resting.push(p); falling.splice(i, 1);
+        }
+        if (p.x < -40 || p.x > W + 40) falling.splice(i, 1);
+      }
+    }
+    for (let i = resting.length - 1; i >= 0; i--) {
+      const p = resting[i];
+      p.y = p.restY ?? g - 1.5;
+      p.life -= dt;
+      if (p.out != null) p.life = Math.min(p.life, (p.out -= dt));
+      if (p.life <= 0 || resting.length > 90) { resting.splice(i, 1); continue; }
+      // The puppy scuffs the leaves as it trots through.
+      if (p.restY == null && dog.moving && !dog.air && dog.h < 1 && Math.abs(p.x - dog.x) < 16 * S()) {
+        p.vy = rnd(-170, -110); p.vx = dog.dir * rnd(60, 120); p.spin = rnd(-6, 6);
+        p.y = g - 3; p.restY = null; resting.splice(i, 1); falling.push(p);
+      }
+    }
+    const b = skyBox();
+    for (const f of flies) {
+      f.age = Math.min(1, f.age + dt * 0.6);
+      f.vx += rnd(-25, 25) * dt; f.vy += rnd(-25, 25) * dt;
+      f.vx *= Math.pow(0.5, dt); f.vy *= Math.pow(0.5, dt);
+      f.x += f.vx * dt; f.y += f.vy * dt;
+      if (f.x < b.x0 || f.x > b.x1) f.vx *= -1;
+      if (f.y < b.y0 || f.y > b.y1) f.vy *= -1;
+    }
+  }
+
+  /* ---------- sun and moon: click one to trade places ---------- */
+
+  const orb = document.getElementById('orb');
+  let dark = false, glow = 0.7;   // glow eases toward the month's strength
+
+  function orbPos() {
+    return { x: Math.max(56, Math.min(W, H) * 0.09), y: 56 };
+  }
+
+  function setTheme(isDark, save) {
+    dark = isDark;
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    const label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    orb.setAttribute('aria-label', label); orb.title = label;
+    if (save) try { localStorage.setItem('kog-theme', dark ? 'dark' : 'light'); } catch (e) {}
+  }
+  orb.addEventListener('click', () => setTheme(!dark, true));
+  try { if (localStorage.getItem('kog-theme') === 'dark') setTheme(true, false); } catch (e) {}
+
+  // Everything on the canvas is drawn in light-mode ink; dark mode inverts the canvas.
+  function drawSky(c, dt) {
+    const target = dark ? moonStrength() : sunStrength();
+    glow += (target - glow) * Math.min(1, dt * 1.5);
+    const { x: sx, y: sy } = orbPos();
+    orb.style.left = sx + 'px'; orb.style.top = sy + 'px';
+    c.strokeStyle = INK; c.fillStyle = INK; c.lineCap = 'round';
+    if (!dark) {
+      const r = 11 + 9 * glow, breathe = 1 + Math.sin(clock * 0.8) * 0.04;
+      c.globalAlpha = 0.45 + 0.55 * glow;
+      c.lineWidth = 1.8;
+      c.beginPath(); c.arc(sx, sy, r, 0, TAU); c.stroke();
+      for (let k = 0; k < 12; k++) {            // twelve rays, one per month
+        const a = clock * 0.05 + k * TAU / 12;
+        const r1 = r + 6, r2 = r1 + (5 + 11 * glow) * (k % 2 ? 0.7 : 1) * breathe;
+        c.beginPath(); c.moveTo(sx + Math.cos(a) * r1, sy + Math.sin(a) * r1);
+        c.lineTo(sx + Math.cos(a) * r2, sy + Math.sin(a) * r2); c.stroke();
+      }
+    } else {
+      const r = 10 + 7 * glow;
+      c.globalAlpha = 0.5 + 0.5 * glow;
+      c.beginPath(); c.arc(sx, sy, r, 0, TAU); c.fill();
+      c.fillStyle = PAPER; c.globalAlpha = 1;
+      c.beginPath(); c.arc(sx + r * 0.45, sy - r * 0.28, r * 0.92, 0, TAU); c.fill();
+      c.fillStyle = INK;
+      if (!stars.length) for (let k = 0; k < 14; k++) stars.push([rnd(0.12, 0.62), rnd(0.03, 0.32), rnd(0, TAU)]);
+      const n = Math.round(4 + 10 * glow);     // more stars on the long winter nights
+      c.lineWidth = 1.1;
+      for (let k = 0; k < n; k++) {
+        const [fx, fy, ph] = stars[k];
+        const x = fx * W, y = fy * H, tw = 0.5 + 0.5 * Math.sin(clock * 0.7 + ph), r2 = 1.6 + tw * 1.4;
+        c.globalAlpha = 0.35 + 0.65 * tw;
+        c.beginPath(); c.moveTo(x - r2, y); c.lineTo(x + r2, y); c.moveTo(x, y - r2); c.lineTo(x, y + r2); c.stroke();
+      }
+    }
+    c.globalAlpha = 1;
+  }
+
+  function drawLeaf(c, p) {
+    c.save(); c.translate(p.x, p.y); c.rotate(p.rot);
+    const z = p.sz;
+    c.beginPath();
+    if (p.type === 'leaves') {
+      c.moveTo(-z, 0); c.quadraticCurveTo(0, -z * 0.8, z, 0); c.quadraticCurveTo(0, z * 0.8, -z, 0);
+      c.fill(); c.stroke();
+      c.beginPath(); c.moveTo(-z * 1.4, 0); c.lineTo(z * 0.75, 0); c.stroke();
+    } else {
+      c.ellipse(0, 0, z, z * 0.55, 0, 0, TAU); c.fill(); c.stroke();
+    }
+    c.restore();
+  }
+
+  function drawWeatherBack(c) {
+    c.strokeStyle = INK; c.lineCap = 'round';
+    c.lineWidth = 1;
+    for (const f of flies) {
+      const glow = (0.5 + 0.5 * Math.sin(clock * f.sp + f.ph)) * f.age;
+      c.fillStyle = INK; c.globalAlpha = 0.25 + 0.75 * glow;
+      c.beginPath(); c.arc(f.x, f.y, 1.8, 0, TAU); c.fill();
+      c.globalAlpha = 0.3 * glow; c.lineWidth = 1;
+      c.beginPath(); c.arc(f.x, f.y, 4 + 3 * glow, 0, TAU); c.stroke();
+    }
+    c.globalAlpha = 1;
+  }
+
+  function drawResting(c) {
+    c.strokeStyle = INK; c.fillStyle = PAPER; c.lineWidth = 1.2;
+    for (const p of resting) { c.globalAlpha = Math.min(1, p.life); drawLeaf(c, p); }
+    c.globalAlpha = 1;
+  }
+
+  function drawWeatherFront(c) {
+    c.strokeStyle = INK; c.fillStyle = PAPER; c.lineCap = 'round';
+    for (const p of falling) {
+      const fade = p.out != null ? Math.max(0, p.out / FADE) : 1;
+      c.globalAlpha = fade;
+      if (p.type === 'snow') {
+        c.lineWidth = 1; c.save(); c.translate(p.x, p.y); c.rotate(p.rot);
+        c.beginPath();
+        for (let k = 0; k < 3; k++) {             // a tiny six-armed flake
+          const a = k * Math.PI / 3;
+          c.moveTo(-Math.cos(a) * p.sz, -Math.sin(a) * p.sz); c.lineTo(Math.cos(a) * p.sz, Math.sin(a) * p.sz);
+        }
+        c.stroke(); c.restore();
+      } else if (p.type === 'rain') {
+        c.lineWidth = 1; c.globalAlpha = 0.45 * fade;
+        const k = p.len / Math.hypot(p.vx, p.vy);
+        c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx * k, p.y - p.vy * k); c.stroke();
+        c.globalAlpha = 1;
+      } else {
+        c.lineWidth = 1.2; drawLeaf(c, p);
+      }
+    }
+    c.globalAlpha = 1;
+  }
+
+  /* ---------- the porch ---------- */
+  // A slim porch at the left edge: two steps up to a small deck with lattice skirting,
+  // two posts, and a flat roof with a scalloped trim that the pets can hop up onto.
+  // Soft light fills the space under the roof and stays there.
+
+  function porch() {
+    const s = S(), g = fit.ground;
+    const L = 58 * s, stepW = 16 * s, deckH = 26 * s, stepH = 13 * s;
+    const roofX1 = L + 20 * s, roofTop = 86 * s, roofT = 5 * s;
+    return {
+      s, g, L, stepW, deckH, stepH, roofX1, roofTop, roofT,
+      blocks: [{ x0: -60, x1: L, top: deckH }, { x0: L, x1: L + stepW, top: stepH }],   // walk up these
+      shelves: [{ x0: -60, x1: roofX1, top: roofTop }],                                // land on the roof
+    };
+  }
+  function blockAt(P, x) {
+    let t = 0;
+    for (const b of P.blocks) if (x >= b.x0 && x < b.x1) t = Math.max(t, b.top);
+    return t;
+  }
+  // What a pet at (x, h) would come to rest on: the steps and deck, or the roof below its feet.
+  function supportAt(x, h) {
+    const P = porch();
+    let t = blockAt(P, x);
+    for (const sh of P.shelves) if (x >= sh.x0 && x < sh.x1 && sh.top <= h + 0.5) t = Math.max(t, sh.top);
+    return t;
+  }
+
+  function lattice(c, x0, y0, x1, y1, step) {
+    c.save(); c.beginPath(); c.rect(x0, y0, x1 - x0, y1 - y0); c.clip();
+    const hgt = y1 - y0;
+    c.beginPath();
+    for (let x = x0 - hgt; x < x1 + hgt; x += step) {
+      c.moveTo(x, y1); c.lineTo(x + hgt, y0); c.moveTo(x + hgt, y1); c.lineTo(x, y0);
+    }
+    c.stroke(); c.restore();
+  }
+
+  function drawPorch(c) {
+    const P = porch(), { s, g, L, stepW, deckH, stepH, roofX1, roofTop, roofT } = P;
+    const roofY = g - roofTop;
+    c.save();
+    c.strokeStyle = INK; c.fillStyle = PAPER; c.lineJoin = 'round'; c.lineCap = 'round';
+    c.globalAlpha = 0.9;
+
+    // two posts
+    c.lineWidth = 2.2;
+    c.beginPath();
+    c.moveTo(9 * s, g - deckH); c.lineTo(9 * s, roofY + roofT);
+    c.moveTo(roofX1 - 4 * s, g); c.lineTo(roofX1 - 4 * s, roofY + roofT);
+    c.stroke();
+
+    // two steps up to the deck, with lattice skirting and a firm top plank
+    c.lineWidth = 1.3;
+    c.beginPath();
+    c.moveTo(-2, g - deckH); c.lineTo(L, g - deckH); c.lineTo(L, g - stepH);
+    c.lineTo(L + stepW, g - stepH); c.lineTo(L + stepW, g); c.lineTo(-2, g); c.closePath();
+    c.fill(); c.stroke();
+    c.lineWidth = 0.9; c.globalAlpha = 0.45;
+    lattice(c, 0, g - deckH + 4 * s, L, g, 9 * s);
+    lattice(c, L, g - stepH + 4 * s, L + stepW, g, 9 * s);
+    c.globalAlpha = 0.9; c.lineWidth = 2.2;
+    c.beginPath(); c.moveTo(-2, g - deckH); c.lineTo(L, g - deckH); c.moveTo(L, g - stepH); c.lineTo(L + stepW, g - stepH); c.stroke();
+
+    // flat roof with a scalloped valance
+    c.fillStyle = INK;
+    c.beginPath(); c.rect(-2, roofY, roofX1 + 5 * s, roofT); c.fill();
+    c.fillStyle = PAPER; c.lineWidth = 1.1;
+    const n = Math.max(3, Math.round(roofX1 / (13 * s))), step = roofX1 / n;
+    for (let k = 0; k < n; k++) {
+      const x = k * step + step / 2;
+      c.beginPath(); c.arc(x, roofY + roofT, step / 2 - 0.8, 0, Math.PI); c.fill(); c.stroke();
+    }
+    c.restore();
+  }
+
+  // Soft, colorless light that fills the porch and stays inside it. It sits on its own layer
+  // behind everything else, so the pets stand in it rather than under a haze.
+  function drawGlow() {
+    const P = porch(), s = P.s;
+    fctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    fctx.clearRect(0, 0, W, H);
+    const top = P.g - P.roofTop + P.roofT;
+    fctx.save();
+    fctx.beginPath(); fctx.rect(0, top, P.roofX1 - 4 * s, P.g - top); fctx.clip();
+    const flicker = 0.95 + 0.03 * Math.sin(clock * 7.1) + 0.02 * Math.sin(clock * 17.3 + 1.7);
+    const strength = (dark ? 0.16 : 0.6) * flicker;
+    const cx = -10 * s, cy = top + 14 * s, r = 120 * s;
+    const grad = fctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    grad.addColorStop(0, `rgba(255, 255, 255, ${strength})`);
+    grad.addColorStop(0.55, `rgba(255, 255, 255, ${strength * 0.35})`);
+    grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    fctx.fillStyle = grad;
+    fctx.fillRect(0, top, P.roofX1, P.g - top);
+    fctx.restore();
+  }
+
+  // How the pet you are not playing gets up to you: straight up if it can make the jump,
+  // otherwise from the deck.
+  function reachOf(a) { const v = STATS[a.kind].jump * S(); return v * v / (2 * 1500 * S()); }
+  function climbPlan(a, tx, th) {
+    const s = S(), P = porch(), reach = reachOf(a) * 0.96;
+    if (th <= a.h + 6 * s || th <= P.deckH + 1) return { x: tx, hop: false };   // walk, or take the steps
+    if (a.h + reach >= th) return { x: tx, hop: true, direct: true };
+    const stones = [{ x: P.L * 0.5, top: P.deckH }];
+    for (const st of stones) {
+      if (st.top > a.h + 1 && a.h + reach >= st.top && st.top + reach >= th) return { x: st.x, hop: true };
+    }
+    return { x: tx, hop: false };
+  }
+
+  /* ---------- the puppy and the cat ---------- */
+  // The puppy is all enthusiasm. The cat is reserved, a little sassy, and mostly unimpressed.
+  // Whoever you are not playing follows you when you wander off, and otherwise does its own thing.
+
+  const keys = {};
+  const S = () => Math.max(0.9, Math.min(1.6, Math.min(W, H) / 400));
+  const STATS = {
+    dog: { walk: 115, run: 145, stroll: 62, jump: 455, far: 200, keep: 60 },
+    cat: { walk: 90, run: 100, stroll: 40, jump: 540, far: 300, keep: 110 },
+  };
+  function critter(kind) {
+    return { kind, x: null, h: 0, vy: 0, dir: 1, walk: 0, wag: rnd(0, TAU), moving: false,
+             lying: false, lieT: 0, stillT: 0, pose: 'stand', blinkT: 0, nextBlink: rnd(1, 4),
+             targetX: null, mode: 'idle', modeT: 0, goal: null, fast: false, jumpQ: -1,
+             jumped: false, napping: false, air: false };
+  }
+  const dog = critter('dog'), cat = critter('cat');
+  let player = dog, caretT = 0;
+  const friendOf = a => (a === dog ? cat : dog);
+
+  function setMode(a, mode, t, goal = null, fast = false) {
+    a.mode = mode; a.modeT = t; a.goal = goal; a.fast = fast;
+  }
+  function hop(a) {
+    if (a.air || a.lying) return false;
+    a.vy = STATS[a.kind].jump * S();
+    a.jumped = true;
+    return true;
+  }
+  function jump() { hop(player); hideHint(); }
+
+  function placePets() {
+    const s = S();
+    if (dog.x === null) dog.x = Math.max(40 * s, Math.min(W * 0.22, fit.ox - 110 * s));
+    if (cat.x === null) {
+      cat.x = Math.min(W - 40 * s, dog.x + 150 * s);
+      cat.dir = 1;                                  // facing away, naturally
+      setMode(cat, 'sit', rnd(4, 6));
+    }
+  }
+
+  // Shared motion: walking, gravity, blinking and tails.
+  function physics(a, move, speed, dt) {
+    const s = S();
+    a.moving = !!move && !a.lying;
+    if (a.moving) {
+      a.dir = move; a.walk += dt * speed / 12;
+      const nx = Math.max(28 * s, Math.min(W - 28 * s, a.x + move * speed * s * dt));
+      if (blockAt(porch(), nx) - a.h > 15 * s) {   // too tall to step up: needs a hop
+        a.moving = false;
+        if (a !== player && hop(a)) a.jumped = false;
+      } else a.x = nx;                             // the steps are just walked up
+    }
+    a.x = Math.max(28 * s, Math.min(W - 28 * s, a.x));
+    const sup = supportAt(a.x, a.h);
+    if (a.h > sup + 0.5 || a.vy > 0) {
+      a.vy -= 1500 * s * dt; a.h += a.vy * dt;
+      if (a.h <= sup && a.vy <= 0) { a.h = sup; a.vy = 0; }
+    } else { a.h = sup; a.vy = 0; }
+    a.air = a.h > sup + 0.5 || a.vy > 0;
+    a.stillT = a.moving || a.air ? 0 : a.stillT + dt;
+    a.lieT = a.lying ? a.lieT + dt : 0;
+    a.wag += dt * (a.kind === 'dog' ? (a.moving || a.air ? 16 : 7) : (a.moving ? 3 : 1.3));
+    a.nextBlink -= dt;
+    if (a.nextBlink <= 0) { a.blinkT = 0.14; a.nextBlink = rnd(2, 5); }
+    a.blinkT = Math.max(0, a.blinkT - dt);
+  }
+
+  function steerPlayer(a, dt) {
+    let move = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+    if (move) a.targetX = null;
+    else if (a.targetX !== null) {
+      const d = a.targetX - a.x;
+      if (Math.abs(d) < 3) a.targetX = null; else move = Math.sign(d);
+    }
+    a.lying = !!keys.down && !a.air && !move;
+    physics(a, move, STATS[a.kind].walk, dt);
+    // A cat left standing still soon sits down. A puppy stays ready.
+    a.pose = a.lying ? 'lie' : (a.kind === 'cat' && a.stillT > 1.2 ? 'sit' : 'stand');
+  }
+
+  const wet = () => { const v = VIBES[vibe] || {}; return !!(v.rain || v.snow); };
+
+  function chooseIdle(a, p) {
+    const s = S(), st = STATS[a.kind], side = Math.sign(p.x - a.x) || 1;
+    const lo = Math.max(30 * s, p.x - st.far * 0.8), hi = Math.min(W - 30 * s, p.x + st.far * 0.8);
+    const r = Math.random();
+    if (a.kind === 'dog') {
+      if (r < 0.38) setMode(a, 'walk', 6, rnd(lo, hi));
+      else if (r < 0.62) setMode(a, 'sniff', rnd(1.5, 3));
+      else if (r < 0.76) { setMode(a, 'stand', 1.2); a.jumpQ = 0.05; }
+      else if (r < 0.9) { setMode(a, 'stand', rnd(1, 2)); a.dir = side; }
+      else setMode(a, 'walk', 6, rnd(lo, hi), true);           // zoomies
+    } else {
+      if (r < 0.3) { setMode(a, 'sit', rnd(3, 6)); a.dir = Math.random() < 0.5 ? side : -side; }
+      else if (r < 0.52) setMode(a, 'groom', rnd(2.5, 4));
+      else if (r < 0.72) setMode(a, 'walk', 8, rnd(lo, hi));
+      else if (r < 0.9 && wet() && a.x > porch().L) setMode(a, 'walk', 10, porch().L * 0.55);   // cats hate getting wet
+      else if (r < 0.9) setMode(a, 'loaf', rnd(4, 8));
+      else { setMode(a, 'sit', 3); a.dir = -side; }
+    }
+  }
+
+  function steerFriend(a, p, dt) {
+    const s = S(), st = STATS[a.kind], isDog = a.kind === 'dog';
+    const d = p.x - a.x, ad = Math.abs(d), side = Math.sign(d) || 1;
+    const above = p.h - a.h > 20 * s && !p.air && p.stillT > 1;     // you are up on something
+    let move = 0, speed = st.stroll, plan = null;
+    a.modeT -= dt;
+
+    // Wandered off, or climbed up somewhere: the puppy comes right away, the cat eventually.
+    if ((ad > st.far * s || (above && (isDog || Math.random() < dt * 0.25))) && a.mode !== 'follow') {
+      setMode(a, 'follow', above ? 8 : 99); a.napping = false;
+    }
+
+    if (a.mode === 'follow') {
+      const goal = p.x - side * (above || p.h > 1 ? Math.min(st.keep * s, 18 * s) : st.keep * s);
+      if ((Math.abs(goal - a.x) < 6 && Math.abs(p.h - a.h) < 4 * s) || a.modeT <= 0) {
+        setMode(a, isDog ? 'stand' : 'sit', rnd(1, 2));
+        a.dir = side;
+        if (isDog) a.jumpQ = 0.1;                         // a happy hop on arrival
+      } else { plan = climbPlan(a, goal, p.h); speed = st.run; }
+    } else {
+      // Reactions to the one you are playing.
+      if (p.jumped && ad < st.far * s) {
+        if (isDog) a.jumpQ = rnd(0.12, 0.3);              // copycat
+        else if (ad < 170 * s) a.dir = side;              // a long look
+      }
+      if (!isDog && p.moving && ad < 70 * s && Math.abs(p.h - a.h) < 10 * s && a.mode !== 'scoot' && !a.napping) {
+        setMode(a, 'scoot', 4, Math.max(30 * s, Math.min(W - 30 * s, a.x - side * 95 * s)));
+      }
+      if (p.lying && p.lieT > (isDog ? 1 : 3) && ad < st.far * s && !a.napping && a.mode !== 'cuddle') {
+        setMode(a, 'cuddle', 12, p.x - side * (isDog ? 36 : 44) * s);   // lying down is an invitation
+      }
+      if (!p.lying && (a.napping || a.mode === 'cuddle')) {
+        a.napping = false; setMode(a, 'idle', 0);
+        if (isDog) a.jumpQ = 0.2;
+      }
+
+      if (a.goal !== null && ['walk', 'scoot', 'cuddle'].includes(a.mode)) {
+        const th = a.mode === 'cuddle' ? p.h : a.h;
+        if (Math.abs(a.goal - a.x) > 4 || Math.abs(th - a.h) > 4 * s) {
+          plan = climbPlan(a, a.goal, th);
+          speed = a.mode === 'scoot' ? st.walk : a.fast ? st.run * 1.15 : st.stroll;
+          if (a.modeT <= 0) setMode(a, 'idle', 0);       // could not get there; never mind
+        } else if (a.mode === 'scoot') { setMode(a, 'sit', rnd(3, 5)); a.dir = -side; }   // back turned
+        else if (a.mode === 'cuddle') {
+          setMode(a, 'nap', 99); a.napping = true; a.dir = side;
+        } else setMode(a, 'idle', 0);
+      }
+      if (a.modeT <= 0 && !a.napping && a.mode !== 'follow') chooseIdle(a, p);
+    }
+
+    if (plan) {
+      const dx = plan.x - a.x;
+      move = Math.abs(dx) > 4 ? Math.sign(dx) : 0;
+      if (plan.hop && !a.air && (Math.abs(dx) < 8 * s || plan.direct) && hop(a)) a.jumped = false;
+    }
+    if (a.jumpQ >= 0 && (a.jumpQ -= dt) < 0) { hop(a); a.jumped = false; }
+    a.lying = a.napping || a.mode === 'loaf';
+    physics(a, move, speed, dt);
+    if (a.lying) a.pose = 'lie';
+    else if (a.moving || a.air) a.pose = 'stand';
+    else if (isDog) a.pose = a.mode === 'sniff' ? 'sniff' : 'stand';
+    else a.pose = a.mode === 'groom' ? 'groom' : 'sit';
+  }
+
+  function updatePets(dt) {
+    placePets();
+    const f = friendOf(player);
+    steerPlayer(player, dt);
+    steerFriend(f, player, dt);
+    player.jumped = false;
+    caretT = Math.max(0, caretT - dt);
+  }
+
+  function switchTo(a) {
+    if (a === player) return;
+    const was = player;
+    player = a;
+    a.targetX = null; a.napping = false; a.lying = false; setMode(a, 'idle', 0);
+    was.targetX = null; setMode(was, 'idle', 0.6);
+    caretT = 1.8;
+    whoEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.who === a.kind)));
+  }
+
+  /* ---------- drawing the pets ---------- */
+
+  function zzz(c, a, s) {
+    c.fillStyle = INK; c.font = `${Math.round(11 * s)}px ui-monospace, Menlo, monospace`;
+    const y = fit.ground - a.h;
+    for (let k = 0; k < 3; k++) {
+      const t = (clock * 0.6 + k / 3) % 1;
+      c.globalAlpha = Math.sin(t * Math.PI);
+      c.fillText('z', a.x + a.dir * (14 + t * 10) * s, y - (24 + t * 26) * s);
+    }
+    c.globalAlpha = 1;
+  }
+
+  function drawDog(c, a) {
+    const s = S(), f = a.dir, lying = a.lying, air = a.air, sniff = a.pose === 'sniff';
+    c.save(); c.translate(a.x, fit.ground - a.h); c.scale(f * s, s);
+    c.lineWidth = 1.8; c.lineCap = 'round'; c.lineJoin = 'round';
+    c.strokeStyle = INK; c.fillStyle = PAPER;
+    const bodyY = lying ? -8 : -15, bodyRx = lying ? 17 : 16, bodyRy = lying ? 7 : 8.5;
+    const hx = lying ? 17 : sniff ? 18 : 15;
+    const hy = lying ? -14 : sniff ? -17 + Math.sin(clock * 10) * 0.8 : -25;
+    const wag = Math.sin(a.wag);
+
+    c.beginPath();                                           // tail
+    if (lying) { c.moveTo(-15, bodyY + 2); c.quadraticCurveTo(-24, -1, -29 + wag, -2); }
+    else { c.moveTo(-15, bodyY - 2); c.quadraticCurveTo(-23, bodyY - 3, -22 + wag * 3.5, bodyY - 13); }
+    c.stroke();
+
+    if (!lying) {                                            // legs
+      for (const [lx, ph] of [[-11, 0], [-6, Math.PI], [7, Math.PI], [12, 0]]) {
+        const swing = a.moving && !air ? Math.sin(a.walk + ph) * 3.5 : 0;
+        const fx = lx + swing + (air ? (lx < 0 ? -3 : 3) : 0), fy = air ? -4 : 0;
+        c.beginPath(); c.moveTo(lx, bodyY + 4); c.lineTo(fx, fy); c.stroke();
+      }
+    }
+
+    c.beginPath(); c.ellipse(0, bodyY, bodyRx, bodyRy, 0, 0, TAU); c.fill();   // body with a spot
+    c.save(); c.clip();
+    c.fillStyle = INK; c.beginPath(); c.ellipse(-5, bodyY - 6, 6.5, 5, 0.3, 0, TAU); c.fill();
+    c.restore();
+    c.beginPath(); c.ellipse(0, bodyY, bodyRx, bodyRy, 0, 0, TAU); c.stroke();
+
+    if (lying) {
+      for (const px of [hx + 3, hx + 9]) {
+        c.beginPath(); c.ellipse(px, -2, 3.4, 2, 0, 0, TAU); c.fill(); c.stroke();
+      }
+    }
+
+    c.beginPath(); c.arc(hx, hy, 8.5, 0, TAU); c.fill(); c.stroke();          // head
+    c.beginPath(); c.ellipse(hx + 7, hy + 3, 5, 3.6, 0, 0, TAU); c.fill(); c.stroke();
+    c.fillStyle = INK;
+    c.beginPath(); c.arc(hx + 11.6, hy + 2, 1.9, 0, TAU); c.fill();
+    const sleepy = lying && a.lieT > 1.5;
+    if (a.blinkT > 0 || sleepy) {
+      c.beginPath(); c.arc(hx + 3, hy - 2.5, 1.7, 0.15 * Math.PI, 0.85 * Math.PI); c.stroke();
+    } else {
+      c.beginPath(); c.arc(hx + 3, hy - 2, 1.6, 0, TAU); c.fill();
+    }
+    c.lineWidth = 1.3;
+    c.beginPath(); c.arc(hx + 8, hy + 5, 1.8, 0.15 * Math.PI, 0.85 * Math.PI); c.stroke();
+    const ear = air ? Math.max(-0.6, Math.min(0.6, -a.vy / 900)) : wag * 0.06;
+    c.save(); c.translate(hx - 4, hy - 4); c.rotate(-0.35 + ear);
+    c.beginPath(); c.ellipse(0, 5, 3.4, 7, 0, 0, TAU); c.fill();
+    c.restore();
+    c.restore();
+    if (sleepy) zzz(c, a, s);
+  }
+
+  // A small black cat with half-lidded, unimpressed eyes.
+  function catHead(c, hx, hy, a, closed) {
+    c.fillStyle = INK;
+    c.beginPath(); c.arc(hx, hy, 7, 0, TAU); c.fill();
+    c.beginPath();
+    c.moveTo(hx - 5.5, hy - 3); c.lineTo(hx - 4, hy - 11.5); c.lineTo(hx - 0.5, hy - 6);
+    c.moveTo(hx + 1, hy - 6.5); c.lineTo(hx + 4.5, hy - 11.5); c.lineTo(hx + 6, hy - 3);
+    c.fill();
+    if (closed || a.blinkT > 0) {
+      c.strokeStyle = PAPER; c.lineWidth = 1.1;
+      c.beginPath(); c.arc(hx + 3.2, hy - 0.8, 1.6, 0.15 * Math.PI, 0.85 * Math.PI); c.stroke();
+    } else {
+      c.fillStyle = PAPER;                                     // lower half only: half-lidded
+      c.beginPath(); c.ellipse(hx + 3.2, hy - 1.2, 2.1, 1.5, 0, 0, Math.PI); c.fill();
+      c.fillStyle = INK;
+      c.beginPath(); c.ellipse(hx + 3.6, hy - 0.6, 0.55, 0.9, 0, 0, TAU); c.fill();
+    }
+    c.strokeStyle = INK; c.lineWidth = 0.8;                    // whiskers
+    c.beginPath();
+    c.moveTo(hx + 5.5, hy + 2); c.lineTo(hx + 12, hy + 0.8);
+    c.moveTo(hx + 5.5, hy + 3); c.lineTo(hx + 12, hy + 4);
+    c.stroke();
+  }
+
+  function drawCat(c, a) {
+    const s = S(), f = a.dir, air = a.air, sway = Math.sin(a.wag);
+    c.save(); c.translate(a.x, fit.ground - a.h); c.scale(f * s, s);
+    c.lineCap = 'round'; c.lineJoin = 'round';
+    c.strokeStyle = INK; c.fillStyle = INK;
+
+    if (a.pose === 'lie') {                                  // the loaf
+      c.lineWidth = 2.6;
+      c.beginPath(); c.moveTo(-13, -3); c.quadraticCurveTo(-6, 2 + sway * 0.5, 7, -0.5); c.stroke();
+      c.beginPath(); c.ellipse(0, -6.5, 14, 6.5, 0, 0, TAU); c.fill();
+      catHead(c, 12, -10, a, a.lieT > 2);
+      c.restore();
+      if (a.lieT > 2) zzz(c, a, s);
+      return;
+    }
+
+    if (a.pose === 'sit' || a.pose === 'groom') {
+      const groom = a.pose === 'groom', bob = groom ? Math.sin(clock * 7) * 1.4 : 0;
+      c.lineWidth = 2.6;                                     // tail curled round the front
+      c.beginPath(); c.moveTo(-5, -2);
+      c.quadraticCurveTo(-15, 0, -16 + sway * 2, -8 - sway); c.stroke();
+      c.beginPath(); c.ellipse(1, -12, 8.5, 12, -0.12, 0, TAU); c.fill();
+      if (groom) {                                           // licking a paw
+        c.lineWidth = 3.4;
+        c.beginPath(); c.moveTo(5, -10); c.lineTo(9, -20 + bob); c.stroke();
+      }
+      catHead(c, groom ? 6 : 4, groom ? -27 + bob * 0.4 : -28, a, groom);
+      c.restore();
+      return;
+    }
+
+    c.lineWidth = 2.6;                                       // walking: tail up, tip curled
+    c.beginPath(); c.moveTo(-12, -15);
+    c.quadraticCurveTo(-19 + sway * 2, -22, -17 + sway * 3, -31);
+    c.quadraticCurveTo(-15 + sway * 3, -35, -12 + sway * 2, -32);
+    c.stroke();
+    c.lineWidth = 2;
+    for (const [lx, ph] of [[-10, 0], [-6, Math.PI], [6, Math.PI], [10, 0]]) {
+      const swing = a.moving && !air ? Math.sin(a.walk + ph) * 3 : 0;
+      const fx = lx + swing + (air ? (lx < 0 ? -5 : 5) : 0), fy = air ? -3 : 0;
+      c.beginPath(); c.moveTo(lx, -12); c.lineTo(fx, fy); c.stroke();
+    }
+    c.beginPath(); c.ellipse(0, -14.5, 14, 6.5, 0, 0, TAU); c.fill();
+    catHead(c, 14, -21, a, false);
+    c.restore();
+  }
+
+  function drawCaret(c) {
+    if (caretT <= 0) return;
+    const s = S(), a = player, y = fit.ground - a.h - 52 * s + Math.sin(clock * 6) * 2;
+    c.globalAlpha = Math.min(1, caretT * 2); c.fillStyle = INK;
+    c.beginPath();                                          // a little heart over whoever you are
+    c.arc(a.x - 2.6 * s, y - 6.2 * s, 2.8 * s, 0, TAU);
+    c.arc(a.x + 2.6 * s, y - 6.2 * s, 2.8 * s, 0, TAU);
+    c.fill();
+    c.beginPath(); c.moveTo(a.x - 5.3 * s, y - 5.2 * s); c.lineTo(a.x + 5.3 * s, y - 5.2 * s); c.lineTo(a.x, y); c.closePath(); c.fill();
+    c.globalAlpha = 1;
+  }
+
+  function drawPets(c) {
+    const draw = a => (a.kind === 'dog' ? drawDog(c, a) : drawCat(c, a));
+    draw(friendOf(player)); draw(player);                   // the one you play stands in front
+    drawCaret(c);
+  }
+
+  /* ---------- input ---------- */
+
+  const whoEl = document.getElementById('who');
+  whoEl.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (b) { switchTo(b.dataset.who === 'cat' ? cat : dog); b.blur(); }
+  });
+
+  function hideHint() { hint.classList.add('gone'); }
+
+  const KEYMAP = { ArrowLeft:'left', a:'left', A:'left', ArrowRight:'right', d:'right', D:'right',
+                   ArrowUp:'up', w:'up', W:'up', ArrowDown:'down', s:'down', S:'down', e:'swap', E:'swap' };
+  window.addEventListener('keydown', e => {
+    const k = KEYMAP[e.key];
+    if (!k || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target === slider && e.key.startsWith('Arrow')) return;   // arrows still turn the dial
+    e.preventDefault();
+    if (k === 'swap') { if (!e.repeat) switchTo(friendOf(player)); return; }
+    if (k === 'up') { if (!e.repeat) jump(); return; }
+    keys[k] = true; hideHint();
+  });
+  window.addEventListener('keyup', e => { const k = KEYMAP[e.key]; if (k) keys[k] = false; });
+  window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
+
+  cv.addEventListener('pointerdown', e => {
+    const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    const s = S(), near = a => Math.hypot(x - a.x, y - (fit.ground - a.h - 15 * s)) < 34 * s;
+    const f = friendOf(player);
+    if (near(player)) jump();
+    else if (near(f)) switchTo(f);
+    else { player.targetX = x; hideHint(); }
+  });
+
+  slider.addEventListener('input', () => {
+    out.textContent = slider.value + '°';
+    segs = grow(+slider.value);
+    treeDirty = true;
+  });
+  btn.addEventListener('click', () => (shown >= SPLITS ? startOver() : play()));
+
+  /* ---------- frame loop ---------- */
+
+  function layout() {
+    DPR = window.devicePixelRatio || 1;
+    W = cv.clientWidth; H = cv.clientHeight;
+    for (const c of [cv, tcv, fx]) { c.width = Math.round(W * DPR); c.height = Math.round(H * DPR); }
+    treeDirty = true;
+  }
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now; clock += dt;
+    if (growing) stepGrowth(now);
+    if (treeDirty) drawTree();
+    updateWeather(dt);
+    updatePets(dt);
+
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    drawSky(ctx, dt);
+    ctx.drawImage(tcv, 0, 0, W, H);
+    drawWeatherBack(ctx);
+    ctx.strokeStyle = INK; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(0, fit.ground); ctx.lineTo(W, fit.ground); ctx.stroke();
+    drawPorch(ctx);
+    drawResting(ctx);
+    drawPets(ctx);
+    drawWeatherFront(ctx);
+    drawGlow();
+    requestAnimationFrame(frame);
+  }
+
+  new ResizeObserver(layout).observe(stage);
+  layout();
+  segs = grow(+slider.value);
+  startOver();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
