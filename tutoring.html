@@ -411,6 +411,7 @@ form.tx-form{display:grid; gap:.85rem; align-content:start;}
 .tx-form input, .tx-form textarea{width:100%; font:inherit; font-size:.93rem; color:var(--cream); background:#100f0e; border:1px solid #ffffff20; border-radius:8px; padding:.65rem .8rem; transition:border-color .18s, box-shadow .18s;}
 .tx-form input:focus, .tx-form textarea:focus{outline:none; border-color:var(--phosphor); box-shadow:0 0 0 3px #ffb6481f;}
 .tx-form textarea{resize:vertical; min-height:6rem;}
+.tx-form .opt{text-transform:none; letter-spacing:.04em; color:#7a6f61;}
 .tx-send{justify-self:start; font-family:var(--mono); font-size:.76rem; letter-spacing:.18em; text-transform:uppercase; color:#1a1610; background:linear-gradient(180deg,#ffd08a,#e5a13d); border:0; border-bottom:3px solid #8a5c1a; border-radius:6px; padding:.8rem 1.6rem .75rem; cursor:pointer;}
 .tx-send:active{transform:translateY(2px); border-bottom-width:1px;}
 .tx-note{font-family:var(--mono); font-size:.66rem; letter-spacing:.1em; color:#8d8172; min-height:1.2em;}
@@ -963,20 +964,26 @@ a.pf-card:hover{
       <form class="tx-form" id="bookForm" action="/api/contact" method="post">
         <div class="tx-frow">
           <div>
-            <label for="bf-first">First name</label>
+            <label for="bf-first">First name <span class="opt">(required)</span></label>
             <input id="bf-first" name="first-name" type="text" autocomplete="given-name" required>
           </div>
           <div>
-            <label for="bf-last">Last name or initial</label>
+            <label for="bf-last">Last name or initial <span class="opt">(required)</span></label>
             <input id="bf-last" name="last-name" type="text" autocomplete="family-name" required>
           </div>
         </div>
-        <div>
-          <label for="bf-email">Email</label>
-          <input id="bf-email" name="email" type="email" autocomplete="email" required>
+        <div class="tx-frow">
+          <div>
+            <label for="bf-email">Email <span class="opt">(required)</span></label>
+            <input id="bf-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div>
+            <label for="bf-email2">Confirm email <span class="opt">(required)</span></label>
+            <input id="bf-email2" name="confirm-email" type="email" autocomplete="email" required>
+          </div>
         </div>
         <div>
-          <label for="bf-msg">How can I help?</label>
+          <label for="bf-msg">How can I help? <span class="opt">(required)</span></label>
           <textarea id="bf-msg" name="message" rows="4" required></textarea>
         </div>
         <button class="tx-send" type="submit">Send</button>
@@ -1363,18 +1370,20 @@ document.querySelectorAll("[data-hl]").forEach(t => {
 
 
 /* Booking form: posts to the same contact handler as the homepage, marked
-   source "tutoring" so the mailer sends it to the tutoring inbox. The
-   handler wants a confirmed email, so the one email field fills both. */
+   source "tutoring" so the mailer sends it to the tutoring inbox. */
 const bookForm = document.getElementById("bookForm"), bookNote = document.getElementById("bookNote");
 bookForm.addEventListener("submit", async e => {
   e.preventDefault();
   const d = Object.fromEntries(new FormData(bookForm).entries());
   const btn = bookForm.querySelector(".tx-send"), label = btn.textContent;
+  if(d.email.trim().toLowerCase() !== d["confirm-email"].trim().toLowerCase()){
+    bookNote.style.color = "#ff9a7a"; bookNote.textContent = "Those two email addresses do not match."; return;
+  }
   btn.disabled = true; btn.textContent = "Sending…"; bookNote.textContent = ""; bookNote.style.color = "";
   try{
     const res = await fetch(bookForm.action, {
       method:"POST", headers:{"Content-Type":"application/json", "Accept":"application/json"},
-      body:JSON.stringify({"first-name":d["first-name"], "last-name":d["last-name"], "email":d.email, "confirm-email":d.email,
+      body:JSON.stringify({"first-name":d["first-name"], "last-name":d["last-name"], "email":d.email, "confirm-email":d["confirm-email"],
                            "message":d.message, "source":"tutoring"})
     });
     let r = null; try{ r = await res.json(); }catch(err){}
