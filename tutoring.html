@@ -364,9 +364,14 @@ nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-con
 }
 
 /* ═══ SESSIONS ═══ */
-.tx-sess{display:block;}
-.tx-sess .tx-tutor{grid-template-columns:clamp(120px, 26%, 220px) minmax(0,1fr);}
-.tx-sess h2, .tx-book h2{font-size:clamp(1.4rem, 3.2vw, 2rem); font-weight:500; letter-spacing:-.02em; line-height:1.2; text-wrap:balance; margin-bottom:.5rem;}
+.tx-sess{display:grid; column-gap:clamp(1.4rem, 3vw, 2.4rem); grid-template-columns:minmax(0,1fr) minmax(0,340px); align-items:stretch;}
+.tx-aboutcol{display:contents;}
+.tx-aboutcol h2{grid-column:1 / -1; grid-row:1;}
+.tx-aboutcol .tx-tutor{grid-column:1; grid-row:2;}
+/* placeholder frame where artwork will go: same footprint the rate card had */
+.tx-artslot{grid-column:2; grid-row:2; margin-top:1rem; border:2px dashed #ffffff2e; border-radius:12px;}
+@media (max-width:860px){ .tx-sess{grid-template-columns:1fr;} .tx-artslot{display:none;} }
+.tx-sess h2, .tx-book-h{font-size:clamp(1.4rem, 3.2vw, 2rem); font-weight:500; letter-spacing:-.02em; line-height:1.2; text-wrap:balance; margin-bottom:.5rem;}
 
 .tx-rates{display:grid; gap:clamp(.8rem, 2vw, 1.1rem); grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr));}
 .tx-rate{
@@ -395,9 +400,20 @@ nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-con
 .tx-rate .tx-key{margin-top:auto; min-width:0; padding:.7rem .9rem .62rem; font-size:.7rem;}
 
 /* ═══ BOOK ═══ */
-.tx-book{text-align:center; padding:1rem 0;}
-.tx-book .tx-rates{max-width:340px; margin:1.2rem auto 0; text-align:left;}
-.tx-rate-soon{font-family:var(--mono); font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; text-align:center; color:#5a3a12; background:#f6efe0; border-radius:6px; box-shadow:inset 0 0 0 1px #00000018; padding:.7rem .9rem .62rem;}
+.tx-book-h{margin-bottom:1rem;}
+.tx-book{display:grid; gap:clamp(1.4rem, 3vw, 2.4rem); grid-template-columns:minmax(0,340px) minmax(0,1fr); align-items:stretch;}
+.tx-book .tx-rates{align-self:start;}
+@media (max-width:860px){ .tx-book{grid-template-columns:1fr;} }
+form.tx-form{display:grid; gap:.85rem; align-content:start;}
+.tx-frow{display:grid; gap:.85rem; grid-template-columns:1fr 1fr;}
+@media (max-width:520px){ .tx-frow{grid-template-columns:1fr;} }
+.tx-form label{display:block; font-family:var(--mono); font-size:.64rem; letter-spacing:.16em; text-transform:uppercase; color:#a2937e; margin-bottom:.3rem;}
+.tx-form input, .tx-form textarea{width:100%; font:inherit; font-size:.93rem; color:var(--cream); background:#100f0e; border:1px solid #ffffff20; border-radius:8px; padding:.65rem .8rem; transition:border-color .18s, box-shadow .18s;}
+.tx-form input:focus, .tx-form textarea:focus{outline:none; border-color:var(--phosphor); box-shadow:0 0 0 3px #ffb6481f;}
+.tx-form textarea{resize:vertical; min-height:6rem;}
+.tx-send{justify-self:start; font-family:var(--mono); font-size:.76rem; letter-spacing:.18em; text-transform:uppercase; color:#1a1610; background:linear-gradient(180deg,#ffd08a,#e5a13d); border:0; border-bottom:3px solid #8a5c1a; border-radius:6px; padding:.8rem 1.6rem .75rem; cursor:pointer;}
+.tx-send:active{transform:translateY(2px); border-bottom-width:1px;}
+.tx-note{font-family:var(--mono); font-size:.66rem; letter-spacing:.1em; color:#8d8172; min-height:1.2em;}
 .tx-tutor{display:grid; grid-template-columns:clamp(120px, 34%, 220px) minmax(0,1fr); gap:1.2rem; align-items:stretch; margin:1rem 0 0;}
 .tx-tutor > div:last-child{display:flex; flex-direction:column; justify-content:space-between; gap:1rem;}
 .tx-tutor .tx-portrait{align-self:start;}
@@ -813,6 +829,7 @@ a.pf-card:hover{
           </div>
         </div>
       </div>
+      <div class="tx-artslot" aria-hidden="true"></div>
     </div>
   </section>
 
@@ -930,8 +947,8 @@ a.pf-card:hover{
   <section class="panel" id="book">
     <span class="panel-tab">Booking &amp; rates</span>
 
+    <h2 class="tx-book-h">Booking and rates</h2>
     <div class="tx-book">
-      <h2>Booking and rates</h2>
       <div class="tx-rates">
         <div class="tx-rate">
           <div class="tx-rate-top"><span class="tx-side">RATE</span></div>
@@ -940,9 +957,31 @@ a.pf-card:hover{
             <p class="where">In person in New York City or online</p>
           </div>
           <p class="tx-price"><strong>$200</strong><span>per hour</span></p>
-          <p class="tx-rate-soon">Booking coming soon</p>
         </div>
       </div>
+
+      <form class="tx-form" id="bookForm" action="/api/contact" method="post">
+        <div class="tx-frow">
+          <div>
+            <label for="bf-first">First name</label>
+            <input id="bf-first" name="first-name" type="text" autocomplete="given-name" required>
+          </div>
+          <div>
+            <label for="bf-last">Last name or initial</label>
+            <input id="bf-last" name="last-name" type="text" autocomplete="family-name" required>
+          </div>
+        </div>
+        <div>
+          <label for="bf-email">Email</label>
+          <input id="bf-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div>
+          <label for="bf-msg">What are you working on?</label>
+          <textarea id="bf-msg" name="message" rows="4" required></textarea>
+        </div>
+        <button class="tx-send" type="submit">Send</button>
+        <p class="tx-note" id="bookNote" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </section>
 
@@ -1320,6 +1359,29 @@ document.querySelectorAll("[data-hl]").forEach(t => {
   const off = () => exPanel.removeAttribute("data-hl-on");
   t.addEventListener("mouseenter", on); t.addEventListener("mouseleave", off);
   t.addEventListener("focus", on); t.addEventListener("blur", off);
+});
+
+
+/* Booking form: posts to the same contact handler as the homepage. That
+   handler wants a confirmed email, so the one email field fills both. */
+const bookForm = document.getElementById("bookForm"), bookNote = document.getElementById("bookNote");
+bookForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  const d = Object.fromEntries(new FormData(bookForm).entries());
+  const btn = bookForm.querySelector(".tx-send"), label = btn.textContent;
+  btn.disabled = true; btn.textContent = "Sending…"; bookNote.textContent = ""; bookNote.style.color = "";
+  try{
+    const res = await fetch(bookForm.action, {
+      method:"POST", headers:{"Content-Type":"application/json", "Accept":"application/json"},
+      body:JSON.stringify({"first-name":d["first-name"], "last-name":d["last-name"], "email":d.email, "confirm-email":d.email,
+                           "message":"Tutoring inquiry\n\n" + d.message})
+    });
+    let r = null; try{ r = await res.json(); }catch(err){}
+    if(!res.ok || !r || !r.ok) throw new Error((r && r.error) || "Unable to send right now. Please email aamir.tutoring@proton.me.");
+    bookForm.reset(); bookNote.style.color = "#6fe3c0"; bookNote.textContent = "Thank you! I will be in touch soon.";
+  }catch(err){
+    bookNote.style.color = "#ff9a7a"; bookNote.textContent = err.message;
+  }finally{ btn.disabled = false; btn.textContent = label; }
 });
 
 /* ═══════════════════════════════════════════════════════════
