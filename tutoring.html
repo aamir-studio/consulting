@@ -193,7 +193,7 @@ nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-con
 .tx-ex{display:grid; column-gap:clamp(1.4rem, 3.4vw, 2.8rem); grid-template-columns:minmax(0,.85fr) minmax(0,1.22fr); align-items:stretch;}
 .tx-ex-dev{display:contents;}
 .tx-ex-dev .tx-devwrap{grid-column:2; grid-row:1;}
-.tx-ex-copy{grid-column:1; grid-row:1; display:flex; flex-direction:column; justify-content:flex-start; gap:2.4rem; padding-top:min(6.3vw, 5.1rem);}  /* first step level with the instrument's label strip */
+.tx-ex-copy{grid-column:1; grid-row:1; display:flex; flex-direction:column; justify-content:flex-start; gap:2.4rem; padding-top:0;}  /* first step level with the top of the instrument */
 .tx-ex-step{border-left:3px solid #7ea6ff55; padding:.2rem 0 .3rem 1rem;}
 .tx-ex-h{font-family:var(--mono); font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color:#7ea6ff; margin-bottom:.55rem;}
 .tx-ex-step p:not(.tx-ex-h){color:#d8ccb7; font-size:clamp(.98rem,1.5vw,1.08rem); line-height:1.6;}
@@ -201,11 +201,6 @@ nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-con
   .tx-ex{grid-template-columns:1fr; row-gap:1.6rem;}
   .tx-ex-copy{grid-row:1; justify-content:flex-start; padding-top:0; gap:1.6rem;}
   .tx-ex-dev .tx-devwrap{grid-column:1; grid-row:auto;}
-  /* phones: problem, how math helps, the instrument, then its interpretation */
-  .tx-ex-copy{display:contents;}
-  .tx-ex-step{order:1;}
-  .tx-ex-dev .tx-devwrap{order:2;}
-  .tx-ex-step:nth-child(3){order:3;}
 }
 .tx-ex-copy .c-dot{color:#2fc4a0; font-weight:700;}
 .tx-ex-copy .c-line{color:#c77dff; font-weight:700;}
