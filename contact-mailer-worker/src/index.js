@@ -31,7 +31,8 @@ function normalizeSubmission(rawSubmission) {
     lastName: normalizeText(rawSubmission.lastName, 100),
     email: normalizeText(rawSubmission.email, 254).toLowerCase(),
     website: normalizeText(rawSubmission.website, 300),
-    message: normalizeText(rawSubmission.message, 4000)
+    message: normalizeText(rawSubmission.message, 4000),
+    source: rawSubmission.source === "tutoring" ? "tutoring" : "consulting"
   };
 
   if (!submission.firstName || !submission.lastName || !submission.message) {
@@ -47,7 +48,7 @@ function normalizeSubmission(rawSubmission) {
 
 function buildTextBody(submission) {
   const lines = [
-    "New consulting inquiry",
+    `New ${submission.source} inquiry`,
     "",
     `First name: ${submission.firstName}`,
     `Last name: ${submission.lastName}`,
@@ -72,7 +73,7 @@ function buildHtmlBody(submission) {
   return [
     "<html>",
     "  <body>",
-    "    <h2>New consulting inquiry</h2>",
+    `    <h2>New ${submission.source} inquiry</h2>`,
     `    <p><strong>First name:</strong> ${escapeHtml(submission.firstName)}</p>`,
     `    <p><strong>Last name:</strong> ${escapeHtml(submission.lastName)}</p>`,
     `    <p><strong>Email:</strong> ${escapeHtml(submission.email)}</p>`,
@@ -84,11 +85,11 @@ function buildHtmlBody(submission) {
   ].join("\r\n");
 }
 
-function buildRawEmail({ sender, recipient, replyTo, subject, textBody, htmlBody }) {
+function buildRawEmail({ sender, senderName, recipient, replyTo, subject, textBody, htmlBody }) {
   const boundary = `cf-contact-${crypto.randomUUID()}`;
 
   return [
-    `From: Aamir Consulting Contact Form <${sender}>`,
+    `From: ${senderName} <${sender}>`,
     `To: <${recipient}>`,
     `Reply-To: <${replyTo}>`,
     `Subject: ${subject}`,
@@ -139,18 +140,25 @@ export default {
       return jsonResponse({ ok: false, error: error.message || "Invalid submission." }, 400);
     }
 
+    // tutoring form -> tutoring inbox; everything else -> consulting inbox
+    const tutoring = submission.source === "tutoring";
+    const recipient = (tutoring && env.TUTORING_FORM_RECIPIENT) || env.CONTACT_FORM_RECIPIENT;
+
     const rawEmail = buildRawEmail({
       sender: env.CONTACT_FORM_SENDER,
-      recipient: env.CONTACT_FORM_RECIPIENT,
+      senderName: tutoring ? "Aamir Tutoring Contact Form" : "Aamir Consulting Contact Form",
+      recipient,
       replyTo: submission.email,
-      subject: "New consulting inquiry via aamir.consulting",
+      subject: tutoring
+        ? "New tutoring inquiry via aamir.consulting/tutoring"
+        : "New consulting inquiry via aamir.consulting",
       textBody: buildTextBody(submission),
       htmlBody: buildHtmlBody(submission)
     });
 
     const message = new EmailMessage(
       env.CONTACT_FORM_SENDER,
-      env.CONTACT_FORM_RECIPIENT,
+      recipient,
       rawEmail
     );
 

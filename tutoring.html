@@ -976,7 +976,7 @@ a.pf-card:hover{
           <input id="bf-email" name="email" type="email" autocomplete="email" required>
         </div>
         <div>
-          <label for="bf-msg">What are you working on?</label>
+          <label for="bf-msg">How can I help?</label>
           <textarea id="bf-msg" name="message" rows="4" required></textarea>
         </div>
         <button class="tx-send" type="submit">Send</button>
@@ -1362,7 +1362,8 @@ document.querySelectorAll("[data-hl]").forEach(t => {
 });
 
 
-/* Booking form: posts to the same contact handler as the homepage. That
+/* Booking form: posts to the same contact handler as the homepage, marked
+   source "tutoring" so the mailer sends it to the tutoring inbox. The
    handler wants a confirmed email, so the one email field fills both. */
 const bookForm = document.getElementById("bookForm"), bookNote = document.getElementById("bookNote");
 bookForm.addEventListener("submit", async e => {
@@ -1374,7 +1375,7 @@ bookForm.addEventListener("submit", async e => {
     const res = await fetch(bookForm.action, {
       method:"POST", headers:{"Content-Type":"application/json", "Accept":"application/json"},
       body:JSON.stringify({"first-name":d["first-name"], "last-name":d["last-name"], "email":d.email, "confirm-email":d.email,
-                           "message":"Tutoring inquiry\n\n" + d.message})
+                           "message":d.message, "source":"tutoring"})
     });
     let r = null; try{ r = await res.json(); }catch(err){}
     if(!res.ok || !r || !r.ok) throw new Error((r && r.error) || "Unable to send right now. Please email aamir.tutoring@proton.me.");

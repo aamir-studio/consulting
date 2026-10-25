@@ -5,11 +5,17 @@
   "send_email": [
     {
       "name": "CONTACT_SEND_EMAIL",
-      "destination_address": "aamir.consulting@proton.me"
+      // every inbox the Worker may send to; each must be a verified
+      // destination address under Cloudflare Email Routing
+      "allowed_destination_addresses": [
+        "aamir.consulting@proton.me",
+        "aamir.tutoring@proton.me"
+      ]
     }
   ],
   "vars": {
     "CONTACT_FORM_SENDER": "mailer@aamir.consulting",
-    "CONTACT_FORM_RECIPIENT": "aamir.consulting@proton.me"
+    "CONTACT_FORM_RECIPIENT": "aamir.consulting@proton.me",
+    "TUTORING_FORM_RECIPIENT": "aamir.tutoring@proton.me"
   }
 }

@@ -76,7 +76,9 @@ function validateSubmission(rawSubmission) {
       254
     ).toLowerCase(),
     website: normalizeText(rawSubmission.website, 300),
-    message: normalizeText(rawSubmission.message, 4000)
+    message: normalizeText(rawSubmission.message, 4000),
+    // which site the form was on; decides the inbox in the mailer Worker
+    source: rawSubmission.source === "tutoring" ? "tutoring" : "consulting"
   };
 
   if (!submission.firstName || !submission.lastName) {

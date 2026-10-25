@@ -103,6 +103,15 @@ wrangler pages dev . --service CONTACT_MAILER=aamir-consulting-contact-mailer
 
 If you renamed the Worker, use that Worker name instead.
 
+## Two inboxes
+
+The tutoring page's form sends `source: "tutoring"`. The mailer Worker delivers those to
+`TUTORING_FORM_RECIPIENT` (aamir.tutoring@proton.me) and everything else to
+`CONTACT_FORM_RECIPIENT` (aamir.consulting@proton.me). Both must be verified destination
+addresses under Email Routing and listed in `allowed_destination_addresses` in
+`contact-mailer-worker/wrangler.jsonc`. After changing the Worker, redeploy it with
+`wrangler deploy` from `contact-mailer-worker`; pushing the site does not redeploy it.
+
 ## Notes
 
 - The form endpoint is `/api/contact`.
