@@ -520,11 +520,7 @@ body.tx-preview .fl-stage{display:block; padding:16px 16px 48px;}
 .fl-qr{display:flex; align-items:center; gap:.12in;}
 .fl-qr p{font-family:var(--mono); font-size:7.6pt; letter-spacing:.1em; line-height:1.5; text-align:right;}
 .fl-qr p b{display:block; font-family:var(--sans); font-size:11pt; letter-spacing:0; font-weight:600;}
-.fl-qrbox{
-  width:1.12in; height:1.12in; flex:none; display:grid; place-items:center; text-align:center;
-  border:1.2pt dashed #8a7e6e; border-radius:4pt;
-  font-family:var(--mono); font-size:7pt; letter-spacing:.14em; line-height:1.5; text-transform:uppercase; color:#8a7e6e;
-}
+.fl-qrimg{width:1.12in; height:1.12in; flex:none; display:block; align-self:center; image-rendering:pixelated;}
 
 .fl-tabs{
   margin:0 -.55in; height:1.62in; flex:none;
@@ -1134,8 +1130,7 @@ a.pf-card:hover{
                 <p><b>Scan to book</b><span class="mt-link"><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><ellipse cx="8" cy="8" rx="2.8" ry="6.5"/><path d="M1.5 8h13M2.6 4.6h10.8M2.6 11.4h10.8"/></g></svg>aamir.consulting/tutoring</span></p>
                 <p><b>Get in touch</b><span class="mt-link"><svg class="mt-ico" viewBox="0 0 16 16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.8 4l6.2 5 6.2-5"/></g></svg>aamir.tutoring@proton.me</span></p>
               </div>
-              <!-- QR placeholder: generate a code for the final link and drop it in here -->
-              <div class="fl-qrbox"><span>QR code<br>goes here</span></div>
+              <img class="fl-qrimg" src="images/tutoring-qr.png" alt="QR code linking to aamir.consulting/tutoring">
             </div>
           </div>
         </section>
