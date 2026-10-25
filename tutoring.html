@@ -364,15 +364,8 @@ nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-con
 }
 
 /* ═══ SESSIONS ═══ */
-.tx-sess{display:grid; column-gap:clamp(1.4rem, 3vw, 2.4rem); grid-template-columns:minmax(0,1fr) minmax(0,340px); align-items:stretch;}
-.tx-aboutcol{display:contents;}
-.tx-aboutcol h2{grid-column:1 / -1; grid-row:1;}
-.tx-aboutcol .tx-tutor{grid-column:1; grid-row:2;}
-.tx-sess .tx-rates{grid-column:2; grid-row:2; margin-top:1rem;}
-.tx-sess .tx-rate{height:100%; justify-content:space-between;}
-.tx-sess .tx-rate .tx-key{margin-top:0;}
-@media (max-width:860px){ .tx-sess{grid-template-columns:1fr; row-gap:1.4rem;} .tx-sess .tx-rates{grid-column:1; grid-row:3; margin-top:0;} .tx-sess .tx-rate{height:auto;} }
-@media (max-width:860px){ .tx-sess{grid-template-columns:1fr;} }
+.tx-sess{display:block;}
+.tx-sess .tx-tutor{grid-template-columns:clamp(120px, 26%, 220px) minmax(0,1fr);}
 .tx-sess h2, .tx-book h2{font-size:clamp(1.4rem, 3.2vw, 2rem); font-weight:500; letter-spacing:-.02em; line-height:1.2; text-wrap:balance; margin-bottom:.5rem;}
 
 .tx-rates{display:grid; gap:clamp(.8rem, 2vw, 1.1rem); grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr));}
@@ -403,6 +396,8 @@ nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-con
 
 /* ═══ BOOK ═══ */
 .tx-book{text-align:center; padding:1rem 0;}
+.tx-book .tx-rates{max-width:340px; margin:1.2rem auto 0; text-align:left;}
+.tx-rate-soon{font-family:var(--mono); font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; text-align:center; color:#5a3a12; background:#f6efe0; border-radius:6px; box-shadow:inset 0 0 0 1px #00000018; padding:.7rem .9rem .62rem;}
 .tx-tutor{display:grid; grid-template-columns:clamp(120px, 34%, 220px) minmax(0,1fr); gap:1.2rem; align-items:stretch; margin:1rem 0 0;}
 .tx-tutor > div:last-child{display:flex; flex-direction:column; justify-content:space-between; gap:1rem;}
 .tx-tutor .tx-portrait{align-self:start;}
@@ -418,7 +413,6 @@ nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-con
 .tx-name a{color:var(--cream); border-bottom:1px solid #ffb64855;}
 .tx-name a:hover{color:var(--phosphor); border-bottom-color:var(--phosphor);}
 .tx-cred{font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; line-height:1.7; color:#a2937e;}
-.tx-soon{font-family:var(--mono); font-size:.8rem; letter-spacing:.24em; text-transform:uppercase; color:var(--phosphor); margin-top:.6rem;}
 
 footer.site{
   padding:1.2rem 0 3rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:center; justify-content:center;
@@ -668,7 +662,7 @@ a.pf-card:hover{
       <button class="key" data-goto="top">Home</button>
       <button class="key" data-goto="sessions">About me</button>
       <button class="key" data-goto="fun">Fun</button>
-      <button class="key" data-goto="book">Booking</button>
+      <button class="key" data-goto="book">Booking &amp; rates</button>
       <a class="key" href="index.html">Consulting</a>
     </nav>
   </header>
@@ -819,18 +813,6 @@ a.pf-card:hover{
           </div>
         </div>
       </div>
-
-      <div class="tx-rates">
-        <div class="tx-rate">
-          <div class="tx-rate-top"><span class="tx-side">RATE</span></div>
-          <div class="tx-rate-label">
-            <h3>One rate</h3>
-            <p class="where">In person in New York City or online</p>
-          </div>
-          <p class="tx-price"><strong>$200</strong><span>per hour</span></p>
-          <button class="tx-key" data-goto="book">Book a session</button>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -946,11 +928,21 @@ a.pf-card:hover{
 
   <!-- ══ BOOK ══ -->
   <section class="panel" id="book">
-    <span class="panel-tab">Book</span>
+    <span class="panel-tab">Booking &amp; rates</span>
 
     <div class="tx-book">
-      <h2>Book a session</h2>
-      <p class="tx-soon">Coming soon</p>
+      <h2>Booking and rates</h2>
+      <div class="tx-rates">
+        <div class="tx-rate">
+          <div class="tx-rate-top"><span class="tx-side">RATE</span></div>
+          <div class="tx-rate-label">
+            <h3>One rate</h3>
+            <p class="where">In person in New York City or online</p>
+          </div>
+          <p class="tx-price"><strong>$200</strong><span>per hour</span></p>
+          <p class="tx-rate-soon">Booking coming soon</p>
+        </div>
+      </div>
     </div>
   </section>
 
