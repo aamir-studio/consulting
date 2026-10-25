@@ -389,6 +389,9 @@ nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-con
 }
 .tx-rate h3{font-size:1.2rem; font-weight:600; letter-spacing:-.01em; line-height:1.2;}
 .tx-rate .where{font-family:var(--mono); font-size:.66rem; letter-spacing:.12em; color:#7a6851; text-transform:uppercase;}
+.tx-perks{list-style:none; margin:0 0 .9rem; padding:0 .2rem; display:grid; gap:.5rem;}
+.tx-perks li{position:relative; padding-left:1.4rem; font-size:.92rem; line-height:1.4; color:#3a2f22;}
+.tx-perks li::before{content:"+"; position:absolute; left:0; top:-.05em; font-family:var(--mono); font-weight:700; font-size:1.05rem; color:#a0611a;}
 .tx-price{
   display:flex; align-items:baseline; gap:.4rem;
   background:#12100e; border-radius:6px; box-shadow:inset 0 0 0 1px #00000060, inset 0 2px 8px #000;
@@ -957,6 +960,10 @@ a.pf-card:hover{
             <h3>One rate</h3>
             <p class="where">In person in New York City or online</p>
           </div>
+          <ul class="tx-perks">
+            <li>Math tailored to your interests and applications</li>
+            <li>Engaging lessons that set you up for confidence and independence</li>
+          </ul>
           <p class="tx-price"><strong>$200</strong><span>per hour</span></p>
         </div>
       </div>
