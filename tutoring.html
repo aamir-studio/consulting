@@ -1541,18 +1541,22 @@ function inkEdges(node){
   const bot = rects[rects.length-1].bottom - (m.fontBoundingBoxDescent - m.actualBoundingBoxDescent);
   return [top, bot];
 }
-function centerCta(){
-  const box = document.querySelector(".sheet .mt-qrtext"), qr = document.querySelector(".sheet .fl-t3 img[src*=qr]");
-  if(!box || !qr) return;
-  if(!qr.complete || !qr.naturalHeight){ qr.addEventListener("load", centerCta, {once:true}); return; }
+/* shift box so its text ink is centered on ref (an image) */
+function inkCenter(box, ref){
+  if(!box || !ref) return;
+  if(!ref.complete || !ref.naturalHeight){ ref.addEventListener("load", centerCta, {once:true}); return; }
   box.style.transform = "none";  /* measure from the unshifted position */
   const scale = sheet.getBoundingClientRect().height / sheet.offsetHeight || 1;
   const walker = document.createTreeWalker(box, NodeFilter.SHOW_TEXT, {acceptNode: n => n.textContent.trim() ? 1 : 3});
   let top = Infinity, bot = -Infinity, n;
   while((n = walker.nextNode())){ const e = inkEdges(n); if(e){ top = Math.min(top, e[0]); bot = Math.max(bot, e[1]); } }
   if(!isFinite(top)){ box.style.transform = ""; return; }
-  const q = qr.getBoundingClientRect();
+  const q = ref.getBoundingClientRect();
   box.style.transform = `translateY(${(((q.top + q.bottom) - (top + bot)) / 2 / scale).toFixed(2)}px)`;
+}
+function centerCta(){
+  inkCenter(document.querySelector(".sheet .mt-qrtext"), document.querySelector(".sheet .fl-t3 img[src*=qr]"));  /* contact block on the QR */
+  inkCenter(document.querySelector(".sheet .fl-who"), document.querySelector(".sheet .fl-alogo img"));          /* name block on the portrait */
 }
 window.addEventListener("resize", () => requestAnimationFrame(centerCta));
 window.addEventListener("load", () => requestAnimationFrame(centerCta));
