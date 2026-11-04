@@ -474,7 +474,22 @@ footer.site{
   color:#a2937e; background:none; border:1px solid #ffffff22; border-radius:5px; padding:.4rem .7rem .35rem; cursor:pointer;
 }
 .tx-printkey:hover{color:var(--phosphor); border-color:#ffb64866;}
-.tx-printkey[hidden]{display:none;}
+.tx-flyerkeys{display:inline-flex; gap:.5rem; flex-wrap:wrap;}
+.tx-flyerkeys[hidden]{display:none;}
+#fl2Frame{display:none; width:100%; height:100%; border:0; background:#fff;}
+body.fl-v2 #sheet{display:none;}
+body.fl-v2 #fl2Frame{display:block;}
+
+/* ═══ TESTIMONIALS ═══ */
+.tq-list{display:grid; gap:1.4rem; max-width:780px; margin:0 auto;}
+.tq{position:relative; margin:0; padding:1.4rem 1.6rem 1.3rem 4rem; border:1px solid #ffffff14; border-left:3px solid var(--phosphor); border-radius:10px; background:#0f0e0d;}
+.tq-mark{position:absolute; left:1.2rem; top:1.4rem; width:1.8rem; color:var(--phosphor); opacity:.85;}
+.tq blockquote{margin:0; color:var(--cream); font-size:.98rem; line-height:1.65;}
+.tq blockquote p + p{margin-top:.8rem;}
+.tq figcaption{margin-top:1rem; display:flex; flex-wrap:wrap; align-items:baseline; gap:.3rem .7rem;}
+.tq figcaption b{font-weight:600; color:var(--phosphor);}
+.tq figcaption span{font-family:var(--mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:#8d8172;}
+@media (max-width:560px){ .tq{padding:3.4rem 1.1rem 1.1rem;} .tq-mark{top:1.1rem;} }
 
 /* ═══ THE FLYER ═══
    One US Letter sheet, built in inches and points. Hidden on screen
@@ -772,6 +787,7 @@ a.pf-card:hover{
     <nav class="keys">
       <button class="key" data-goto="top">Home</button>
       <button class="key" data-goto="sessions">About me</button>
+      <button class="key" data-goto="testimonials">Testimonials</button>
       <button class="key" data-goto="fun">Fun</button>
       <button class="key" data-goto="book">Booking &amp; rates</button>
       <a class="key" href="index.html">Consulting</a>
@@ -925,6 +941,22 @@ a.pf-card:hover{
         </div>
       </div>
       <div class="tx-artslot"><svg class="tx-tapestry" viewBox="0 0 340 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="An elliptical orbit around the sun, swept in three equal areas: a space biology habitat, a business and finance world with a rising chart, and an engineering satellite"><defs><pattern id="tp-grout" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0V5H0" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width=".6"/></pattern><radialGradient id="tp-sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6c2"/><stop offset=".45" stop-color="#FCCC0A"/><stop offset="1" stop-color="#FF6319"/></radialGradient><radialGradient id="tp-halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FCCC0A" stop-opacity=".45"/><stop offset="1" stop-color="#FCCC0A" stop-opacity="0"/></radialGradient><radialGradient id="tp-dome" cx=".4" cy=".3" r=".8"><stop offset="0" stop-color="#e8f7ff" stop-opacity=".9"/><stop offset="1" stop-color="#7cc4ff" stop-opacity=".45"/></radialGradient><radialGradient id="tp-world" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#7fe0a0"/><stop offset="1" stop-color="#00733a"/></radialGradient><clipPath id="tp-clip"><rect x="3" y="3" width="334" height="294" rx="10"/></clipPath></defs><g clip-path="url(#tp-clip)"><rect width="340" height="300" fill="#0f2d6b"/><rect width="340" height="300" fill="url(#tp-grout)"/><g fill="#fff"><rect x="112" y="51" width="2.2" height="1.4" opacity="0.4"/><rect x="272" y="35" width="2.2" height="1.4" opacity="0.85"/><rect x="77" y="32" width="1.8" height="1.4" opacity="0.4"/><rect x="37" y="129" width="2.2" height="1.4" opacity="0.4"/><rect x="211" y="174" width="1.4" height="2.2" opacity="0.85"/><rect x="136" y="285" width="1.4" height="2.2" opacity="0.4"/><rect x="101" y="49" width="1.4" height="2.2" opacity="0.6"/><rect x="188" y="202" width="1.4" height="2.2" opacity="0.85"/><rect x="214" y="114" width="2.2" height="2.2" opacity="0.4"/><rect x="190" y="184" width="1.8" height="2.2" opacity="0.85"/><rect x="146" y="97" width="2.2" height="1.8" opacity="0.6"/><rect x="105" y="234" width="2.2" height="1.4" opacity="0.4"/><rect x="193" y="157" width="1.8" height="2.2" opacity="0.6"/><rect x="101" y="286" width="1.4" height="2.2" opacity="0.6"/><rect x="61" y="105" width="1.8" height="1.8" opacity="0.4"/><rect x="318" y="30" width="2.2" height="2.2" opacity="0.6"/><rect x="118" y="107" width="1.8" height="2.2" opacity="0.6"/><rect x="30" y="35" width="1.8" height="1.8" opacity="0.85"/><rect x="222" y="25" width="2.2" height="1.8" opacity="0.85"/><rect x="194" y="201" width="1.8" height="1.8" opacity="0.85"/><rect x="132" y="198" width="1.4" height="1.8" opacity="0.6"/><rect x="62" y="41" width="1.4" height="1.4" opacity="0.6"/><rect x="50" y="78" width="1.8" height="1.8" opacity="0.4"/><rect x="62" y="122" width="1.8" height="1.4" opacity="0.6"/><rect x="286" y="87" width="1.8" height="1.8" opacity="0.85"/><rect x="293" y="280" width="1.4" height="1.4" opacity="0.4"/><rect x="57" y="195" width="1.4" height="1.8" opacity="0.85"/><rect x="67" y="88" width="1.4" height="1.8" opacity="0.85"/><rect x="127" y="169" width="1.4" height="2.2" opacity="0.85"/><rect x="314" y="194" width="2.2" height="1.4" opacity="0.6"/><rect x="298" y="230" width="2.2" height="2.2" opacity="0.6"/><rect x="136" y="120" width="1.8" height="2.2" opacity="0.6"/><rect x="28" y="27" width="1.4" height="1.8" opacity="0.4"/><rect x="43" y="179" width="1.4" height="1.4" opacity="0.85"/><rect x="57" y="37" width="1.8" height="2.2" opacity="0.4"/><rect x="31" y="67" width="1.8" height="1.4" opacity="0.85"/><rect x="89" y="107" width="1.8" height="1.8" opacity="0.4"/><rect x="45" y="147" width="1.8" height="1.8" opacity="0.6"/><rect x="108" y="49" width="2.2" height="1.8" opacity="0.85"/><rect x="93" y="243" width="1.4" height="2.2" opacity="0.4"/><rect x="74" y="278" width="1.8" height="1.4" opacity="0.85"/><rect x="183" y="16" width="2.2" height="1.8" opacity="0.85"/><rect x="286" y="206" width="1.8" height="2.2" opacity="0.6"/><rect x="300" y="109" width="1.4" height="2.2" opacity="0.85"/><rect x="259" y="102" width="1.4" height="2.2" opacity="0.4"/><rect x="268" y="240" width="2.2" height="1.4" opacity="0.4"/></g><polygon points="69.6,175.5 102.4,78.8 106.9,76.5 111.3,74.4 115.6,72.4 119.8,70.6 124.0,68.9 128.1,67.4 132.2,65.9 136.2,64.6 140.1,63.4 144.0,62.3 147.8,61.2 151.5,60.3 155.2,59.5 158.8,58.7 162.4,58.0 165.9,57.4 169.3,56.8 172.7,56.3 176.0,55.9 179.3,55.6 182.5,55.3 185.7,55.0 188.8,54.8 191.9,54.7 194.9,54.6 197.9,54.5 200.8,54.5 203.7,54.6 206.6,54.7 209.3,54.8 212.1,55.0 214.8,55.2 217.4,55.4 220.0,55.7 222.6,56.0 225.1,56.3 227.6,56.7 230.0,57.1 232.4,57.6 234.7,58.1" fill="#2f6ee8" fill-opacity=".28" stroke="#2f6ee8" stroke-opacity=".7" stroke-width="1"/><polygon points="69.6,175.5 294.3,90.2 295.3,91.4 296.3,92.6 297.2,93.8 298.1,95.1 299.0,96.3 299.8,97.6 300.6,98.8 301.3,100.1 302.1,101.4 302.8,102.7 303.4,104.0 304.0,105.4 304.6,106.7 305.2,108.0 305.7,109.4 306.2,110.7 306.7,112.1 307.1,113.5 307.5,114.9 307.9,116.3 308.2,117.7 308.5,119.1 308.8,120.5 309.0,121.9 309.2,123.4 309.3,124.8 309.5,126.3 309.6,127.7 309.6,129.2 309.7,130.7 309.6,132.1 309.6,133.6 309.5,135.1 309.4,136.6 309.3,138.1 309.1,139.6 308.9,141.1 308.6,142.6 308.3,144.2 308.0,145.7" fill="#00933C" fill-opacity=".28" stroke="#00933C" stroke-opacity=".7" stroke-width="1"/><polygon points="69.6,175.5 270.2,202.0 268.3,203.5 266.4,205.1 264.5,206.6 262.4,208.1 260.4,209.6 258.2,211.0 256.1,212.5 253.8,214.0 251.5,215.4 249.2,216.8 246.8,218.2 244.3,219.6 241.8,221.0 239.2,222.4 236.5,223.8 233.8,225.1 231.0,226.4 228.1,227.7 225.2,229.0 222.2,230.2 219.1,231.4 215.9,232.6 212.7,233.8 209.4,234.9 206.0,236.0 202.5,237.0 198.9,238.0 195.3,239.0 191.5,239.9 187.6,240.8 183.7,241.6 179.6,242.4 175.5,243.1 171.2,243.7 166.8,244.2 162.3,244.7 157.7,245.0 152.9,245.3 148.0,245.4 143.0,245.5" fill="#FF6319" fill-opacity=".28" stroke="#FF6319" stroke-opacity=".7" stroke-width="1"/><polyline points="307.8,116.1 308.5,119.3 309.1,122.4 309.4,125.6 309.6,128.9 309.6,132.1 309.5,135.4 309.2,138.7 308.7,142.0 308.1,145.4 307.3,148.7 306.3,152.0 305.1,155.4 303.9,158.7 302.4,162.0 300.8,165.3 299.0,168.6 297.1,171.8 295.0,175.1 292.7,178.3 290.4,181.4 287.8,184.6 285.2,187.6 282.4,190.7 279.4,193.7 276.4,196.6 273.2,199.5 269.9,202.3 266.4,205.1 262.9,207.8 259.2,210.4 255.4,212.9 251.6,215.4 247.6,217.8 243.5,220.1 239.4,222.3 235.1,224.4 230.8,226.5 226.5,228.4 222.0,230.3 217.5,232.0 212.9,233.7 208.3,235.2 203.7,236.7 199.0,238.0 194.3,239.3 189.5,240.4 184.7,241.4 179.9,242.3 175.1,243.1 170.3,243.8 165.5,244.4 160.7,244.8 156.0,245.1 151.2,245.4 146.5,245.5 141.7,245.5 137.1,245.3 132.5,245.1 127.9,244.7 123.4,244.2 118.9,243.7 114.5,242.9 110.2,242.1 105.9,241.2 101.7,240.2 97.6,239.0 93.6,237.7 89.7,236.4 85.9,234.9 82.2,233.3 78.7,231.6 75.2,229.9 71.8,228.0 68.6,226.0 65.5,224.0 62.5,221.8 59.7,219.6 57.0,217.2 54.4,214.8 52.0,212.4 49.7,209.8 47.6,207.2 45.6,204.5 43.8,201.7 42.1,198.9 40.6,196.0 39.2,193.0 38.0,190.0 37.0,187.0 36.2,183.9 35.5,180.7 34.9,177.6 34.6,174.4 34.4,171.1 34.4,167.9 34.5,164.6 34.8,161.3 35.3,158.0 35.9,154.6 36.7,151.3 37.7,148.0 38.9,144.6 40.1,141.3 41.6,138.0 43.2,134.7 45.0,131.4 46.9,128.2 49.0,124.9 51.3,121.7 53.6,118.6 56.2,115.4 58.8,112.4 61.6,109.3 64.6,106.3 67.6,103.4 70.8,100.5 74.1,97.7 77.6,94.9 81.1,92.2 84.8,89.6 88.6,87.1 92.4,84.6 96.4,82.2 100.5,79.9 104.6,77.7 108.9,75.6 113.2,73.5 117.5,71.6 122.0,69.7 126.5,68.0 131.1,66.3 135.7,64.8 140.3,63.3 145.0,62.0 149.7,60.7 154.5,59.6 159.3,58.6 164.1,57.7 168.9,56.9 173.7,56.2 178.5,55.6 183.3,55.2 188.0,54.9 192.8,54.6 197.5,54.5 202.3,54.5 206.9,54.7 211.5,54.9 216.1,55.3 220.6,55.8 225.1,56.3 229.5,57.1 233.8,57.9 238.1,58.8 242.3,59.8 246.4,61.0 250.4,62.3 254.3,63.6 258.1,65.1 261.8,66.7 265.3,68.4 268.8,70.1 272.2,72.0 275.4,74.0 278.5,76.0 281.5,78.2 284.3,80.4 287.0,82.8 289.6,85.2 292.0,87.6 294.3,90.2 296.4,92.8 298.4,95.5 300.2,98.3 301.9,101.1 303.4,104.0 304.8,107.0 306.0,110.0 307.0,113.0 307.8,116.1" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.6" stroke-dasharray="5 4"/><circle cx="69.6" cy="175.5" r="34" fill="url(#tp-halo)"/><circle cx="69.6" cy="175.5" r="15" fill="url(#tp-sun)"/><path d="M88.6 175.5L93.6 175.5" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M86.1 185.0L90.4 187.5" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M79.1 192.0L81.6 196.3" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M69.6 194.5L69.6 199.5" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M60.1 192.0L57.6 196.3" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M53.2 185.0L48.8 187.5" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M50.6 175.5L45.6 175.5" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M53.2 166.0L48.8 163.5" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M60.1 159.1L57.6 154.7" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M69.6 156.5L69.6 151.5" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M79.1 159.1L81.6 154.7" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><path d="M86.1 166.0L90.4 163.5" stroke="#FCCC0A" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="tp-grow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff5fd2" stop-opacity=".75"/><stop offset="1" stop-color="#b44bff" stop-opacity=".12"/></linearGradient><clipPath id="tp-win"><path d="M-21 -11H21L26 -1L21 9H-21L-26 -1Z"/></clipPath></defs><g transform="translate(179.3 55.6) rotate(-6)"><circle r="30" fill="#2f6ee8" opacity=".16"/><path d="M-42 -1H42" stroke="#A7A9AC" stroke-width="2.4"/><path d="M-42 -5L-37 -5L-35 -1L-37 3L-42 3Z" fill="#d0d3d8" stroke="#333" stroke-width=".7"/><path d="M42 -5L37 -5L35 -1L37 3L42 3Z" fill="#d0d3d8" stroke="#333" stroke-width=".7"/><path d="M-31 -1L-24 -15H24L31 -1L24 13H-24Z" fill="#cfd5dd" stroke="#2a2f38" stroke-width="1"/><g clip-path="url(#tp-win)"><rect x="-27" y="-12" width="54" height="22" fill="#14112e"/><rect x="-27" y="-12" width="54" height="22" fill="url(#tp-grow)"/><rect x="-27" y="4" width="54" height="7" fill="#6b4423"/><path d="M-27 4H27" stroke="#8a5a30" stroke-width="1"/><path d="M-15 5V-1" stroke="#3f8f2f" stroke-width="1.3" stroke-linecap="round"/><path d="M-15 2q-6 -1 -7 -6q5 0 7 6Z" fill="#6CBE45"/><path d="M-15 0q6 -1 7 -6q-5 0 -7 6Z" fill="#8ee06a"/><path d="M-7 5V-4" stroke="#3f8f2f" stroke-width="1.3" stroke-linecap="round"/><path d="M-7 -1q-6 -1 -7 -6q5 0 7 6Z" fill="#6CBE45"/><path d="M-7 -3q6 -1 7 -6q-5 0 -7 6Z" fill="#8ee06a"/><path d="M1 5V-2" stroke="#3f8f2f" stroke-width="1.3" stroke-linecap="round"/><path d="M1 1q-6 -1 -7 -6q5 0 7 6Z" fill="#6CBE45"/><path d="M1 -1q6 -1 7 -6q-5 0 -7 6Z" fill="#8ee06a"/><path d="M9 5V-5" stroke="#3f8f2f" stroke-width="1.3" stroke-linecap="round"/><path d="M9 -2q-6 -1 -7 -6q5 0 7 6Z" fill="#6CBE45"/><path d="M9 -4q6 -1 7 -6q-5 0 -7 6Z" fill="#8ee06a"/><path d="M17 5V0" stroke="#3f8f2f" stroke-width="1.3" stroke-linecap="round"/><path d="M17 3q-6 -1 -7 -6q5 0 7 6Z" fill="#6CBE45"/><path d="M17 1q6 -1 7 -6q-5 0 -7 6Z" fill="#8ee06a"/></g><path d="M-21 -11H21L26 -1L21 9H-21L-26 -1Z" fill="#e8f7ff" fill-opacity=".1" stroke="#e8f7ff" stroke-width=".9"/><path d="M-19 -14H19" stroke="#ff7ad9" stroke-width="2" stroke-linecap="round"/><path d="M-22 13.5H22" stroke="#00A1DE" stroke-width="1.4" stroke-linecap="round"/></g><defs><clipPath id="tp-earth"><circle r="18"/></clipPath><radialGradient id="tp-ocean" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#5fb6ff"/><stop offset=".6" stop-color="#1a5fc0"/><stop offset="1" stop-color="#0b2a6b"/></radialGradient><radialGradient id="tp-atmo" cx=".5" cy=".5" r=".5"><stop offset=".72" stop-color="#7cc4ff" stop-opacity="0"/><stop offset=".82" stop-color="#9fd8ff" stop-opacity=".55"/><stop offset="1" stop-color="#9fd8ff" stop-opacity="0"/></radialGradient><radialGradient id="tp-shade" cx=".3" cy=".25" r="1"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient></defs><g transform="translate(307.9 116.3)"><circle r="28" fill="#00933C" opacity=".14"/><circle r="25" fill="url(#tp-atmo)"/><circle r="18" fill="url(#tp-ocean)"/><g clip-path="url(#tp-earth)"><path d="M-14 -10q4 -6 10 -4q3 4 -1 7q-3 2 -2 6q1 5 -3 8q-4 1 -5 -4q-2 -5 1 -8Z" fill="#4f9a3a"/><path d="M2 -16q7 -2 11 3q2 5 -2 7q-4 1 -3 5q2 6 -2 11q-3 3 -5 -1q-1 -6 -4 -9q-2 -5 2 -9q1 -4 3 -7Z" fill="#5aa845"/><path d="M6 -2q3 1 2 4" fill="none" stroke="#c9a46a" stroke-width="1.6" stroke-linecap="round"/><path d="M-8 12q6 2 12 0" fill="none" stroke="#e8f2ff" stroke-width="1.6" stroke-linecap="round" opacity=".85"/><path d="M-17 -2q8 -4 14 0t14 -2" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".8"/><path d="M-6 -15q6 -3 13 0" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".7"/><path d="M-2 6q5 -2 10 1" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round" opacity=".6"/><circle r="18" fill="url(#tp-shade)"/></g><circle r="18" fill="none" stroke="#bfe6ff" stroke-opacity=".6" stroke-width=".8"/></g><defs><linearGradient id="tp-foil" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe9a0"/><stop offset=".45" stop-color="#d9a52a"/><stop offset=".7" stop-color="#f3cc5c"/><stop offset="1" stop-color="#9a6b10"/></linearGradient><linearGradient id="tp-panel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d5fd0"/><stop offset="1" stop-color="#10276b"/></linearGradient></defs><g transform="translate(222.2 230.2) rotate(-20)"><circle r="28" fill="#FF6319" opacity=".16"/><path d="M-39 0H39" stroke="#c9ced6" stroke-width="1.4"/><rect x="-39" y="-6" width="25" height="12" fill="url(#tp-panel)" stroke="#d0d3d8" stroke-width=".9"/><path d="M-34 -6V6" stroke="#9fd8ff" stroke-opacity=".45" stroke-width=".5"/><path d="M-29 -6V6" stroke="#9fd8ff" stroke-opacity=".45" stroke-width=".5"/><path d="M-24 -6V6" stroke="#9fd8ff" stroke-opacity=".45" stroke-width=".5"/><path d="M-19 -6V6" stroke="#9fd8ff" stroke-opacity=".45" stroke-width=".5"/><path d="M-39 0H-14" stroke="#9fd8ff" stroke-opacity=".45" stroke-width=".5"/><rect x="14" y="-6" width="25" height="12" fill="url(#tp-panel)" stroke="#d0d3d8" stroke-width=".9"/><path d="M19 -6V6" stroke="#9fd8ff" stroke-opacity=".45" stroke-width=".5"/><path d="M24 -6V6" stroke="#9fd8ff" stroke-opacity=".45" stroke-width=".5"/><path d="M29 -6V6" stroke="#9fd8ff" stroke-opacity=".45" stroke-width=".5"/><path d="M34 -6V6" stroke="#9fd8ff" stroke-opacity=".45" stroke-width=".5"/><path d="M14 0H39" stroke="#9fd8ff" stroke-opacity=".45" stroke-width=".5"/><rect x="-9" y="-8" width="18" height="16" rx="1.5" fill="url(#tp-foil)" stroke="#6b4a08" stroke-width=".8"/><path d="M-9 -2h18M-3 -8v16M4 -8v16" stroke="#8a5f0c" stroke-opacity=".45" stroke-width=".6"/><path d="M-6 -14Q0 -20 6 -14L3 -8H-3Z" fill="#e6e9ee" stroke="#4a4f58" stroke-width=".8"/><path d="M0 -14V-21" stroke="#c9ced6" stroke-width=".9"/><circle cx="0" cy="-21.5" r="1" fill="#c9ced6"/><rect x="-3" y="8" width="6" height="3" fill="#8a8f98"/></g><circle cx="34.5" cy="164.7" r="3.2" fill="#fff"/><path d="M37.5 165.7l12 4" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/></g><rect x="1.5" y="1.5" width="337" height="297" rx="12" fill="none" stroke="#000" stroke-width="3"/><rect x="6" y="6" width="328" height="288" rx="8" fill="none" stroke="#FCCC0A" stroke-width="3.5" stroke-dasharray="4 1.3"/></svg></div>
+    </div>
+  </section>
+
+  <!-- ══ TESTIMONIALS ══ (more quotes go in as extra <figure class="tq">) -->
+  <section class="panel" id="testimonials" aria-label="Testimonials">
+    <span class="panel-tab">Testimonials</span>
+    <div class="tq-list">
+      <figure class="tq">
+        <svg class="tq-mark" viewBox="0 0 40 32" aria-hidden="true"><path d="M0 32V18Q0 4 14 0l2 4Q8 8 8 16h8v16Zm22 0V18Q22 4 36 0l2 4q-8 4-8 12h8v16Z" fill="currentColor"/></svg>
+        <blockquote>
+          <p>I first had the opportunity to work with Aamir at NASA and was glad to continue collaborating with him after he launched his consulting business.</p>
+          <p>As a biological scientist, I work with large and often complex datasets. Aamir has an exceptional talent for turning them into clear, intuitive visualizations that make the underlying story easy to see. Beyond his statistical expertise, he brings new approaches I may not have considered, helping me get more value from my data and communicate results more effectively.</p>
+          <p>Working with Aamir has made several of my projects stronger. I have greatly appreciated his insight.</p>
+        </blockquote>
+        <figcaption><b>Jess A.</b><span>Biological scientist · former NASA colleague</span></figcaption>
+      </figure>
     </div>
   </section>
 
@@ -1082,7 +1114,7 @@ a.pf-card:hover{
             <li>Math tailored to your interests and applications</li>
             <li>Engaging lessons that set you up for confidence and independence</li>
           </ul>
-          <p class="tx-price"><strong>$200</strong><span>per hour</span></p>
+          <p class="tx-price"><strong>$150</strong><span>per hour</span></p>
           <p class="tx-rate-note">Book a free introductory consultation before you commit. Feel free to reach out through my contact info or the contact form.</p>
         </div>
       </div>
@@ -1121,7 +1153,7 @@ a.pf-card:hover{
 
   <footer class="site">
     <span id="copyMark">© 2026 Aamir Ahmad</span>
-    <button class="tx-printkey" id="flyerKey" type="button" hidden>Print flyer</button>
+    <span class="tx-flyerkeys" id="flyerKeys" hidden><button class="tx-printkey" id="flyerKey1" type="button">Tutoring flyer 1</button><button class="tx-printkey" id="flyerKey2" type="button">Tutoring flyer 2</button></span>
   </footer>
 </div>
 
@@ -1131,9 +1163,10 @@ a.pf-card:hover{
     <button class="key" id="flBack" type="button">Back to page</button>
     <button class="key" id="flPrint" type="button">Print</button>
     <a class="key" id="flDownload" href="downloads/tutoring-flyer.pdf" download="aamir-tutoring-flyer.pdf">Download PDF</a>
-    <p>Both use the same exact US Letter PDF, 8.5 × 11 in.</p>
+    <p id="flNote">Both use the same exact US Letter PDF, 8.5 × 11 in.</p>
   </div>
   <div class="fl-hold" id="flHold">
+    <iframe id="fl2Frame" title="Tutoring flyer 2" loading="lazy"></iframe>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <pattern id="mt-grout" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0V5H0" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width=".7"/></pattern>
   <clipPath id="mt-panel"><rect x="4" y="4" width="102" height="192" rx="8"/></clipPath>
@@ -1562,18 +1595,37 @@ window.addEventListener("resize", () => requestAnimationFrame(centerCta));
 window.addEventListener("load", () => requestAnimationFrame(centerCta));
 window.addEventListener("beforeprint", centerCta);
 if(document.fonts) document.fonts.ready.then(() => requestAnimationFrame(centerCta));
-function syncHash(){ preview(location.hash === "#flyer"); requestAnimationFrame(centerCta); }
+/* two flyers: #flyer is flyer 1 (tear-off tabs, drawn live below);
+   #flyer2 is the redesign, shown straight from its PDF */
+const FLYERS = {
+  "#flyer":  {pdf:"downloads/tutoring-flyer.pdf",   name:"aamir-tutoring-flyer-1.pdf", v2:false},
+  "#flyer2": {pdf:"downloads/tutoring-flyer-2.pdf", name:"aamir-tutoring-flyer-2.pdf", v2:true}
+};
+function syncHash(){
+  const f = FLYERS[location.hash];
+  if(f){
+    flyerPdf = f.pdf;
+    const d = document.getElementById("flDownload"); d.href = f.pdf; d.download = f.name;
+    document.body.classList.toggle("fl-v2", f.v2);
+    const fr = document.getElementById("fl2Frame");
+    if(f.v2 && !fr.src) fr.src = f.pdf + "#view=FitH&toolbar=0";
+    document.getElementById("flNote").textContent = (f.v2 ? "Flyer 2" : "Flyer 1") + " · Print and Download use the same US Letter PDF, 8.5 × 11 in.";
+    const pf = document.getElementById("flPdfFrame"); if(pf && pf.src.indexOf(f.pdf) < 0) pf.remove();
+  }
+  preview(!!f); requestAnimationFrame(centerCta);
+}
 window.addEventListener("hashchange", syncHash);
 window.addEventListener("resize", fitSheet);
 /* Print flyer opens the flyer view; its Print and Download buttons use the
    ready-made Letter PDF, which is made from this same layout. */
-document.getElementById("flyerKey").addEventListener("click", () => { location.hash = "flyer"; });
-const toggleKeys = () => ["flyerKey"].forEach(id => { const k = document.getElementById(id); k.hidden = !k.hidden; });
+document.getElementById("flyerKey1").addEventListener("click", () => { location.hash = "flyer"; });
+document.getElementById("flyerKey2").addEventListener("click", () => { location.hash = "flyer2"; });
+const toggleKeys = () => ["flyerKeys"].forEach(id => { const k = document.getElementById(id); k.hidden = !k.hidden; });
 /* the Print flyer key stays hidden from visitors; press F anywhere to show or hide it */
 document.addEventListener("keydown", e => {
   if(e.key.toLowerCase() !== "f" || e.metaKey || e.ctrlKey || e.altKey) return;
   if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
-  const k = document.getElementById("flyerKey");
+  const k = document.getElementById("flyerKeys");
   toggleKeys();
   if(!k.hidden) k.scrollIntoView({behavior:"smooth", block:"center"});
 });
