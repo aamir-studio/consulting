@@ -1153,7 +1153,7 @@ a.pf-card:hover{
 
   <footer class="site">
     <span id="copyMark">© 2026 Aamir Ahmad</span>
-    <span class="tx-flyerkeys" id="flyerKeys" hidden><button class="tx-printkey" id="flyerKey1" type="button">Tutoring flyer 1</button><button class="tx-printkey" id="flyerKey2" type="button">Tutoring flyer 2</button></span>
+    <span class="tx-flyerkeys" id="flyerKeys" hidden><button class="tx-printkey" id="flyerKey1" type="button">Tutoring flyer 1</button><button class="tx-printkey" id="flyerKey2" type="button">Tutoring flyer 2</button><button class="tx-printkey" id="flyerKey3" type="button">Tutoring flyer 3</button></span>
   </footer>
 </div>
 
@@ -1166,7 +1166,7 @@ a.pf-card:hover{
     <p id="flNote">Both use the same exact US Letter PDF, 8.5 × 11 in.</p>
   </div>
   <div class="fl-hold" id="flHold">
-    <iframe id="fl2Frame" title="Tutoring flyer 2" loading="lazy"></iframe>
+    <iframe id="fl2Frame" title="Tutoring flyer" loading="lazy"></iframe>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <pattern id="mt-grout" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0V5H0" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width=".7"/></pattern>
   <clipPath id="mt-panel"><rect x="4" y="4" width="102" height="192" rx="8"/></clipPath>
@@ -1596,10 +1596,12 @@ window.addEventListener("load", () => requestAnimationFrame(centerCta));
 window.addEventListener("beforeprint", centerCta);
 if(document.fonts) document.fonts.ready.then(() => requestAnimationFrame(centerCta));
 /* two flyers: #flyer is flyer 1 (tear-off tabs, drawn live below);
-   #flyer2 is the redesign, shown straight from its PDF */
+   #flyer2 is the redesign and #flyer3 is four simplified flyer 2 cards
+   on one sheet, both shown straight from their PDFs */
 const FLYERS = {
-  "#flyer":  {pdf:"downloads/tutoring-flyer.pdf",   name:"aamir-tutoring-flyer-1.pdf", v2:false},
-  "#flyer2": {pdf:"downloads/tutoring-flyer-2.pdf", name:"aamir-tutoring-flyer-2.pdf", v2:true}
+  "#flyer":  {pdf:"downloads/tutoring-flyer.pdf",   name:"aamir-tutoring-flyer-1.pdf", v2:false, label:"Flyer 1"},
+  "#flyer2": {pdf:"downloads/tutoring-flyer-2.pdf", name:"aamir-tutoring-flyer-2.pdf", v2:true,  label:"Flyer 2"},
+  "#flyer3": {pdf:"downloads/tutoring-flyer-3.pdf", name:"aamir-tutoring-flyer-3.pdf", v2:true,  label:"Flyer 3 · four cards to a sheet"}
 };
 function syncHash(){
   const f = FLYERS[location.hash];
@@ -1608,8 +1610,8 @@ function syncHash(){
     const d = document.getElementById("flDownload"); d.href = f.pdf; d.download = f.name;
     document.body.classList.toggle("fl-v2", f.v2);
     const fr = document.getElementById("fl2Frame");
-    if(f.v2 && !fr.src) fr.src = f.pdf + "#view=FitH&toolbar=0";
-    document.getElementById("flNote").textContent = (f.v2 ? "Flyer 2" : "Flyer 1") + " · Print and Download use the same US Letter PDF, 8.5 × 11 in.";
+    if(f.v2 && fr.dataset.pdf !== f.pdf){ fr.src = f.pdf + "#view=FitH&toolbar=0"; fr.dataset.pdf = f.pdf; }
+    document.getElementById("flNote").textContent = f.label + " · Print and Download use the same US Letter PDF, 8.5 × 11 in.";
     const pf = document.getElementById("flPdfFrame"); if(pf && pf.src.indexOf(f.pdf) < 0) pf.remove();
   }
   preview(!!f); requestAnimationFrame(centerCta);
@@ -1620,6 +1622,7 @@ window.addEventListener("resize", fitSheet);
    ready-made Letter PDF, which is made from this same layout. */
 document.getElementById("flyerKey1").addEventListener("click", () => { location.hash = "flyer"; });
 document.getElementById("flyerKey2").addEventListener("click", () => { location.hash = "flyer2"; });
+document.getElementById("flyerKey3").addEventListener("click", () => { location.hash = "flyer3"; });
 const toggleKeys = () => ["flyerKeys"].forEach(id => { const k = document.getElementById(id); k.hidden = !k.hidden; });
 /* the Print flyer key stays hidden from visitors; press F anywhere to show or hide it */
 document.addEventListener("keydown", e => {
