@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demos | aamir.consulting</title>
+<meta name="description" content="Working demos of tools for real decisions. Press play and see what they do.">
+<style>
+:root{
+  --ink:        #0d0c0b;
+  --phosphor:   #ffb648;
+  --cream:      #f3ead9;
+  --edge: 1px solid #ffffff1f;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sans: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  background:
+    radial-gradient(120% 80% at 50% -10%, #241f1a 0%, transparent 60%),
+    var(--ink);
+  color:var(--cream);
+  font-family:var(--sans);
+  font-size:clamp(15px, 0.5vw + 13px, 17px);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+a{color:var(--phosphor); text-decoration:none; border-bottom:1px solid #ffb64855;}
+a:hover{border-bottom-color:var(--phosphor);}
+.wrap{width:min(1100px, 92vw); margin:0 auto;}
+.sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+
+/* ── PANEL CHROME ── */
+.panel{
+  position:relative;
+  border:var(--edge); border-radius:14px;
+  background:linear-gradient(180deg, #1f1c1a, #141210);
+  padding:clamp(2.2rem, 3.4vw, 3rem) clamp(1.1rem, 2.6vw, 2.2rem) clamp(1.8rem, 3vw, 2.4rem);
+  margin:clamp(1.6rem, 4vw, 3.4rem) 0;
+  box-shadow:0 30px 70px -40px #000;
+}
+.panel-tab{
+  position:absolute; top:-1px; left:-1px;
+  padding:.45rem 1.5rem .5rem;
+  border:var(--edge); border-top-left-radius:14px; border-bottom-right-radius:14px;
+  background:#0f0e0d;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.26em; text-transform:uppercase;
+  color:#bfae94;
+}
+
+/* ── HEADER ── */
+header.site{
+  display:flex; align-items:center; gap:clamp(.8rem,2vw,1.3rem);
+  flex-wrap:wrap; padding:clamp(1rem,2.6vw,1.7rem) 0 .6rem;
+}
+.logo-frame{
+  width:clamp(54px, 6vw, 76px); aspect-ratio:1;
+  border:var(--edge); border-radius:10px;
+  display:grid; place-items:center; overflow:hidden;
+  background:#100f0e; flex:none;
+}
+.logo-frame img{width:100%; height:100%; object-fit:contain;}
+.logo-fallback{font-family:var(--mono); font-size:.65rem; color:#8d8172; letter-spacing:.1em;}
+.brand{font-size:clamp(1.3rem, 3vw, 1.95rem); font-weight:600; letter-spacing:-.02em; line-height:1;}
+.brand a{color:inherit; border:0;}
+.brand small{
+  display:block; margin-top:.38rem;
+  font-family:var(--mono); font-weight:400; letter-spacing:.13em;
+  font-size:clamp(.58rem,1vw,.7rem); color:#a2937e; text-transform:lowercase;
+}
+nav.keys{margin-left:auto; display:flex; gap:.45rem; flex-wrap:wrap; justify-content:flex-end;}
+.key{
+  display:inline-block;
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
+  color:#e8dcc7; background:linear-gradient(180deg,#3a352f,#232019);
+  border:1px solid #ffffff22; border-bottom:3px solid #00000090;
+  border-radius:6px; padding:.55rem .95rem .5rem; cursor:pointer;
+  transition:transform .06s, border-bottom-width .06s, background .2s;
+}
+.key:hover{background:linear-gradient(180deg,#464038,#2a251e); border-bottom-color:#00000090;}
+.key:active{transform:translateY(2px); border-bottom-width:1px;}
+
+/* ── WINDOWS ──
+   Each card is a window onto the demo itself: the real page, running,
+   shrunk to fit. Nothing inside it can be clicked; the card opens it.
+   ─────────────────────────────────────────────────────────────── */
+.demo-lede{max-width:62ch; margin:1.2rem 0 clamp(1.4rem,3vw,2rem); color:#d6c8b1;}
+.demo-grid{
+  display:grid; gap:clamp(1rem,2.2vw,1.5rem);
+  grid-template-columns:repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+}
+.pf-card{
+  display:flex; flex-direction:column;
+  border:var(--edge); border-radius:12px; overflow:hidden;
+  background:linear-gradient(180deg,#232019,#151310);
+  box-shadow:inset 0 1px 0 #ffffff12, 0 18px 40px -34px #000;
+  color:inherit; border-bottom:var(--edge);
+  transition:transform .18s, box-shadow .18s, border-color .18s;
+}
+a.pf-card:hover{
+  transform:translateY(-3px); border-color:#ffb64840;
+  box-shadow:inset 0 1px 0 #ffffff1a, 0 26px 50px -34px #000;
+}
+.window{
+  position:relative; margin:.7rem .7rem 0; height:clamp(180px, 22vw, 230px);
+  border-radius:8px; overflow:hidden; background:#f6f1e6;
+  box-shadow:inset 0 0 0 1px #00000014, 0 0 0 4px #100f0d, 0 0 0 5px #ffffff1a;
+}
+.pf-body{padding:1.1rem clamp(1rem,2vw,1.3rem) 1.3rem; display:flex; flex-direction:column; flex:1;}
+.pf-num{
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.24em;
+  text-transform:uppercase; color:#8d8172; margin-bottom:.5rem;
+}
+.pf-card h3{font-size:1.1rem; font-weight:600; line-height:1.25; margin-bottom:.45rem;}
+.pf-card p{font-size:.9rem; color:#c2b59e; margin-bottom:.9rem;}
+.pf-chips{display:flex; flex-wrap:wrap; gap:.3rem; margin:auto 0 0;}
+.pf-chips span{
+  font-family:var(--mono); font-size:.58rem; letter-spacing:.12em; text-transform:uppercase;
+  color:#b3a690; border:1px solid #ffffff1f; border-radius:4px; padding:.24rem .45rem .19rem;
+}
+.pf-open{
+  margin-top:1rem; font-family:var(--mono); font-size:.66rem;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--phosphor);
+}
+
+footer.site{padding:2.2rem 0 3rem; text-align:center; font-family:var(--mono); font-size:.66rem; letter-spacing:.18em; color:#6f6558;}
+/* ── MINI PREVIEW ──
+   The page is laid out at a desktop width and scaled down, so the
+   window shows exactly what a visitor sees on arrival. */
+.pv{position:absolute; inset:0; overflow:hidden;}
+.pv iframe{position:absolute; left:0; top:0; border:0; transform-origin:0 0; pointer-events:none; background:transparent;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="site">
+    <div class="logo-frame">
+      <img src="../images/logo.png" alt="aamir.consulting logo"
+           onerror="var p=this.parentNode;this.remove();p.insertAdjacentHTML('beforeend','<span class=logo-fallback>a.c</span>')">
+    </div>
+    <div class="brand">
+      <a href="../index.html">aamir.consulting</a>
+      <small>experience is the architecture</small>
+    </div>
+    <nav class="keys">
+      <a class="key" href="index.html" aria-current="page">Demos</a>
+      <a class="key" href="../index.html">Consulting</a>
+      <a class="key" href="../fun/index.html">Fun</a>
+    </nav>
+  </header>
+
+  <section class="panel" id="demos">
+    <span class="panel-tab">Demos</span>
+    <h1 class="sr-only">Demos</h1>
+    <p class="demo-lede">Working demos of tools for real decisions. Press play and see what they do.</p>
+
+    <div class="demo-grid">
+
+      <a class="pf-card" href="running-late.html">
+        <span class="window"><span class="pv" data-src="running-late.html"></span></span>
+        <span class="pf-body">
+          <span class="pf-num">No. 01</span>
+          <h3>Running Late?</h3>
+          <p>Same project, same results, two forecasts. One learns from every finished task.</p>
+          <span class="pf-chips">
+            <span>Cost &amp; schedule</span><span>Forecasting</span><span>Learns as it goes</span>
+          </span>
+          <span class="pf-open">Try the demo →</span>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <footer class="site">
+    <span>© 2026 Aamir Ahmad</span>
+  </footer>
+</div>
+
+<script>
+/* Mini previews: each window loads its page at a desktop width, then
+   scales it to fit. Loaded only when the window comes into view. */
+(() => {
+  const VW = 1180;
+  document.querySelectorAll('.pv').forEach(box => {
+    const f = document.createElement('iframe');
+    f.tabIndex = -1; f.setAttribute('aria-hidden', 'true'); f.setAttribute('scrolling', 'no');
+    f.title = ''; f.loading = 'lazy'; f.src = box.dataset.src;
+    box.appendChild(f);
+    const fit = () => {
+      const s = box.clientWidth / VW;
+      f.style.width = VW + 'px';
+      f.style.height = (box.clientHeight / s) + 'px';
+      f.style.transform = 'scale(' + s + ')';
+    };
+    new ResizeObserver(fit).observe(box); fit();
+  });
+})();
+</script>
+</body>
+</html>

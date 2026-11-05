@@ -249,7 +249,7 @@
 
   <div class="foot">
     <button class="textbtn" id="fresh" type="button">New sheet</button>
-    <button class="textbtn" id="sound" type="button" aria-pressed="true">Sound on</button>
+    <button class="textbtn" id="sound" type="button" aria-pressed="false">Sound off</button>
     <span class="hint">Drag the view to look around</span>
   </div>
 
@@ -286,8 +286,10 @@
   let path = [], busyMsg = '';
 
   /* ---------- sound: synthesized, nothing loaded ---------- */
-  let ac = null, noise = null, soundOn = true;
-  try { soundOn = localStorage.getItem('tcw-sound') !== 'off'; } catch (e) {}
+  /* off unless the visitor turns it on; never on inside a preview window */
+  const framed = window.self !== window.top;
+  let ac = null, noise = null, soundOn = false;
+  try { soundOn = !framed && localStorage.getItem('tcw-sound') === 'on'; } catch (e) {}
   const soundBtn = document.getElementById('sound');
   function paintSound() { soundBtn.textContent = soundOn ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', String(soundOn)); }
   paintSound();
@@ -296,7 +298,7 @@
     try { localStorage.setItem('tcw-sound', soundOn ? 'on' : 'off'); } catch (e) {}
   });
   function audio() {
-    if (!soundOn) return null;
+    if (!soundOn || framed) return null;
     if (!ac) {
       try {
         ac = new (window.AudioContext || window.webkitAudioContext)();

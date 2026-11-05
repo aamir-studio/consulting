@@ -1,0 +1,1152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Running Late? | aamir.consulting</title>
+<meta name="description" content="The same project, the same actual results, two forecasts. One keeps its day-one estimates, one learns from every finished task.">
+<style>
+/* ===== THEME TOKENS ==============================================
+   Light = the symposium "drafting" theme, dark = "instrument".
+   Values are copied from THEMES in JCL_Model_Presentation_v3.ipynb so
+   these charts and the deck charts speak the same colour language.
+   The canvases read these variables, so one swap restyles everything.
+   ================================================================ */
+:root{
+  /* light mode is warm cream rather than white, easier on the eyes */
+  --paper:#F4EEE2; --plot:#FAF6EE; --rail:#1B3A5C; --tick:#12263F;
+  --grid:#E2D9C8; --grid2:#ECE5D7; --text:#12263F; --muted:#41607E;
+  --both:#1F7A4D; --one:#9AA9B8; --neither:#C0392B; --amber:#D97A00;
+  --bar:#D3D6D4; --edge:#1B3A5C; --static:#5C6B7A; --dynamic:#1F5FA0;
+  --readbg:rgba(250,246,238,.95); --band:rgba(92,70,27,.04);
+  --ledoff:#D9CFBC;
+  --cp1:#4B3A9E; --cp2:#A33A8F; --cp3:#DD5C38; --cp4:#D99A12;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+  --display:"Arial Black","Arial Bold",Arial,sans-serif;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --paper:#12161B; --plot:#161B21; --rail:#4FD1C5; --tick:#E6EDF3;
+  --grid:#232C36; --grid2:#1B222A; --text:#E6EDF3; --muted:#9AA9B8;
+  --both:#3FBF7F; --one:#5C6B7A; --neither:#FF6B5B; --amber:#FFB627;
+  --bar:#2B3944; --edge:#4FD1C5; --static:#C9D8E6; --dynamic:#4CA6FF;
+  --readbg:rgba(12,16,21,.90); --band:rgba(255,255,255,.028);
+  --ledoff:#2B3944;
+  --cp1:#8B7BEA; --cp2:#E063B8; --cp3:#FF875A; --cp4:#FFC845;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--text);font-family:var(--mono);font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%}
+.tf{max-width:1320px;margin:0 auto;padding:clamp(14px,2.4vw,28px) clamp(14px,2.4vw,28px) 40px}
+
+/* ---------- header ---------- */
+.tf-head{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:16px;margin-bottom:clamp(12px,1.8vw,20px)}
+.tf-head .tf-h2{grid-column:1 / -1}
+.tf-h2{font-family:var(--display);font-weight:900;font-size:clamp(14px,1.6vw,19px);line-height:1.25;margin:6px 0 0;color:var(--dynamic);text-wrap:balance}
+.tf-fit .tf-h2{font-size:clamp(13px,2.2vh,19px);margin-top:clamp(2px,.5vh,6px)}
+.tf-head p{margin:6px 0 0;font-size:clamp(13px,1.3vw,15px)}
+.tf-head h1{font-family:var(--display);font-weight:900;font-size:clamp(22px,3vw,34px);line-height:1.08;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.tf-ctrls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* LED buttons. Namespaced tf- so they never collide with the site header's .key */
+.tf-btn{appearance:none;font:inherit;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--text);
+  background:var(--plot);border:1.5px solid var(--rail);border-radius:6px;padding:8px 12px 8px 10px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 0 var(--rail);transition:transform .06s,box-shadow .06s}
+.tf-btn:active{transform:translateY(2px);box-shadow:0 0 0 var(--rail)}
+.tf-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.tf-led{width:8px;height:8px;border-radius:50%;background:var(--ledoff);flex:none;transition:background .15s,box-shadow .15s}
+.tf-btn[aria-pressed="true"] .tf-led{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+/* theme toggle: moon in light mode, sun in dark mode */
+.tf-icon{padding:7px 9px}
+.tf-icon svg{display:block}
+.tf-sun{display:none !important}
+:root[data-theme="dark"] .tf-sun{display:block !important}
+:root[data-theme="dark"] .tf-moon{display:none !important}
+/* full screen toggle: expand arrows normally, inward arrows while full screen */
+.tf-exit{display:none !important}
+#tfFull[aria-pressed="true"] .tf-exit{display:block !important}
+#tfFull[aria-pressed="true"] .tf-enter{display:none !important}
+#tfFull[hidden]{display:none}
+:fullscreen body{overflow:hidden}
+/* fit to screen while full screen: wider stage, tighter padding; the canvases take whatever height is left */
+.tf-fit .tf{max-width:1800px;padding-top:clamp(10px,1.6vh,22px);padding-bottom:clamp(10px,1.6vh,22px)}
+.tf-fit .tf-head{margin-bottom:clamp(6px,1.2vh,16px)}
+.tf-fit .tf-head h1{font-size:clamp(20px,3.6vh,34px)}
+.tf-fit .tf-head p{font-size:clamp(12px,1.7vh,15px);margin-top:clamp(2px,.6vh,6px)}
+.tf-fit .tf-row{margin-bottom:clamp(3px,.6vh,8px)}
+.tf-fit .tf-time{margin-top:clamp(8px,1.6vh,22px)}
+
+/* ---------- the two forecast panels ---------- */
+.tf-mob{display:none;gap:6px;margin-bottom:10px}
+.tf-panels{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.8vw,22px)}
+.tf-panel{margin:0;min-width:0}
+.tf-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-bottom:8px}
+.tf-prog{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:clamp(150px,18vw,260px)}
+.tf-ptext{font-size:12px;letter-spacing:.1em;font-variant-numeric:tabular-nums}
+.tf-ptext b{font-family:var(--display);font-weight:900;font-size:clamp(15px,1.5vw,19px);letter-spacing:0}
+.tf-pbar{width:100%;height:6px;border-radius:3px;background:var(--grid);overflow:hidden}
+.tf-pbar i{display:block;height:100%;width:0;background:var(--rail);border-radius:3px}
+.tf-side{display:flex;align-items:center;gap:clamp(12px,1.6vw,22px);min-width:0}
+.tf-side.tf-right{justify-content:flex-end}
+.tf-center{display:flex;align-items:center;gap:clamp(10px,1.2vw,16px)}
+.tf-center .tf-btn{padding:7px 9px}
+.tf-i-pause{display:none !important}
+#tfPlay[aria-pressed="true"] .tf-i-pause{display:block !important}
+#tfPlay[aria-pressed="true"] .tf-i-play{display:none !important}
+.tf-ptext{white-space:nowrap}
+.tf-right{justify-content:flex-end}
+.tf-name{font-family:var(--display);font-size:clamp(15px,1.5vw,19px);letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+.tf-sw{display:inline-block;width:18px;height:3px;border-radius:2px}
+.tf-name[data-mode="static"] .tf-sw{background:var(--static)}
+.tf-name[data-mode="dynamic"] .tf-sw{background:var(--dynamic)}
+.tf-name[data-mode="dynamic"]{color:var(--dynamic)}
+.tf-bezel{border:1.5px solid var(--rail);border-radius:8px;background:var(--plot);overflow:hidden;position:relative}
+.tf-bezel canvas{display:block;width:100%}
+.tf-scrub{touch-action:pan-y;cursor:ew-resize}
+
+/* ---------- time strip + cost-loaded schedule ---------- */
+.tf-time{margin-top:clamp(12px,1.8vw,22px)}
+
+/* ---------- light bulbs and their one-sentence tips ---------- */
+.tf-bulb{appearance:none;width:22px;height:22px;padding:0;border-radius:50%;border:1.5px solid var(--amber);background:var(--plot);color:var(--amber);
+  display:inline-flex;align-items:center;justify-content:center;cursor:help;flex:none;transition:background .12s,color .12s,box-shadow .12s}
+.tf-bulb:hover,.tf-bulb:focus-visible{background:var(--amber);color:var(--plot);box-shadow:0 0 10px var(--amber);outline:none}
+.tf-bulb-abs{position:absolute;transform:translate(-50%,-50%);z-index:2}
+.tf-name .tf-bulb{margin-left:4px}
+.tf-name.tf-right{justify-content:flex-end}
+.tf-name.tf-right .tf-bulb{margin:0 4px 0 0;order:-1}
+.tf-tip{position:fixed;z-index:20;max-width:300px;padding:9px 11px;border:1.5px solid var(--amber);border-radius:6px;background:var(--plot);color:var(--text);
+  font-size:12.5px;line-height:1.45;box-shadow:0 6px 24px rgba(0,0,0,.18);pointer-events:none}
+.tf-tip[hidden]{display:none}
+.tf-tip.tf-small{max-width:none;white-space:nowrap;font-size:11.5px;padding:5px 9px}
+/* tips off: every bulb goes away; the toggle's rays go dark */
+.tf-notips .tf-bulb{display:none}
+#tfTips[aria-pressed="false"]{opacity:.55}
+#tfTips[aria-pressed="false"] .tf-rays{display:none}
+
+/* Plans and Actuals: PLANS solid, ACTUALS hollow, filling left to right as the project runs */
+.tf-pa{font-family:var(--display);font-weight:900;font-size:clamp(15px,1.5vw,19px);letter-spacing:.04em;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.tf-and{font-family:var(--mono);font-weight:400;font-size:.75em;letter-spacing:0}
+.tf-act{position:relative;color:transparent;-webkit-text-stroke:1.2px var(--text);--fill:0%}
+.tf-act::after{content:attr(data-text);position:absolute;left:0;top:0;color:var(--text);-webkit-text-stroke:0;clip-path:inset(0 calc(100% - var(--fill)) 0 0)}
+.tf-pa .tf-bulb{margin-left:4px}
+.tf-fit .tf-pa{margin-bottom:clamp(3px,.6vh,8px)}
+
+@media (max-width:760px){
+  .tf-mob{display:flex}
+  .tf-panels{grid-template-columns:1fr}
+  .tf-panel[hidden]{display:none}
+  .tf-name{font-size:13px;gap:6px}
+  .tf-sw{width:12px}
+  /* phones: the day counter takes its own row, the two names sit under it */
+  .tf-row{grid-template-columns:1fr 1fr;grid-template-areas:"mid mid" "s d";gap:10px}
+  .tf-center{grid-area:mid;justify-self:center;width:100%;max-width:420px}
+  .tf-center .tf-prog{flex:1;min-width:0}
+  .tf-center .tf-btn{padding:5px 7px}
+  .tf-side[data-mode="static"]{grid-area:s}
+  .tf-side[data-mode="dynamic"]{grid-area:d}
+}
+@media (max-width:420px){
+}
+</style>
+</head>
+<body>
+<main class="tf">
+  <header class="tf-head">
+    <h1>Running Late?</h1>
+    <div class="tf-ctrls">
+      <button class="tf-btn tf-icon" id="tfTips" aria-pressed="true" aria-label="Hide the tips">
+        <svg viewBox="-1 -1 26 26" width="18" height="18" aria-hidden="true"><path d="M9.2 18.5h5.6M10.2 21.5h3.6M12 4.5a5.8 5.8 0 0 0-3.4 10.5c.6.5.9 1.1.9 1.8v.3h5v-.3c0-.7.3-1.3.9-1.8A5.8 5.8 0 0 0 12 4.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path class="tf-rays" d="M12 .2v1.8M3.6 3.6l1.3 1.3M20.4 3.6l-1.3 1.3M.4 11.2h1.8M21.8 11.2h1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button class="tf-btn tf-icon" id="tfFull" aria-pressed="false" aria-label="Enter full screen">
+        <svg class="tf-enter" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="tf-exit" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="tf-btn tf-icon" id="tfTheme" aria-pressed="false" aria-label="Switch to dark mode">
+        <svg class="tf-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg>
+        <svg class="tf-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>
+      </button>
+    </div>
+    <h2 class="tf-h2">Dynamic forecasts use project actuals to find the real answer sooner when overruns share a cause.</h2>
+  </header>
+
+  <div class="tf-mob" role="group" aria-label="Forecast shown">
+    <button class="tf-btn" data-show="static" aria-pressed="true"><i class="tf-led"></i>Static</button>
+    <button class="tf-btn" data-show="dynamic" aria-pressed="false"><i class="tf-led"></i>Dynamic</button>
+  </div>
+
+  <section class="tf-row">
+    <div class="tf-side" data-mode="static">
+      <span class="tf-name" data-mode="static" data-bulb="static"><span class="tf-sw"></span>STATIC</span>
+    </div>
+    <div class="tf-center">
+      <button class="tf-btn tf-icon" id="tfPlay" aria-pressed="false" aria-label="Play">
+        <svg class="tf-i-play" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <svg class="tf-i-pause" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="5.5" y="4.5" width="4.5" height="15" rx="1" fill="currentColor"/><rect x="14" y="4.5" width="4.5" height="15" rx="1" fill="currentColor"/></svg>
+      </button>
+      <div class="tf-prog" role="progressbar" aria-label="Project day" aria-valuemin="0" id="tfProg">
+        <div class="tf-ptext">DAY <b id="tfDay">0</b> OF <span id="tfDays">0</span></div>
+        <div class="tf-pbar"><i id="tfPfill"></i></div>
+      </div>
+      <button class="tf-btn tf-icon" id="tfReset" aria-label="Back to day one">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/><path d="M3.8 3.6v4.6h4.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="tf-side tf-right" data-mode="dynamic">
+      <span class="tf-name tf-right" data-mode="dynamic" data-bulb="dynamic">DYNAMIC<span class="tf-sw"></span></span>
+    </div>
+  </section>
+
+  <section class="tf-panels">
+    <figure class="tf-panel" data-mode="static">
+      <div class="tf-bezel"><canvas aria-label="Static forecast: possible finish dates and total costs"></canvas></div>
+    </figure>
+    <figure class="tf-panel" data-mode="dynamic">
+      <div class="tf-bezel"><canvas aria-label="Dynamic forecast: possible finish dates and total costs"></canvas></div>
+    </figure>
+  </section>
+
+  <section class="tf-time">
+    <h2 class="tf-pa" data-bulb="schedule"><span class="tf-plans">PLANS</span><span class="tf-and">and</span><span class="tf-act" id="tfAct" data-text="ACTUALS">ACTUALS</span></h2>
+    <div class="tf-bezel">
+      <canvas id="tfStrip" class="tf-scrub" aria-label="How much of the gap each forecast has closed over time"></canvas>
+      <canvas id="tfTimeline" class="tf-scrub" aria-label="The project schedule filling in with actuals"></canvas>
+    </div>
+  </section>
+</main>
+<div class="tf-tip" id="tfTip" role="tooltip" hidden></div>
+
+<script>
+/* ===== MODEL =====================================================
+   The fictional six-task project from the symposium example, without
+   its discrete risks. Each task duration is lognormal. Its log spread
+   is split into a part shared by every task (one "overrun factor" for
+   the whole project) and a part that belongs to the task alone. The
+   shared part is what gives the day-one cloud the 0.3 duration
+   correlation the symposium workbook uses.
+
+   STATIC  : finished tasks are replaced by their actuals; every other
+             task keeps its day-one estimate. (A standard rerun.)
+   DYNAMIC : same, but each finished task also updates the belief about
+             the shared overrun factor (conjugate normal update on the
+             log scale), and the remaining tasks are drawn with it.
+
+   Both use the SAME random draws, so any gap between the two panels is
+   the learning and nothing else.
+   ================================================================ */
+
+const PROJECT = {
+  start: '2026-10-01',          // a Thursday; working days are Mon-Fri
+  loeBurn: 5250,                // project management, $ per working day
+  rho: 0.3,                     // share of each task's log variance that is common
+  tasks: [
+    { id: 'AD', name: 'Subsystem A design', short: 'A design', mean: 34.13, cv: 0.0797, ti: 126000, tiCv: 0.0514, burn: 2067, pred: [], lag: 0 },
+    { id: 'BD', name: 'Subsystem B design', short: 'B design', mean: 26.67, cv: 0.0797, ti: 105000, tiCv: 0.0514, burn: 2067, pred: [], lag: 0 },
+    { id: 'AB', name: 'Subsystem A build',  short: 'A build',  mean: 48.75, cv: 0.0890, ti: 630000, tiCv: 0.0701, burn: 3100, pred: ['AD'], lag: 0 },
+    { id: 'BB', name: 'Subsystem B build',  short: 'B build',  mean: 45.50, cv: 0.0890, ti: 472500, tiCv: 0.0701, burn: 3100, pred: ['BD'], lag: 10 },
+    { id: 'AT', name: 'Subsystem A test',   short: 'A test',   mean: 21.67, cv: 0.1071, ti: 84000,  tiCv: 0.0514, burn: 2583, pred: ['AB'], lag: 0 },
+    { id: 'IT', name: 'Integration and test', short: 'I and T', mean: 41.80, cv: 0.1159, ti: 213333, tiCv: 0.0797, burn: 4200, pred: ['AT', 'BB'], lag: 0 },
+  ],
+};
+
+/* What actually happens. theta = true shared overrun (log scale);
+   e = each task's own luck, in units of that task's own spread.
+   tiLuck = actual one-off cost as a multiple of its estimate. */
+const SCENARIOS = {
+  long: { label: 'Runs long', theta: Math.log(1.16), e: [0.4, 0.2, -0.3, 0.3, 0.5, 0.1], tiLuck: [1.03, 1.02, 1.05, 1.01, 1.04, 1.06] },
+};
+
+const N_ITER = 3000;
+const SEED = 20261001;
+
+/* ---------- numerics ---------- */
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function normals(n, rnd) { const z = new Float64Array(n); for (let i = 0; i < n; i += 2) { const u = 1 - rnd(), v = rnd(); const r = Math.sqrt(-2 * Math.log(u)); z[i] = r * Math.cos(2 * Math.PI * v); if (i + 1 < n) z[i + 1] = r * Math.sin(2 * Math.PI * v); } return z; }
+function Phi(x) { // standard normal CDF (Abramowitz & Stegun 7.1.26 via erf)
+  const s = x < 0 ? -1 : 1, a = Math.abs(x) / Math.SQRT2, t = 1 / (1 + 0.3275911 * a);
+  const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-a * a);
+  return 0.5 * (1 + s * y);
+}
+function PhiInv(p) { // Acklam's inverse normal
+  const a = [-39.69683028665376, 220.9460984245205, -275.9285104469687, 138.3577518672690, -30.66479806614716, 2.506628277459239];
+  const b = [-54.47609879822406, 161.5858368580409, -155.6989798598866, 66.80131188771972, -13.28068155288572];
+  const c = [-0.007784894002430293, -0.3223964580411365, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783];
+  const d = [0.007784695709041462, 0.3224671290700398, 2.445134137142996, 3.754408661907416];
+  const pl = 0.02425;
+  if (p < pl) { const q = Math.sqrt(-2 * Math.log(p)); return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1); }
+  if (p > 1 - pl) { const q = Math.sqrt(-2 * Math.log(1 - p)); return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1); }
+  const q = p - 0.5, r = q * q;
+  return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+}
+
+/* ---------- derived task parameters ---------- */
+const T = PROJECT.tasks, NT = T.length;
+const IDX = Object.fromEntries(T.map((t, i) => [t.id, i]));
+const S2 = T.map(t => Math.log(1 + t.cv * t.cv));                 // total log variance
+const MU = T.map((t, i) => Math.log(t.mean) - S2[i] / 2);         // log median
+const TAU2 = PROJECT.rho * S2.reduce((a, b) => a + b, 0) / NT;     // shared variance
+const SIG2 = S2.map(s => s - TAU2);                                // task-own variance
+const SIG = SIG2.map(Math.sqrt), TAU = Math.sqrt(TAU2);
+const TIS = T.map(t => Math.sqrt(Math.log(1 + t.tiCv * t.tiCv)));
+const PRED = T.map(t => t.pred.map(p => IDX[p]));
+
+/* ---------- common random numbers ---------- */
+const rnd = mulberry32(SEED);
+const Z0 = normals(N_ITER, rnd);                 // shared factor draw
+const ZD = normals(N_ITER * NT, rnd);            // task duration draws
+const ZC = normals(N_ITER * NT, rnd);            // one-off cost draws
+const UD = ZD.map(Phi);                          // same draws as uniforms (for in-progress tasks)
+
+/* ---------- what really happened ---------- */
+function truthOf(key) {
+  const sc = SCENARIOS[key];
+  const dur = T.map((t, i) => Math.exp(MU[i] + sc.theta + SIG[i] * sc.e[i]));
+  const ti = T.map((t, i) => t.ti * sc.tiLuck[i]);
+  const start = new Array(NT), end = new Array(NT);
+  for (let i = 0; i < NT; i++) {
+    let s = 0; for (const p of PRED[i]) s = Math.max(s, end[p]);
+    start[i] = PRED[i].length ? s + T[i].lag : 0; end[i] = start[i] + dur[i];
+  }
+  const finish = end[IDX.IT];
+  let cost = PROJECT.loeBurn * finish;
+  for (let i = 0; i < NT; i++) cost += ti[i] + T[i].burn * dur[i];
+  return { dur, ti, start, end, finish, cost };
+}
+
+/* ---------- one Monte Carlo pass at playhead time t ---------- */
+function simulate(mode, t, truth, outX, outY) {
+  const done = truth.end.map(e => e <= t);
+  let mPost = 0, vPost = TAU2;
+  if (mode === 'dynamic') {
+    let prec = 1 / TAU2, sum = 0;
+    for (let i = 0; i < NT; i++) if (done[i]) { prec += 1 / SIG2[i]; sum += (Math.log(truth.dur[i]) - MU[i]) / SIG2[i]; }
+    vPost = 1 / prec; mPost = sum / prec;
+  }
+  const sdPost = Math.sqrt(vPost);
+  const end = new Float64Array(NT);
+  for (let k = 0; k < N_ITER; k++) {
+    const theta = mPost + sdPost * Z0[k];
+    let cost = 0;
+    for (let i = 0; i < NT; i++) {
+      let s = 0; for (const p of PRED[i]) s = Math.max(s, end[p]);
+      const st = PRED[i].length ? s + T[i].lag : 0;
+      let D, ti;
+      if (done[i]) { D = truth.dur[i]; ti = truth.ti[i]; }
+      else {
+        const m = MU[i] + theta, j = k * NT + i;
+        const el = t - st;
+        if (el > 0) { // in progress: it has already run `el` days, so draw from the tail beyond that
+          const p0 = Phi((Math.log(el) - m) / SIG[i]);
+          let u = p0 + (1 - p0) * UD[j]; u = Math.min(Math.max(u, 1e-12), 1 - 1e-12);
+          D = Math.max(Math.exp(m + SIG[i] * PhiInv(u)), el);
+        } else D = Math.exp(m + SIG[i] * ZD[j]);
+        ti = T[i].ti * Math.exp(-TIS[i] * TIS[i] / 2 + TIS[i] * ZC[j]);
+      }
+      end[i] = st + D;
+      cost += ti + T[i].burn * D;
+    }
+    const fin = end[IDX.IT];
+    outX[k] = fin; outY[k] = cost + PROJECT.loeBurn * fin;
+  }
+  return { mPost, sdPost };
+}
+
+function jclOf(X, Y, F, C) { let n = 0; for (let k = 0; k < X.length; k++) if (X[k] <= F && Y[k] <= C) n++; return n / X.length; }
+
+/* Balanced plan point on day one: the date and budget that are each at the
+   same confidence q on their own, chosen so the chance of hitting both is 70%. */
+function planTargets(X, Y, level) {
+  const xs = Float64Array.from(X).sort(), ys = Float64Array.from(Y).sort();
+  const qt = (a, q) => a[Math.min(a.length - 1, Math.floor(q * a.length))];
+  let lo = level, hi = 0.9999;
+  for (let it = 0; it < 40; it++) { const q = (lo + hi) / 2; if (jclOf(X, Y, qt(xs, q), qt(ys, q)) < level) lo = q; else hi = q; }
+  return { F: qt(xs, hi), C: qt(ys, hi), q: hi };
+}
+
+/* ===== VIEW ======================================================
+   Everything below draws the model. Nothing here changes a number.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  /* ---------- calendar: working-day index -> date ---------- */
+  const WD = []; // WD[n] = Date of working day n (n = 0 is the project start)
+  (function () {
+    const d = new Date(PROJECT.start + 'T12:00:00');
+    while (WD.length < 600) { const w = d.getDay(); if (w !== 0 && w !== 6) WD.push(new Date(d)); d.setDate(d.getDate() + 1); }
+  })();
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dateAt = x => WD[Math.max(0, Math.min(WD.length - 1, Math.floor(x)))];
+  const fmtDate = x => { const d = dateAt(x); return d.getDate() + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear(); };
+  const MONTHS = []; // {x, label} at the first working day of each month
+  for (let n = 1; n < WD.length; n++) if (WD[n].getMonth() !== WD[n - 1].getMonth()) MONTHS.push({ x: n, m: WD[n].getMonth(), y: WD[n].getFullYear() });
+  const fmtK = v => '$' + Math.round(v / 1000) + 'K';
+
+  /* ---------- fixed pieces: plan, truths, axes ---------- */
+  const TRUTH = { long: truthOf('long') };
+  const X0 = new Float64Array(N_ITER), Y0 = new Float64Array(N_ITER);
+  simulate('static', 0, TRUTH.long, X0, Y0);                 // day one: no actuals yet, so either truth gives the same cloud
+  const PLAN = planTargets(X0, Y0, 0.70);
+  const EST = (function () { // the day-one deterministic schedule, using each task's estimate
+    const st = [], en = [];
+    T.forEach((t, i) => { let s = 0; t.pred.forEach(p => { s = Math.max(s, en[T.findIndex(q => q.id === p)]); }); st[i] = t.pred.length ? s + t.lag : 0; en[i] = st[i] + t.mean; });
+    return { st, en, fin: en[T.length - 1] };
+  })();
+  const SPEND = T.map(t => (t.ti + t.burn * t.mean) / t.mean);   // $ per working day
+  const EST_COST = T.map(t => t.ti + t.burn * t.mean);
+  const MAX_SPEND = Math.max(...SPEND);
+
+  function q(a, p) { const s = Float64Array.from(a).sort(); return s[Math.floor(p * (s.length - 1))]; }
+  const truthMaxF = TRUTH.long.finish, truthMinF = TRUTH.long.finish;
+  const truthMaxC = TRUTH.long.cost, truthMinC = TRUTH.long.cost;
+  // Axis box: wide enough for every cloud the playback will show, so no dot is cut off at the edge.
+  const AX = (function () {
+    let x0 = Math.min(q(X0, 0.001), truthMinF), x1 = Math.max(q(X0, 0.999), truthMaxF);
+    let y0 = Math.min(q(Y0, 0.001), truthMinC), y1 = Math.max(q(Y0, 0.999), truthMaxC);
+    const ex = new Float64Array(N_ITER), ey = new Float64Array(N_ITER);
+    for (const t of [35, 60, 90, 110, 130, 150]) for (const m of ['static', 'dynamic']) {
+      simulate(m, t, TRUTH.long, ex, ey);
+      x0 = Math.min(x0, q(ex, 0.001)); x1 = Math.max(x1, q(ex, 0.999)); y0 = Math.min(y0, q(ey, 0.001)); y1 = Math.max(y1, q(ey, 0.999));
+    }
+    const px = (x1 - x0) * 0.04, py = (y1 - y0) * 0.05;
+    return { x0: x0 - px, x1: x1 + px, y0: y0 - py, y1: y1 + py };
+  })();
+  const TL_END = Math.ceil(truthMaxF + 9);   // timeline spans the project, with room past the finish for the final label
+
+  /* Checkpoints: a few working days after each group of tasks finishes, once both forecasts have
+     settled, plus the finish. The paths are coloured by the stretch between checkpoints, so the two
+     graphs can be compared at the same moments. */
+  const PHASES = [['AD', 'BD'], ['AB', 'BB'], ['AT']];
+  const CPS = PHASES.map(ids => Math.ceil(Math.max(...ids.map(id => TRUTH.long.end[T.findIndex(t => t.id === id)])) + 5)).concat([TRUTH.long.finish]);
+  // checkpoint colours run indigo, magenta, orange, gold: one continuous sweep, a distinct hue per stage.
+  // Badge numbers are white on the deep hues and dark on the bright ones.
+  const cpInk = c => document.documentElement.dataset.theme === 'dark' ? (c === 0 ? '#FFFFFF' : C.plot) : (c === 3 ? C.text : '#FFFFFF');
+  const segOf = d => { for (let i = 0; i < CPS.length; i++) if (d <= CPS[i]) return i; return CPS.length - 1; };
+
+  /* ---------- state ---------- */
+  const S = { scen: 'long', t: 0, playing: false, show: 'static', last: 0 };
+  const SPEED = 10;                // working days per second of playback
+  const BIN = 0.5;                 // scatter recomputes every half working day
+  const GLIDE = 0.35;              // seconds: how quickly a dot slides to its new position
+  const MODES = ['static', 'dynamic'];
+  const cloud = () => ({ X: new Float64Array(N_ITER), Y: new Float64Array(N_ITER) });
+  const PTS = { static: cloud(), dynamic: cloud() };    // where the model says each future is now
+  const DPTS = { static: cloud(), dynamic: cloud() };   // where each dot is drawn (glides toward PTS)
+  let curBin = -1, snapped = false;
+  let FIT = null;                  // set only in full screen: the heights that make the page fit the window
+  // Per working day: SERIES[scen][mode] = chance of hitting both, and
+  // SERIES[scen].cx / .cy [mode] = centre of the cloud. NaN until computed.
+  const SERIES = {};
+  for (const k of ['long']) {
+    const n = Math.ceil(TRUTH[k].finish) + 1, f = () => new Float32Array(n).fill(NaN);
+    SERIES[k] = { static: f(), dynamic: f(), cx: { static: f(), dynamic: f() }, cy: { static: f(), dynamic: f() } };
+  }
+  const tmpX = new Float64Array(N_ITER), tmpY = new Float64Array(N_ITER);
+  function seriesAt(k, mode, day) {
+    const arr = SERIES[k][mode];
+    if (Number.isNaN(arr[day])) {
+      simulate(mode, day, TRUTH[k], tmpX, tmpY); arr[day] = jclOf(tmpX, tmpY, PLAN.F, PLAN.C);
+      let mx = 0, my = 0; for (let i = 0; i < N_ITER; i++) { mx += tmpX[i]; my += tmpY[i]; }
+      SERIES[k].cx[mode][day] = mx / N_ITER; SERIES[k].cy[mode][day] = my / N_ITER;
+    }
+    return arr[day];
+  }
+  // The path the cloud's centre has travelled, smoothed the same way the dots glide.
+  function trail(mode, upto) {
+    const k = S.scen, cx = SERIES[k].cx[mode], cy = SERIES[k].cy[mode], a = 1 - Math.exp(-1 / (GLIDE * SPEED));
+    const out = []; let fx = 0, fy = 0;
+    for (let d = 0; d <= upto; d++) {
+      seriesAt(k, mode, d);
+      if (!d) { fx = cx[0]; fy = cy[0]; } else { fx += (cx[d] - fx) * a; fy += (cy[d] - fy) * a; }
+      out.push(fx, fy);
+    }
+    return out;
+  }
+  // Fill the confidence lines in the background so the playhead rarely waits.
+  (function prefill() {
+    let k = 0; const keys = ['long'];
+    function step() {
+      const sc = keys[k], n = SERIES[sc].static.length; let did = 0;
+      for (let d = 0; d < n && did < 6; d++) for (const m of ['static', 'dynamic']) if (Number.isNaN(SERIES[sc][m][d])) { seriesAt(sc, m, d); did++; }
+      if (!did) { k++; if (k >= keys.length) return; }
+      setTimeout(step, 0);
+    }
+    setTimeout(step, 300);
+  })();
+
+  function endT() { return TRUTH[S.scen].finish; }
+  function compute() {
+    const over = S.t >= endT() - 1e-9;
+    const b = over ? -2 : Math.round(S.t / BIN);
+    if (b === curBin) return;
+    curBin = b;
+    const t = Math.min(b * BIN, endT());
+    for (const m of ['static', 'dynamic']) {
+      simulate(m, over ? endT() + 1e-9 : t, TRUTH[S.scen], PTS[m].X, PTS[m].Y);
+    }
+    if (!snapped) snap();
+  }
+  function snap() { for (const m of MODES) { DPTS[m].X.set(PTS[m].X); DPTS[m].Y.set(PTS[m].Y); } snapped = true; }
+  // Move every drawn dot part of the way to where the model now puts it. Returns true while anything is still moving.
+  function glide(dt) {
+    const a = 1 - Math.exp(-dt / GLIDE), ex = (AX.x1 - AX.x0) * 4e-4, ey = (AX.y1 - AX.y0) * 4e-4;
+    let moving = false;
+    for (const m of MODES) {
+      const P = PTS[m], D = DPTS[m];
+      for (let k = 0; k < N_ITER; k++) {
+        const dx = P.X[k] - D.X[k], dy = P.Y[k] - D.Y[k];
+        if (Math.abs(dx) > ex || Math.abs(dy) > ey) { D.X[k] += dx * a; D.Y[k] += dy * a; moving = true; }
+        else { D.X[k] = P.X[k]; D.Y[k] = P.Y[k]; }
+      }
+    }
+    return moving;
+  }
+
+  /* ---------- theme ---------- */
+  let C = {};
+  function readTheme() { const cs = getComputedStyle(document.documentElement); for (const k of ['paper', 'plot', 'rail', 'tick', 'grid', 'grid2', 'text', 'muted', 'both', 'one', 'neither', 'amber', 'bar', 'edge', 'static', 'dynamic', 'readbg', 'band', 'cp1', 'cp2', 'cp3', 'cp4']) C[k] = cs.getPropertyValue('--' + k).trim(); C.mono = cs.getPropertyValue('--mono').trim(); C.display = cs.getPropertyValue('--display').trim(); }
+  function setTheme(dark) {
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    themeBtn.setAttribute('aria-pressed', String(dark)); themeBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    if (tipFor === themeBtn) showSay(themeBtn, themeBtn.getAttribute('aria-label'));
+    try { localStorage.setItem('tf-theme', dark ? 'dark' : 'light'); } catch (e) {}
+    readTheme(); draw();
+  }
+
+  /* ---------- canvas helpers ---------- */
+  function fit(cv, h) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5), w = cv.parentElement.clientWidth;
+    cv.style.height = h + 'px';
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+    const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); return { g, w, h };
+  }
+  function alpha(col, a) { // hex or rgb(a) -> rgba with alpha a
+    if (col[0] === '#') { const n = parseInt(col.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+    return col;
+  }
+  let lastHead = [0, 0];
+  // A small readout box in the symposium style, kept inside the canvas.
+  /* A callout: a readout box pinned to one corner of the plot ('tl', 'tr' or 'br'), with a leader line
+     from its inner corner to the point it names. `hot` (hovered) brightens all three. Returns the
+     geometry so hover can be tested against the box, the line and the point. */
+  function callout(g, B, corner, lines, pt, o) {
+    const fs = o.fs || 10.5, pad = 7, lh = fs + 4, m = 8;
+    g.font = `${fs}px ${C.mono}`;
+    const bw = Math.max(...lines.map(l => g.measureText(l).width)) + pad * 2, bh = lines.length * lh + pad * 2 - 4;
+    const bx = corner === 'tl' ? B.x0 + m : B.x1 - m - bw, by = corner === 'br' ? B.y1 - m - bh : B.y0 + m;
+    const cx = corner === 'tl' ? bx + bw : bx, cy = corner === 'br' ? by : by + bh;   // the corner facing the plot
+    const dx = pt[0] - cx, dy = pt[1] - cy, len = Math.hypot(dx, dy) || 1, ex = pt[0] - dx / len * (o.r + 3), ey = pt[1] - dy / len * (o.r + 3);
+    g.save();
+    if (o.hot) { g.shadowColor = o.edge; g.shadowBlur = 8; }
+    g.strokeStyle = o.hot ? o.edge : alpha(o.edge, .8); g.lineWidth = o.hot ? 2.75 : 1.4;
+    g.beginPath(); g.moveTo(cx, cy); g.lineTo(ex, ey); g.stroke();
+    if (o.hot) { g.lineWidth = 2.5; g.beginPath(); g.arc(pt[0], pt[1], o.r + 5, 0, Math.PI * 2); g.stroke(); }
+    g.restore();
+    g.fillStyle = C.readbg; g.fillRect(bx, by, bw, bh);
+    if (o.hot) { g.fillStyle = alpha(o.edge, .14); g.fillRect(bx, by, bw, bh); }
+    g.strokeStyle = o.edge; g.lineWidth = o.hot ? 2 : 1.25; g.strokeRect(bx + .5, by + .5, bw - 1, bh - 1);
+    g.fillStyle = C.text; g.textAlign = 'left'; g.textBaseline = 'top';
+    lines.forEach((l, i) => { g.font = `${i === 0 ? 'bold ' : ''}${fs}px ${C.mono}`; g.fillText(l, bx + pad, by + pad + i * lh); });
+    return { rect: [bx, by, bw, bh], seg: [cx, cy, pt[0], pt[1]], pt: [pt[0], pt[1], o.r] };
+  }
+  function hitTest(hits, x, y) {
+    const near = (h) => {
+      const [bx, by, bw, bh] = h.rect; if (x >= bx - 2 && x <= bx + bw + 2 && y >= by - 2 && y <= by + bh + 2) return true;
+      if (Math.hypot(x - h.pt[0], y - h.pt[1]) <= h.pt[2] + 8) return true;
+      const [x1, y1, x2, y2] = h.seg, L2 = (x2 - x1) ** 2 + (y2 - y1) ** 2 || 1;
+      const u = Math.max(0, Math.min(1, ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / L2));
+      return Math.hypot(x - (x1 + u * (x2 - x1)), y - (y1 + u * (y2 - y1))) <= 6;
+    };
+    for (const k of Object.keys(hits)) if (near(hits[k])) return k;
+    return null;
+  }
+  /* ---------- light bulbs: hover, focus or tap for a one-sentence explanation ---------- */
+  const TIPS = {
+    "static": "Static locks in each finished task's real time and cost, but keeps every remaining task at its day-one estimate.",
+    "dynamic": "Dynamic also locks in each finished task, then uses how far the finished work ran over to re-estimate everything still to come.",
+    "cloud": "Each dot is one of 3,000 simulated ways the project could end, placed by its finish date and total cost.",
+    "forecast": "The forecast is the center of the cloud, and its line traces how that center has moved since day one, with a numbered marker at each checkpoint.",
+    "actual": "The star is when the project really finished and what it really cost, shown from the start so you can watch each forecast close in on it.",
+    "acc": "The gap is how far this forecast still misses the actual result, in calendar days and in total cost, with its two lines pointing at each.",
+    "strip": "Gap closed is how much of the distance between the day-one forecast and the actual result each forecast has made up, tracked here over time with numbered checkpoints to compare.",
+    "schedule": "Bar height is spending per day so each bar's area is its cost, outlines are estimates, fills are actuals, and red is time beyond the estimate."
+  };
+  const BULB_SVG = '<svg viewBox="-1 -1 26 26" width="14" height="14" aria-hidden="true"><path d="M9.2 18.5h5.6M10.2 21.5h3.6M12 4.5a5.8 5.8 0 0 0-3.4 10.5c.6.5.9 1.1.9 1.8v.3h5v-.3c0-.7.3-1.3.9-1.8A5.8 5.8 0 0 0 12 4.5z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 .2v1.8M3.6 3.6l1.3 1.3M20.4 3.6l-1.3 1.3M.4 11.2h1.8M21.8 11.2h1.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+  const tipEl = document.getElementById('tfTip');
+  let tipFor = null;
+  function showTip(btn) {
+    tipFor = btn; tipEl.textContent = TIPS[btn.dataset.tip]; tipEl.classList.remove('tf-small'); tipEl.hidden = false;
+    const b = btn.getBoundingClientRect(), tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+    let x = b.left + b.width / 2 - tw / 2, y = b.bottom + 8;
+    if (y + th > window.innerHeight - 8) y = b.top - th - 8;
+    tipEl.style.left = Math.max(8, Math.min(window.innerWidth - tw - 8, x)) + 'px'; tipEl.style.top = Math.max(8, y) + 'px';
+  }
+  // the top-right controls say what clicking them will do
+  function showSay(btn, text) {
+    tipFor = btn; tipEl.textContent = text; tipEl.classList.add('tf-small'); tipEl.hidden = false;
+    const b = btn.getBoundingClientRect(), tw = tipEl.offsetWidth;
+    tipEl.style.left = Math.max(8, Math.min(window.innerWidth - tw - 8, b.left + b.width / 2 - tw / 2)) + 'px'; tipEl.style.top = (b.bottom + 8) + 'px';
+  }
+  function hideTip(btn) { if (!btn || tipFor === btn) { tipEl.hidden = true; tipFor = null; } }
+  function makeBulb(key) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'tf-bulb'; b.dataset.tip = key; b.setAttribute('aria-label', TIPS[key]); b.innerHTML = BULB_SVG;
+    b.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') showTip(b); });
+    b.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') hideTip(b); });
+    b.addEventListener('focus', () => showTip(b)); b.addEventListener('blur', () => hideTip(b));
+    b.addEventListener('click', e => { e.stopPropagation(); tipFor === b ? hideTip(b) : showTip(b); });
+    return b;
+  }
+  document.addEventListener('click', () => hideTip());
+  document.querySelectorAll('[data-bulb]').forEach(el => el.appendChild(makeBulb(el.dataset.bulb)));
+  // Bulbs that sit over a canvas are absolutely placed at points the drawing code hands over.
+  function placeBulbs(host, pos) {
+    host._bulbs = host._bulbs || {};
+    for (const [k, xy] of Object.entries(pos)) {
+      let b = host._bulbs[k];
+      if (!b) { b = host._bulbs[k] = makeBulb(k); b.classList.add('tf-bulb-abs'); host.appendChild(b); }
+      b.style.left = Math.round(xy[0]) + 'px'; b.style.top = Math.round(xy[1]) + 'px';
+    }
+  }
+
+  function star(g, x, y, r) { g.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; g.lineTo(x + rr * Math.cos(a), y + rr * Math.sin(a)); } g.closePath(); }
+
+  /* ---------- scatter panel ---------- */
+  const panels = [...document.querySelectorAll('.tf-panel')].map(el => ({ el, mode: el.dataset.mode, cv: el.querySelector('canvas') }));
+
+  function drawScatter(p) {
+    const w0 = p.cv.parentElement.clientWidth; if (!w0) return;
+    const narrow = w0 < 460;
+    const phone = window.matchMedia('(max-width:760px)').matches;
+    const hh = FIT ? FIT.scatter : phone ? Math.min(w0 * 0.72, 420) : Math.min(w0 * 0.6, window.innerHeight - 600, 440);
+    const { g, w, h } = fit(p.cv, Math.round(FIT ? hh : Math.max(240, hh)));
+    const M = { l: narrow ? 48 : 60, r: 10, t: 10, b: 28 };
+    const pw = w - M.l - M.r, ph = h - M.t - M.b;
+    const sx = x => M.l + (x - AX.x0) / (AX.x1 - AX.x0) * pw, sy = y => M.t + (1 - (y - AX.y0) / (AX.y1 - AX.y0)) * ph;
+    g.clearRect(0, 0, w, h);
+
+    // axes: total cost up the side, finish date along the bottom
+    g.lineWidth = 1; g.font = `${narrow ? 9.5 : 10.5}px ${C.mono}`; g.fillStyle = C.tick;
+    g.textAlign = 'right'; g.textBaseline = 'middle';
+    for (let v = Math.ceil(AX.y0 / 100000) * 100000; v <= AX.y1; v += 100000) {
+      const y = Math.round(sy(v)) + .5; g.strokeStyle = C.grid; g.beginPath(); g.moveTo(M.l, y); g.lineTo(M.l + pw, y); g.stroke();
+      g.fillText('$' + (v / 1e6).toFixed(1) + 'M', M.l - 6, y);
+    }
+    g.textAlign = 'center'; g.textBaseline = 'top';
+    let firstLabel = true;
+    for (const mo of MONTHS) {
+      if (mo.x < AX.x0 || mo.x > AX.x1) continue;
+      const x = Math.round(sx(mo.x)) + .5; g.strokeStyle = C.grid; g.beginPath(); g.moveTo(x, M.t); g.lineTo(x, M.t + ph); g.stroke();
+      g.fillText(MON[mo.m] + (mo.m === 0 || firstLabel ? ' ' + mo.y : ''), x, M.t + ph + 7); firstLabel = false;
+    }
+    g.save(); g.beginPath(); g.rect(M.l, M.t, pw, ph); g.clip();
+
+    // day-one ghost cloud, so you can see how far the forecast has travelled
+    const ds = narrow ? 1.6 : 2;
+    g.fillStyle = alpha(C.one, S.t > 0 ? .16 : 0);
+    if (S.t > 0) for (let k = 0; k < N_ITER; k++) g.fillRect(sx(X0[k]) - ds / 2, sy(Y0[k]) - ds / 2, ds, ds);
+
+    // current cloud, in this model's colour
+    const { X, Y } = DPTS[p.mode];
+    g.fillStyle = alpha(C[p.mode], .6);
+    for (let k = 0; k < N_ITER; k++) g.fillRect(sx(X[k]) - ds / 2, sy(Y[k]) - ds / 2, ds, ds);
+
+    // two fixed points, shown from the start: where the forecast starts (hollow ring)
+    // and where the project actually ends (star)
+    const tr = TRUTH[S.scen];
+    const start = trail(p.mode, 0), r0 = narrow ? 4 : 5;
+
+    // the path the centre of the cloud has travelled, coloured by checkpoint stretch
+    p.segHits = null;
+    if (S.t > 0) {
+      const path = trail(p.mode, Math.min(Math.floor(S.t), SERIES[S.scen].cx[p.mode].length - 1));
+      let mx = 0, my = 0; for (let k = 0; k < N_ITER; k++) { mx += X[k]; my += Y[k]; } mx /= N_ITER; my /= N_ITER;
+      const pts = []; for (let i = 0; i < path.length; i += 2) pts.push([sx(path[i]), sy(path[i + 1]), i / 2]);
+      pts.push([sx(mx), sy(my), S.t]);
+      g.lineJoin = 'round'; g.lineCap = 'round';
+      g.beginPath(); pts.forEach((q, i) => i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]));
+      g.strokeStyle = C.plot; g.lineWidth = narrow ? 5.5 : 7; g.stroke();
+      g.lineWidth = narrow ? 2.5 : 3.25;
+      const hs = segHover(p.hover), polys = [];
+      let i = 1;
+      while (i < pts.length) {
+        const s = segOf(pts[i][2]), poly = [pts[i - 1]];
+        while (i < pts.length && segOf(pts[i][2]) === s) { poly.push(pts[i]); i++; }
+        polys.push([s, poly]);
+      }
+      for (const [s, poly] of polys) {
+        const hot = s === hs;
+        g.save(); if (hot) { g.shadowColor = C['cp' + (s + 1)]; g.shadowBlur = 12; }
+        g.beginPath(); poly.forEach((q, j) => j ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]));
+        g.strokeStyle = C['cp' + (s + 1)]; g.lineWidth = (narrow ? 2.5 : 3.25) + (hot ? 2.5 : 0); g.stroke(); g.restore();
+      }
+      p.segHits = { polys, markers: [] };
+      g.fillStyle = C['cp' + (segOf(S.t) + 1)]; g.strokeStyle = C.plot; g.lineWidth = 2;
+      lastHead = pts[pts.length - 1];
+      g.beginPath(); g.arc(lastHead[0], lastHead[1], narrow ? 4.5 : 5.5, 0, Math.PI * 2); g.fill(); g.stroke();   // now
+      // numbered markers where the path stood at each checkpoint (the last checkpoint is the star)
+      g.font = `bold ${narrow ? 8.5 : 9.5}px ${C.mono}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      for (let c = 0; c < CPS.length - 1; c++) {
+        if (S.t < CPS[c] || !pts[CPS[c]]) continue;
+        const [x, y] = pts[CPS[c]], rr = narrow ? 6.5 : 8;
+        p.segHits.markers.push([x, y, rr, c]);
+        if (c === hs) { g.save(); g.shadowColor = C['cp' + (c + 1)]; g.shadowBlur = 12; g.strokeStyle = C['cp' + (c + 1)]; g.lineWidth = 2.5; g.beginPath(); g.arc(x, y, rr + 4, 0, Math.PI * 2); g.stroke(); g.restore(); }
+        g.fillStyle = C['cp' + (c + 1)]; g.strokeStyle = C.plot; g.lineWidth = 2;
+        g.beginPath(); g.arc(x, y, rr, 0, Math.PI * 2); g.fill(); g.stroke();
+        g.fillStyle = cpInk(c);
+        g.fillText(String(c + 1), x, y + .5);
+      }
+    }
+    g.fillStyle = C.plot; g.strokeStyle = C.text; g.lineWidth = 2;
+    g.beginPath(); g.arc(sx(start[0]), sy(start[1]), r0, 0, Math.PI * 2); g.fill(); g.stroke();   // day one
+    g.fillStyle = C.text; g.strokeStyle = C.plot; g.lineWidth = 2; star(g, sx(tr.finish), sy(tr.cost), narrow ? 9 : 11); g.fill(); g.stroke();
+    g.restore();
+    g.strokeStyle = C.rail; g.lineWidth = 1.5; g.strokeRect(M.l + .5, M.t + .5, pw - 1, ph - 1);   // plot frame
+
+    // the two callouts, pinned to corners: actual (top right), this model's forecast (bottom right)
+    let fx = start[0];
+    if (S.t > 0) { fx = 0; for (let k = 0; k < N_ITER; k++) fx += X[k]; fx /= N_ITER; }
+    const head = S.t > 0 ? lastHead : [sx(start[0]), sy(start[1])];
+    const word = (long, short) => narrow ? short : long;
+    const fsz = narrow ? 9 : 10.5, name = p.mode === 'static' ? 'STATIC' : 'DYNAMIC';
+    const B = { x0: M.l, y0: M.t, x1: M.l + pw, y1: M.t + ph };
+    p.hits = {
+      actual: callout(g, B, 'tr', [word('ACTUAL COMPLETION', 'ACTUAL'), fmtDate(tr.finish)], [sx(tr.finish), sy(tr.cost)], { edge: C.text, fs: fsz, r: narrow ? 9 : 11, hot: p.hover === 'actual' }),
+      forecast: callout(g, B, 'tl', [word(name + ' FORECAST', name), fmtDate(fx)], head, { edge: C[p.mode], fs: fsz, r: narrow ? 5 : 6, hot: p.hover === 'forecast' }),
+    };
+
+    // bottom right: how far this forecast is from the actual result, in calendar days and in dollars
+    let fy = trail(p.mode, 0)[1];
+    if (S.t > 0) { fy = 0; for (let k = 0; k < N_ITER; k++) fy += Y[k]; fy /= N_ITER; }
+    const off = Math.round(Math.abs(dateAt(tr.finish) - dateAt(fx)) / 86400000);
+    // two aligned columns: numbers right-aligned, units centred under each other ("24 d" over "$231 K")
+    const nums = [String(off), '$' + Math.round(Math.abs(tr.cost - fy) / 1000)], units = ['d', 'K'];
+    const val = narrow ? 11.5 : 13, small = narrow ? 9.5 : 10.5, pad = narrow ? 7 : 9;
+    const accN = Math.round(accuracy(p.mode) * 100);
+    // compact layout: GAP label on the left with days and dollars stacked on the right,
+    // then a rule, then ACCURACY on the left with its percentage on the right, and the bar beneath
+    g.font = `bold ${val}px ${C.mono}`; const wN = g.measureText('$888').width;   // widest a number can get, so the box never changes size
+    g.font = `${val}px ${C.mono}`; const wU = Math.max(g.measureText('d').width, g.measureText('K').width), gapU = 5, wV = wN + gapU + wU;
+    g.font = `${small}px ${C.mono}`; const wG = g.measureText('GAP').width, wM = g.measureText('GAP CLOSED 100%').width + 8;
+    const bw = Math.max(wG + 14 + wV, wM) + pad * 2, barH = 5;
+    const yDays = pad + val, yCost = yDays + val + 4, yRule = yCost + 8, yAcc = yRule + 7 + small, yBar = yAcc + 5;
+    const bh = yBar + barH + pad;
+    const abx = B.x1 - 6 - bw, aby = B.y1 - 6 - bh, hot = p.hover === 'acc' || S.playing;   // lit while playing: it is what you follow
+    // two lines from the box's top-left corner: one to where this forecast is now, one to the actual result
+    const toward = (pt, r0, col) => {
+      const dx = pt[0] - abx, dy = pt[1] - aby, len = Math.hypot(dx, dy) || 1;
+      g.save(); if (hot) { g.shadowColor = col; g.shadowBlur = 8; }
+      g.strokeStyle = hot ? col : alpha(col, .8); g.lineWidth = hot ? 2.5 : 1.25; g.setLineDash([4, 3]);
+      g.beginPath(); g.moveTo(abx, aby); g.lineTo(pt[0] - dx / len * (r0 + 3), pt[1] - dy / len * (r0 + 3)); g.stroke(); g.restore();
+    };
+    toward(head, narrow ? 5 : 6, C[p.mode]);
+    toward([sx(tr.finish), sy(tr.cost)], narrow ? 9 : 11, C.text);
+    g.save(); if (hot) { g.shadowColor = C[p.mode]; g.shadowBlur = 10; }
+    g.fillStyle = C.readbg; g.fillRect(abx, aby, bw, bh); g.restore();
+    if (hot) { g.fillStyle = alpha(C[p.mode], .14); g.fillRect(abx, aby, bw, bh); }
+    g.strokeStyle = C[p.mode]; g.lineWidth = hot ? 2.25 : 1.25; g.strokeRect(abx + .5, aby + .5, bw - 1, bh - 1);
+    p.hits.acc = { rect: [abx, aby, bw, bh], seg: [abx, aby, abx, aby], pt: [-999, -999, 0] };
+    const hf = p.hits.forecast.rect, ha = p.hits.actual.rect;
+    placeBulbs(p.cv.parentElement, {
+      forecast: [hf[0] + hf[2] + 15, hf[1] + hf[3] / 2],   // just outside each box, on the side away from its leader line
+      actual: [ha[0] - 15, ha[1] + ha[3] / 2],
+      acc: [abx - 15, aby + bh - 15],
+      cloud: [B.x0 + 16, B.y1 - 16],
+    });
+    const L = abx + pad, R = abx + bw - pad;
+    g.textBaseline = 'alphabetic';
+    g.textAlign = 'left'; g.fillStyle = C.text; g.font = `${small}px ${C.mono}`; g.fillText('GAP', L, aby + yDays);
+    const uC = R - wU / 2, nR = R - wU - gapU;
+    g.fillStyle = C[p.mode];
+    g.textAlign = 'right'; g.font = `bold ${val}px ${C.mono}`; g.fillText(nums[0], nR, aby + yDays); g.fillText(nums[1], nR, aby + yCost);
+    g.textAlign = 'center'; g.font = `${val}px ${C.mono}`; g.fillText(units[0], uC, aby + yDays); g.fillText(units[1], uC, aby + yCost);
+    g.strokeStyle = alpha(C[p.mode], .35); g.lineWidth = 1; g.beginPath(); g.moveTo(L, aby + yRule + .5); g.lineTo(R, aby + yRule + .5); g.stroke();
+    // accuracy, with its bar, at the very bottom
+    g.textAlign = 'left'; g.fillStyle = C.text; g.font = `${small}px ${C.mono}`; g.fillText('GAP CLOSED', L, aby + yAcc);
+    g.textAlign = 'right'; g.fillStyle = C[p.mode]; g.font = `bold ${small + 1}px ${C.mono}`; g.fillText(accN + '%', R, aby + yAcc);
+    g.fillStyle = C.grid; g.beginPath(); g.roundRect(L, aby + yBar, R - L, barH, 3); g.fill();
+    if (accN > 0) { g.fillStyle = C[p.mode]; g.beginPath(); g.roundRect(L, aby + yBar, (R - L) * accN / 100, barH, 3); g.fill(); }
+
+  }
+  /* Gap closed (called accuracy in the code): how much of the gap between this forecast's day-one point and the actual result it has
+     closed so far. 0% on day one, 100% when the forecast sits on the actual result. Cost and date each
+     count as a fraction of their own day-one gap, then the two are combined as a straight-line distance.
+     Measured on the drawn (gliding) cloud, so the counter rolls with the dots. */
+  function accAt(mode, mx, my) {
+    const tr = TRUTH[S.scen], s = trail(mode, 0);
+    const nx = (mx - tr.finish) / (s[0] - tr.finish), ny = (my - tr.cost) / (s[1] - tr.cost);
+    return Math.max(0, Math.min(1, 1 - Math.sqrt((nx * nx + ny * ny) / 2)));
+  }
+  function accuracy(mode) {
+    const { X, Y } = DPTS[mode];
+    let mx = 0, my = 0; for (let k = 0; k < N_ITER; k++) { mx += X[k]; my += Y[k]; } mx /= N_ITER; my /= N_ITER;
+    return accAt(mode, mx, my);
+  }
+
+  /* ---------- timeline: confidence strip + cost-loaded schedule ---------- */
+  const tl = document.getElementById('tfTimeline'), stripCv = document.getElementById('tfStrip');
+  const stripLines = {};   // screen points of the two tracker lines, for hover
+  const stripBadges = [];  // the numbered checkpoint badges in the tracker, for hover
+  let TLG = null; // geometry of the last draw, for scrubbing
+
+  // Where each task sits at time t: actual start if it has started, otherwise
+  // pushed along by whatever its predecessors have actually done so far.
+  function projected(t) {
+    const tr = TRUTH[S.scen], st = [], en = [];
+    T.forEach((task, i) => {
+      if (tr.start[i] <= t) st[i] = tr.start[i];
+      else { let s = 0; task.pred.forEach(p => { s = Math.max(s, en[T.findIndex(q => q.id === p)]); }); st[i] = task.pred.length ? s + task.lag : 0; }
+      if (tr.end[i] <= t) en[i] = tr.end[i];
+      else if (tr.start[i] <= t) en[i] = st[i] + Math.max(task.mean, t - st[i]);
+      else en[i] = st[i] + task.mean;
+    });
+    return { st, en, fin: en[T.length - 1] };
+  }
+
+  // Both timeline canvases share one time axis: the same gutter, the same width, the same x for any day,
+  // so the playhead lines up in the timekeeper at the top and the schedule at the bottom.
+  function timeAxis(cv) {
+    const w = cv.parentElement.clientWidth, narrow = w < 620;
+    const G = narrow ? 96 : 212, pw = w - G - 14;
+    return { w, narrow, G, pw, sx: x => G + x / TL_END * pw, inv: px => (px - G) / pw * TL_END };
+  }
+  function monthGrid(g, A, y0, y1, labelY) {
+    g.font = `${A.narrow ? 9.5 : 10.5}px ${C.mono}`; g.textAlign = 'center'; g.textBaseline = 'top';
+    let first = true;
+    for (const mo of MONTHS) {
+      if (mo.x > TL_END) break;
+      const x = Math.round(A.sx(mo.x)) + .5;
+      g.strokeStyle = C.grid; g.lineWidth = 1; g.beginPath(); g.moveTo(x, y0); g.lineTo(x, y1); g.stroke();
+      if (labelY != null) { g.fillStyle = C.tick; g.fillText(A.narrow ? MON[mo.m][0] : MON[mo.m] + ((mo.m === 0 || first) ? ' ' + mo.y : ''), x, labelY); }
+      first = false;
+    }
+    g.strokeStyle = alpha(C.neither, .8); g.setLineDash([5, 4]); g.beginPath(); g.moveTo(A.sx(0) + .5, y0); g.lineTo(A.sx(0) + .5, y1); g.stroke(); g.setLineDash([]);
+  }
+  function playhead(g, A, y0, y1) {
+    const px = Math.round(A.sx(S.t)) + .5;
+    g.strokeStyle = C.text; g.lineWidth = 1.5; g.beginPath(); g.moveTo(px, y0); g.lineTo(px, y1); g.stroke();
+    return px;
+  }
+
+  /* --- the gap tracker: how much of the gap each forecast has closed, drawn up to now --- */
+  function drawStrip() {
+    const A = timeAxis(stripCv); if (!A.w) return;
+    const { narrow, G, pw, sx } = A, t = S.t;
+    const stripTop = 30, bottom = 30;   // badges sit in the top margin, clear of the lines near 100%
+    const stripH = FIT ? Math.max(50, FIT.strip - stripTop - bottom) : narrow ? 92 : 104;
+    const { g, w, h } = fit(stripCv, stripTop + stripH + bottom);
+    TLG = A;
+    g.clearRect(0, 0, w, h);
+    const sy = v => stripTop + (1 - v) * stripH;
+    monthGrid(g, A, stripTop, stripTop + stripH, stripTop + stripH + 9);
+    g.strokeStyle = C.grid; g.lineWidth = 1;
+    for (const v of [0, .5, 1]) { const y = Math.round(sy(v)) + .5; g.beginPath(); g.moveTo(G, y); g.lineTo(G + pw, y); g.stroke(); }
+    // checkpoints, numbered to match the markers on the two graphs
+    g.font = `bold ${narrow ? 8.5 : 9.5}px ${C.mono}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    const hs = segHover(panels[0].hover);
+    stripBadges.length = 0;
+    if (hs >= 0) {   // the stretch of time this checkpoint closes, shaded in its colour
+      const xa = sx(hs ? CPS[hs - 1] : 0), xb = sx(CPS[hs]);
+      g.fillStyle = alpha(C['cp' + (hs + 1)], .14); g.fillRect(xa, stripTop, xb - xa, stripH);
+    }
+    CPS.forEach((d, c) => {
+      const x = Math.round(sx(d)) + .5, rr = narrow ? 6.5 : 7.5, col = C['cp' + (c + 1)], hot = c === hs;
+      g.strokeStyle = col; g.lineWidth = hot ? 2.5 : 1.5; if (!hot) g.setLineDash([3, 3]);
+      const by = stripTop - rr - 5;
+      stripBadges.push([x, by, rr, c]);
+      g.beginPath(); g.moveTo(x, by + rr + 2); g.lineTo(x, sy(0)); g.stroke(); g.setLineDash([]);
+      if (hot) { g.save(); g.shadowColor = col; g.shadowBlur = 10; g.lineWidth = 2.5; g.beginPath(); g.arc(x, by, rr + 3.5, 0, Math.PI * 2); g.stroke(); g.restore(); }
+      g.fillStyle = col; g.strokeStyle = C.plot; g.lineWidth = 2;
+      g.beginPath(); g.arc(x, by, rr, 0, Math.PI * 2); g.fill(); g.stroke();
+      g.fillStyle = cpInk(c);
+      g.fillText(String(c + 1), x, by + .5);
+    });
+    g.textAlign = 'right'; g.textBaseline = 'middle'; g.fillStyle = C.tick; g.font = `${narrow ? 9 : 10}px ${C.mono}`;
+    if (!narrow) { g.fillText('100%', G - 6, sy(1)); g.fillText('50%', G - 6, sy(.5)); g.fillText('0%', G - 6, sy(0)); }
+
+    const cur = {};
+    for (const mode of ['static', 'dynamic']) {
+      const last = Math.min(Math.floor(t), SERIES[S.scen].cx[mode].length - 1), path = trail(mode, last);
+      const hot = panels[0].hover === 'acc' || S.playing;
+      g.save(); if (hot) { g.shadowColor = C[mode]; g.shadowBlur = 10; }
+      g.strokeStyle = C[mode]; g.lineWidth = (mode === 'dynamic' ? 2.5 : 2.25) + (hot ? 1.5 : 0); g.lineJoin = 'round';
+      g.beginPath();
+      const pl = [];
+      for (let d = 0; d <= last; d++) { const v = accAt(mode, path[2 * d], path[2 * d + 1]); pl.push(sx(d), sy(v)); d ? g.lineTo(sx(d), sy(v)) : g.moveTo(sx(d), sy(v)); }
+      const now = accuracy(mode);
+      pl.push(sx(t), sy(now)); stripLines[mode] = pl;
+      g.lineTo(sx(t), sy(now)); g.stroke(); g.restore();
+      cur[mode] = now;
+    }
+    // frame, playhead, and the current values beside it
+    g.strokeStyle = C.rail; g.lineWidth = 1.5; g.beginPath(); g.moveTo(G + .5, stripTop); g.lineTo(G + .5, stripTop + stripH); g.stroke();
+    const px = playhead(g, A, stripTop - (narrow ? 0 : 4), stripTop + stripH);
+    // current values beside the playhead. When both read the same (day one, the finish) show one label,
+    // and keep labels clear of the axis below and the checkpoint badges above.
+    const vS = Math.round(cur.static * 100), vD = Math.round(cur.dynamic * 100), same = vS === vD;
+    const clampY = y => Math.max(stripTop + 8, Math.min(sy(0) - 8, y));
+    let ys = clampY(sy(cur.static)), yd = clampY(sy(cur.dynamic));
+    if (!same && Math.abs(ys - yd) < 13) { const m = (ys + yd) / 2; if (cur.static >= cur.dynamic) { ys = m - 7; yd = m + 7; } else { ys = m + 7; yd = m - 7; } ys = clampY(ys); yd = clampY(yd); }
+    g.font = `bold ${narrow ? 10 : 11}px ${C.mono}`; g.textBaseline = 'middle';
+    const labX = sx(t) + 8, flip = labX > G + pw - 34;
+    g.textAlign = flip ? 'right' : 'left';
+    for (const mode of ['static', 'dynamic']) { g.fillStyle = C[mode]; g.beginPath(); g.arc(sx(t), sy(cur[mode]), 3.5, 0, Math.PI * 2); g.fill(); }
+    if (t > 0.5) {
+      if (same) { g.fillStyle = C.text; g.fillText(vS + '%', flip ? sx(t) - 8 : labX, ys); }
+      else for (const [mode, y, v] of [['static', ys, vS], ['dynamic', yd, vD]]) { g.fillStyle = C[mode]; g.fillText(v + '%', flip ? sx(t) - 8 : labX, y); }
+    }
+    // the date at the playhead, sitting on the month row like a cursor tag
+    const lab = fmtDate(t); g.font = `${narrow ? 9.5 : 10.5}px ${C.mono}`;
+    const lw = g.measureText(lab).width + 12, lh = 18, lxp = Math.min(Math.max(px - lw / 2, G + 2), G + pw - lw), lyp = stripTop + stripH + 6;
+    g.fillStyle = C.text; g.fillRect(lxp, lyp, lw, lh);
+    g.fillStyle = C.plot; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(lab, lxp + 6, lyp + lh / 2 + .5);
+    // legend in the gutter: title on the 100% line, the two keys spaced evenly down to the 0% line
+    g.textAlign = 'left'; g.textBaseline = 'middle';
+    const lx = narrow ? 8 : 14;
+    g.fillStyle = C.text; g.font = `bold ${narrow ? 8.5 : 10}px ${C.mono}`;
+    let titleEnd, yT = sy(1) + (narrow ? 4 : 2);
+    if (narrow) { g.fillText('GAP', lx, yT); g.fillText('TRACKER', lx, yT + 12); titleEnd = [lx + g.measureText('TRACKER').width + 14, yT + 12]; }
+    else { g.fillText('GAP TRACKER', lx, yT); titleEnd = [lx + g.measureText('GAP TRACKER').width + 16, yT]; }
+    const bulbs = { strip: titleEnd };
+    g.font = `${narrow ? 8.5 : 10}px ${C.mono}`;
+    const k0 = yT + (narrow ? 30 : 22), k1 = k0 + (narrow ? 15 : 17);   // keys sit right under the title, as one block
+    for (const [mode, y] of [['static', k0], ['dynamic', k1]]) {
+      g.strokeStyle = C[mode]; g.lineWidth = 2.5; g.beginPath(); g.moveTo(lx, y); g.lineTo(lx + 18, y); g.stroke();
+      g.fillStyle = C.text; g.fillText(mode === 'static' ? 'Static' : 'Dynamic', lx + 25, y);
+    }
+    placeBulbs(stripCv.parentElement, bulbs);
+  }
+
+  /* --- the cost-loaded schedule --- */
+  function drawSchedule() {
+    const A = timeAxis(tl); if (!A.w) return;
+    const { narrow, G, pw, sx } = A, t = S.t, tr = TRUTH[S.scen];
+    const rows = T.length + 1, axisH = 28, gTop = 12;
+    const pitch = FIT ? Math.max(14, Math.min(46, (FIT.schedule - gTop - axisH) / rows)) : narrow ? 26 : 30;
+    const { g, w, h } = fit(tl, gTop + rows * pitch + axisH);
+    g.clearRect(0, 0, w, h);
+    for (let r = 0; r < rows; r += 2) { g.fillStyle = C.band; g.fillRect(G, gTop + r * pitch, pw, pitch); }
+    monthGrid(g, A, gTop, gTop + rows * pitch, gTop + rows * pitch + 8);
+    const pj = projected(t);
+    const rowsDef = T.map((task, i) => ({ i, name: narrow ? task.short : task.name, spend: SPEND[i] }));
+    rowsDef.push({ i: -1, name: narrow ? 'Mgmt' : 'Project management', spend: PROJECT.loeBurn });
+    rowsDef.forEach((row, r) => {
+      const yc = gTop + r * pitch + pitch / 2;
+      const bh = Math.max(5, (pitch - 8) * row.spend / MAX_SPEND);
+      let pSt, pLen, aSt, aEnd, done, estCost, actCost, gSt, gLen;
+      if (row.i >= 0) {
+        const i = row.i;
+        pSt = pj.st[i]; pLen = T[i].mean; gSt = EST.st[i]; gLen = T[i].mean;
+        aSt = tr.start[i]; aEnd = Math.min(t, tr.end[i]); done = tr.end[i] <= t;
+        estCost = EST_COST[i]; actCost = tr.ti[i] + T[i].burn * tr.dur[i];
+      } else { // project management runs every day the project runs
+        pSt = 0; pLen = EST.fin; gSt = 0; gLen = EST.fin; // outline stays the estimate; the fill shows any overrun
+        aSt = 0; aEnd = Math.min(t, tr.finish); done = tr.finish <= t;
+        estCost = PROJECT.loeBurn * EST.fin; actCost = PROJECT.loeBurn * tr.finish;
+      }
+      // original plan ghost, only when the task has been pushed
+      if (row.i >= 0 && Math.abs(pSt - gSt) > 0.5) {
+        g.strokeStyle = alpha(C.one, .9); g.setLineDash([3, 3]); g.lineWidth = 1;
+        g.strokeRect(sx(gSt) + .5, yc - bh / 2 + .5, sx(gSt + gLen) - sx(gSt) - 1, bh - 1); g.setLineDash([]);
+      }
+      // estimate outline (current position)
+      const ox = sx(pSt), ow = sx(pSt + pLen) - ox;
+      g.fillStyle = alpha(C.bar, .55); g.fillRect(ox, yc - bh / 2, ow, bh);
+      // actual fill: within the estimate, then red beyond it
+      if (t > aSt) {
+        const estEnd = aSt + (row.i >= 0 ? T[row.i].mean : EST.fin);
+        const inEnd = Math.min(aEnd, estEnd);
+        g.fillStyle = alpha(C.edge, .55); g.fillRect(sx(aSt), yc - bh / 2, Math.max(0, sx(inEnd) - sx(aSt)), bh);
+        if (aEnd > estEnd) { g.fillStyle = alpha(C.neither, .85); g.fillRect(sx(estEnd), yc - bh / 2, sx(aEnd) - sx(estEnd), bh); }
+      }
+      g.strokeStyle = C.edge; g.lineWidth = 1.25; g.strokeRect(ox + .5, yc - bh / 2 + .5, ow - 1, bh - 1);
+      if (done && row.i >= 0) { // finished marker
+        g.fillStyle = C.text; g.beginPath(); g.arc(sx(tr.end[row.i]), yc, 2.5, 0, Math.PI * 2); g.fill();
+      }
+      // gutter label: name, then the estimate, swapped for the actual once it is in
+      g.textBaseline = 'middle'; g.textAlign = 'left'; g.fillStyle = C.text; g.font = `${narrow ? 9.5 : 11.5}px ${C.mono}`;
+      g.fillText(row.name, narrow ? 8 : 14, yc);
+      if (!narrow) {
+        g.textAlign = 'right';
+        if (done) { g.fillStyle = actCost > estCost * 1.005 ? C.neither : C.both; g.fillText(fmtK(actCost), G - 10, yc); }
+        else { g.fillStyle = C.muted; g.fillText(fmtK(estCost), G - 10, yc); }
+      }
+    });
+
+    g.strokeStyle = C.rail; g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(G + .5, gTop); g.lineTo(G + .5, gTop + rows * pitch); g.stroke();
+    g.beginPath(); g.moveTo(G, gTop + rows * pitch + .5); g.lineTo(G + pw, gTop + rows * pitch + .5); g.stroke();
+    playhead(g, A, gTop - 6, gTop + rows * pitch);
+  }
+
+  /* ---------- draw + playback ---------- */
+  // the day counter: calendar day of the project out of the days it actually runs
+  const actEl = document.getElementById('tfAct'), dayEl = document.getElementById('tfDay'), daysEl = document.getElementById('tfDays'), fillEl = document.getElementById('tfPfill'), progEl = document.getElementById('tfProg');
+  const calDay = x => Math.round((dateAt(x) - WD[0]) / 86400000);
+  function drawProgress() {
+    const total = calDay(endT()), now = Math.min(total, calDay(S.t));
+    dayEl.textContent = now; daysEl.textContent = total;
+    fillEl.style.width = (now / total * 100).toFixed(2) + '%';
+    actEl.style.setProperty('--fill', (now / total * 100).toFixed(2) + '%');
+    progEl.setAttribute('aria-valuemax', total); progEl.setAttribute('aria-valuenow', now);
+  }
+  function render() { measureFit(); panels.forEach(drawScatter); drawProgress(); drawStrip(); drawSchedule(); }
+
+  // Fit to screen. In full screen, everything that is not a canvas keeps its natural height, and the
+  // two canvases split what is left of the window, so nothing needs scrolling.
+  function measureFit() {
+    const on = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    document.documentElement.classList.toggle('tf-fit', on);
+    if (!on) { FIT = null; return; }
+    const main = document.querySelector('.tf'), sc = panels[0].cv;
+    const fixed = main.offsetHeight - sc.offsetHeight - stripCv.offsetHeight - tl.offsetHeight;
+    const avail = Math.max(300, window.innerHeight - fixed - 2);
+    const strip = Math.round(Math.max(110, Math.min(220, avail * 0.2)));
+    FIT = { strip, scatter: Math.round((avail - strip) * 0.56), schedule: Math.round((avail - strip) * 0.44) };
+  }
+  function draw() { compute(); render(); }
+  // One animation loop: it runs while playing, and keeps running after a pause or a scrub until the dots settle.
+  let raf = 0, lastFrame = 0;
+  function kick() { if (!raf) { lastFrame = performance.now(); raf = requestAnimationFrame(frame); } }
+  function frame(now) {
+    raf = 0;
+    const dt = Math.min(0.1, (now - lastFrame) / 1000); lastFrame = now;
+    if (S.playing) { S.t = Math.min(endT(), S.t + dt * SPEED); if (S.t >= endT()) setPlaying(false); }
+    compute();
+    const moving = glide(dt);
+    render();
+    if (S.playing || moving) raf = requestAnimationFrame(frame);
+  }
+  function setPlaying(on) {
+    S.playing = on; playBtn.setAttribute('aria-pressed', String(on)); playBtn.setAttribute('aria-label', on ? 'Pause' : 'Play');
+    if (tipFor === playBtn) showSay(playBtn, playBtn.getAttribute('aria-label'));
+    if (on && S.t >= endT() - 1e-9) { S.t = 0; compute(); snap(); }
+    kick();   // also redraws on pause, so the playing glow switches off
+  }
+  function setT(t) { S.t = Math.max(0, Math.min(endT(), t)); kick(); }
+
+  /* ---------- wiring ---------- */
+  const playBtn = document.getElementById('tfPlay'), themeBtn = document.getElementById('tfTheme');
+  playBtn.addEventListener('click', () => setPlaying(!S.playing));
+  document.getElementById('tfReset').addEventListener('click', () => { setPlaying(false); S.t = 0; curBin = -1; compute(); snap(); render(); });
+  themeBtn.addEventListener('click', () => setTheme(document.documentElement.dataset.theme !== 'dark'));
+
+  // Full screen: this button enters and leaves it; Escape also leaves (the browser handles that).
+  const fullBtn = document.getElementById('tfFull'), root = document.documentElement;
+
+  // Tips on or off. On by default; the choice is remembered in this browser.
+  const tipsBtn = document.getElementById('tfTips');
+  function setTips(on) {
+    root.classList.toggle('tf-notips', !on);
+    tipsBtn.setAttribute('aria-pressed', String(on)); tipsBtn.setAttribute('aria-label', on ? 'Hide the tips' : 'Show the tips');
+    if (!on) hideTip();
+    try { localStorage.setItem('tf-tips', on ? 'on' : 'off'); } catch (e) {}
+  }
+  tipsBtn.addEventListener('click', e => { e.stopPropagation(); setTips(root.classList.contains('tf-notips')); say(tipsBtn); });
+  let tipsOn = true; try { tipsOn = localStorage.getItem('tf-tips') !== 'off'; } catch (e) {}
+  setTips(tipsOn);
+  // hover (or keyboard focus) on any top-right control: a small popup naming what a click will do
+  const say = b => { if (tipFor === b || b.matches(':hover') || b.matches(':focus-visible')) showSay(b, b.getAttribute('aria-label')); };
+  for (const b of [tipsBtn, fullBtn, document.getElementById('tfTheme'), document.getElementById('tfPlay'), document.getElementById('tfReset')]) {
+    b.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') showSay(b, b.getAttribute('aria-label')); });
+    b.addEventListener('pointerleave', () => hideTip(b));
+    b.addEventListener('focus', () => { if (b.matches(':focus-visible')) showSay(b, b.getAttribute('aria-label')); });
+    b.addEventListener('blur', () => hideTip(b));
+  }
+  const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const canFs = !!(root.requestFullscreen || root.webkitRequestFullscreen);
+  // Desktop only: a fine pointer and a wide window. Phones and tablets never see the button.
+  const desktop = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 761px)');
+  const showFull = () => { fullBtn.hidden = !canFs || !desktop.matches; };
+  showFull(); if (desktop.addEventListener) desktop.addEventListener('change', showFull);
+  fullBtn.addEventListener('click', () => {
+    if (fsEl()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    else (root.requestFullscreen || root.webkitRequestFullscreen).call(root);
+  });
+  const onFs = () => { const on = !!fsEl(); fullBtn.setAttribute('aria-pressed', String(on)); fullBtn.setAttribute('aria-label', on ? 'Exit full screen' : 'Enter full screen'); if (tipFor === fullBtn) showSay(fullBtn, fullBtn.getAttribute('aria-label')); requestAnimationFrame(() => { render(); render(); }); };
+  document.addEventListener('fullscreenchange', onFs); document.addEventListener('webkitfullscreenchange', onFs);
+  document.querySelectorAll('[data-show]').forEach(b => b.addEventListener('click', () => {
+    S.show = b.dataset.show; document.querySelectorAll('[data-show]').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+    layoutPanels(); draw();
+  }));
+  function layoutPanels() {
+    const phone = window.matchMedia('(max-width:760px)').matches;
+    panels.forEach(p => { p.el.hidden = phone && p.mode !== S.show; });
+  }
+  // One hover state for the whole page: the same callout lights on both graphs, and hovering a gap
+  // box also lights the two lines in the accuracy tracker.
+  // which stretch ('seg0'..'seg3') is hovered, or -1
+  const segHover = k => (k && k.startsWith('seg')) ? +k.slice(3) : -1;
+  // hit test a graph's stretches: the numbered markers first, then the path itself
+  function segHit(sh, x, y) {
+    if (!sh) return null;
+    for (const [mx, my, rr, c] of sh.markers) if (Math.hypot(x - mx, y - my) <= rr + 3) return 'seg' + c;
+    for (const [s, poly] of sh.polys) for (let i = 1; i < poly.length; i++) {
+      const [x1, y1] = poly[i - 1], [x2, y2] = poly[i], L2 = (x2 - x1) ** 2 + (y2 - y1) ** 2 || 1;
+      const u = Math.max(0, Math.min(1, ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / L2));
+      if (Math.hypot(x - (x1 + u * (x2 - x1)), y - (y1 + u * (y2 - y1))) <= 5) return 'seg' + s;
+    }
+    return null;
+  }
+  function setHover(k) { panels.forEach(q => { q.hover = k; }); render(); }
+  // hover a callout, its line or its point to light it up (on both graphs at once)
+  panels.forEach(p => {
+    const at = e => { const r = p.cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    // linked: hovering a callout on one graph lights the same callout on the other graph too
+    const set = k => { if (p.hover !== k) { setHover(k); p.cv.style.cursor = k ? 'pointer' : ''; } };
+    const find = e => { const [x, y] = at(e); return (p.hits && hitTest(p.hits, x, y)) || segHit(p.segHits, x, y); };
+    p.cv.addEventListener('pointermove', e => set(find(e)));
+    p.cv.addEventListener('pointerdown', e => set(find(e)));
+    p.cv.addEventListener('pointerleave', () => set(null));
+  });
+  let drag = false;
+  function nearLine(x, y) {
+    for (const pl of Object.values(stripLines)) for (let i = 2; i < pl.length; i += 2) {
+      const x1 = pl[i - 2], y1 = pl[i - 1], x2 = pl[i], y2 = pl[i + 1], L2 = (x2 - x1) ** 2 + (y2 - y1) ** 2 || 1;
+      const u = Math.max(0, Math.min(1, ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / L2));
+      if (Math.hypot(x - (x1 + u * (x2 - x1)), y - (y1 + u * (y2 - y1))) <= 6) return true;
+    }
+    return false;
+  }
+  // drag on either the timekeeper or the schedule: same axis, so both playheads move together
+  for (const cv of [stripCv, tl]) {
+    cv.addEventListener('pointerdown', e => {
+      if (!TLG) return; const r = cv.getBoundingClientRect(), x = e.clientX - r.left;
+      if (x < TLG.G - 4) return;
+      drag = true; cv.setPointerCapture(e.pointerId); setPlaying(false); setT(TLG.inv(x));
+    });
+    cv.addEventListener('pointermove', e => {
+      const r = cv.getBoundingClientRect();
+      if (drag) { setT(TLG.inv(e.clientX - r.left)); return; }
+      if (cv === stripCv && e.pointerType === 'mouse') {   // a tracker line lights the gap boxes; a badge lights its stretch
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        let k = nearLine(x, y) ? 'acc' : null;
+        if (!k) for (const [bx, by, rr, c] of stripBadges) if (Math.hypot(x - bx, y - by) <= rr + 3) k = 'seg' + c;
+        if (k !== panels[0].hover) { setHover(k); cv.style.cursor = k ? 'pointer' : ''; }
+      }
+    });
+    cv.addEventListener('pointerleave', () => { if (cv === stripCv && panels[0].hover) { setHover(null); cv.style.cursor = ''; } });
+    cv.addEventListener('pointerup', () => { drag = false; });
+    cv.addEventListener('pointercancel', () => { drag = false; });
+  }
+  document.addEventListener('keydown', e => {
+    if (e.target.closest && e.target.closest('button, summary, input')) return;
+    if (e.code === 'Space') { e.preventDefault(); setPlaying(!S.playing); }
+    if (e.key === 'ArrowRight') { setPlaying(false); setT(S.t + 5); }
+    if (e.key === 'ArrowLeft') { setPlaying(false); setT(S.t - 5); }
+  });
+  let rz; window.addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { layoutPanels(); draw(); }); });
+
+  // URL switches for recording: ?theme=dark  ?t=80  ?play
+  const qs = new URLSearchParams(location.search);
+  let dark = false; try { dark = localStorage.getItem('tf-theme') === 'dark'; } catch (e) {}
+  if (qs.has('theme')) dark = qs.get('theme') === 'dark';
+  if (qs.has('t')) S.t = Math.max(0, Math.min(endT(), parseFloat(qs.get('t')) || 0));
+  layoutPanels();
+  setTheme(dark);
+  if (qs.has('play')) setPlaying(true);
+})();
+</script>
+</body>
+</html>

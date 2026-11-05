@@ -1,20 +1,7 @@
 .DS_Store
-contact-mailer-worker/node_modules/
 
-# working drafts of the moonflower page — local only.
-# the published page is moonflower.html
-pitch.html
-pitch[0-9].html
-
-# old page versions, unused images and working files — local only, never deployed.
+# old page versions, unused files and backups: local only, never deployed.
 _archive/
 
-# full-resolution camera originals for the symposium photos (~113MB).
-# the web-sized .webp versions next to them are what ship.
-images/portfolio/geometry-of-confidence/NASA*.png
-
-# review screenshots the desktop app saves here — never deployed.
+# review screenshots the desktop app saves here: never deployed.
 Claude outputs/
-
-# numbered drafts of portfolio pieces — local only, never deployed.
-portfolio/*-v[0-9].html
