@@ -41,8 +41,12 @@ body{background:var(--paper);color:var(--text);font-family:var(--mono);font-size
 .tf{max-width:1320px;margin:0 auto;padding:clamp(14px,2.4vw,28px) clamp(14px,2.4vw,28px) 40px}
 
 /* ---------- header ---------- */
-.tf-head{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:16px;margin-bottom:clamp(12px,1.8vw,20px)}
-.tf-head .tf-h2{grid-column:1 / -1}
+.tf-head{display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:14px;margin-bottom:clamp(12px,1.8vw,20px)}
+.tf-head .tf-h2{grid-column:2 / -1}
+/* the logo tile: same height as the buttons at the right, shown at full fidelity */
+.tf-logo{width:36px;height:36px;border:1.5px solid var(--rail);border-radius:6px;overflow:hidden;background:#FFFFFF;display:grid;place-items:center;flex:none;box-shadow:0 2px 0 var(--rail)}
+.tf-logo img{width:100%;height:100%;object-fit:contain;display:block}
+.tf-logo span{font-family:var(--mono);font-size:10px;color:#12263F;letter-spacing:.08em}
 .tf-h2{font-family:var(--display);font-weight:900;font-size:clamp(14px,1.6vw,19px);line-height:1.25;margin:6px 0 0;color:var(--dynamic);text-wrap:balance}
 .tf-fit .tf-h2{font-size:clamp(13px,2.2vh,19px);margin-top:clamp(2px,.5vh,6px)}
 .tf-head p{margin:6px 0 0;font-size:clamp(13px,1.3vw,15px)}
@@ -57,12 +61,12 @@ body{background:var(--paper);color:var(--text);font-family:var(--mono);font-size
 .tf-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 .tf-led{width:8px;height:8px;border-radius:50%;background:var(--ledoff);flex:none;transition:background .15s,box-shadow .15s}
 .tf-btn[aria-pressed="true"] .tf-led{background:var(--amber);box-shadow:0 0 6px var(--amber)}
-/* theme toggle: moon in light mode, sun in dark mode */
+/* theme toggle shows the mode you are in: sun in light mode, moon in dark mode */
 .tf-icon{padding:7px 9px}
 .tf-icon svg{display:block}
-.tf-sun{display:none !important}
-:root[data-theme="dark"] .tf-sun{display:block !important}
-:root[data-theme="dark"] .tf-moon{display:none !important}
+.tf-moon{display:none !important}
+:root[data-theme="dark"] .tf-moon{display:block !important}
+:root[data-theme="dark"] .tf-sun{display:none !important}
 /* full screen toggle: expand arrows normally, inward arrows while full screen */
 .tf-exit{display:none !important}
 #tfFull[aria-pressed="true"] .tf-exit{display:block !important}
@@ -78,7 +82,10 @@ body{background:var(--paper);color:var(--text);font-family:var(--mono);font-size
 .tf-fit .tf-time{margin-top:clamp(8px,1.6vh,22px)}
 
 /* ---------- the two forecast panels ---------- */
-.tf-mob{display:none;gap:6px;margin-bottom:10px}
+.tf-pick{appearance:none;background:none;border:0;padding:0;margin:0;font:inherit;letter-spacing:inherit;color:inherit;display:inline-flex;align-items:center;gap:8px;cursor:default}
+.tf-mini{display:none;font-family:var(--display);font-variant-numeric:tabular-nums}
+.tf-name[data-mode="static"] .tf-mini{color:var(--static)}
+.tf-name[data-mode="dynamic"] .tf-mini{color:var(--dynamic)}
 .tf-panels{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.8vw,22px)}
 .tf-panel{margin:0;min-width:0}
 .tf-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-bottom:8px}
@@ -134,7 +141,13 @@ body{background:var(--paper);color:var(--text);font-family:var(--mono);font-size
 .tf-fit .tf-pa{margin-bottom:clamp(3px,.6vh,8px)}
 
 @media (max-width:760px){
-  .tf-mob{display:flex}
+  /* phones: the two labels are the switch for which graph shows, each with its live gap-closed number */
+  .tf-pick{cursor:pointer;border:1.5px solid var(--rail);border-radius:6px;padding:6px 9px;background:var(--plot);box-shadow:0 2px 0 var(--rail);opacity:.62;transition:transform .06s,box-shadow .06s,opacity .12s}
+  .tf-pick[aria-pressed="true"]{opacity:1;transform:translateY(2px);box-shadow:0 0 0 var(--rail)}
+  .tf-name[data-mode="static"] .tf-pick[aria-pressed="true"]{border-color:var(--static);box-shadow:inset 0 -3px 0 var(--static)}
+  .tf-name[data-mode="dynamic"] .tf-pick[aria-pressed="true"]{border-color:var(--dynamic);box-shadow:inset 0 -3px 0 var(--dynamic)}
+  .tf-pick:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  .tf-mini{display:inline;font-size:14px}
   .tf-panels{grid-template-columns:1fr}
   .tf-panel[hidden]{display:none}
   .tf-name{font-size:13px;gap:6px}
@@ -148,12 +161,22 @@ body{background:var(--paper);color:var(--text);font-family:var(--mono);font-size
   .tf-side[data-mode="dynamic"]{grid-area:d}
 }
 @media (max-width:420px){
+  .tf-pick .tf-sw{display:none}
+  .tf-head{column-gap:10px}
+  .tf-head .tf-h2{grid-column:1 / -1}
+  .tf-pick{padding:5px 7px;gap:6px}
+  .tf-row .tf-name{font-size:12px;gap:4px}
+  .tf-mini{font-size:13px}
 }
 </style>
 </head>
 <body>
 <main class="tf">
   <header class="tf-head">
+    <a class="tf-logo" href="../" aria-label="aamir.consulting home">
+      <img src="../images/logo.png" alt="aamir.consulting logo" width="36" height="36"
+           onerror="var p=this.parentNode;this.remove();p.insertAdjacentHTML('beforeend','<span>a.c</span>')">
+    </a>
     <h1>Running Late?</h1>
     <div class="tf-ctrls">
       <button class="tf-btn tf-icon" id="tfTips" aria-pressed="true" aria-label="Hide the tips">
@@ -171,14 +194,9 @@ body{background:var(--paper);color:var(--text);font-family:var(--mono);font-size
     <h2 class="tf-h2">Dynamic forecasts use project actuals to find the real answer sooner when overruns share a cause.</h2>
   </header>
 
-  <div class="tf-mob" role="group" aria-label="Forecast shown">
-    <button class="tf-btn" data-show="static" aria-pressed="true"><i class="tf-led"></i>Static</button>
-    <button class="tf-btn" data-show="dynamic" aria-pressed="false"><i class="tf-led"></i>Dynamic</button>
-  </div>
-
   <section class="tf-row">
     <div class="tf-side" data-mode="static">
-      <span class="tf-name" data-mode="static" data-bulb="static"><span class="tf-sw"></span>STATIC</span>
+      <span class="tf-name" data-mode="static" data-bulb="static"><button class="tf-pick" data-show="static" aria-pressed="true" aria-label="Show the static graph"><span class="tf-sw"></span>STATIC<b class="tf-mini" id="tfMiniS">0%</b></button></span>
     </div>
     <div class="tf-center">
       <button class="tf-btn tf-icon" id="tfPlay" aria-pressed="false" aria-label="Play">
@@ -194,7 +212,7 @@ body{background:var(--paper);color:var(--text);font-family:var(--mono);font-size
       </button>
     </div>
     <div class="tf-side tf-right" data-mode="dynamic">
-      <span class="tf-name tf-right" data-mode="dynamic" data-bulb="dynamic">DYNAMIC<span class="tf-sw"></span></span>
+      <span class="tf-name tf-right" data-mode="dynamic" data-bulb="dynamic"><button class="tf-pick" data-show="dynamic" aria-pressed="false" aria-label="Show the dynamic graph"><b class="tf-mini" id="tfMiniD">0%</b>DYNAMIC<span class="tf-sw"></span></button></span>
     </div>
   </section>
 
@@ -564,7 +582,7 @@ function planTargets(X, Y, level) {
   /* ---------- light bulbs: hover, focus or tap for a one-sentence explanation ---------- */
   const TIPS = {
     "static": "Static locks in each finished task's real time and cost, but keeps every remaining task at its day-one estimate.",
-    "dynamic": "Dynamic also locks in each finished task, then uses how far the finished work ran over to re-estimate everything still to come.",
+    "dynamic": "Dynamic uses Bayesian updating: it also locks in each finished task, then uses how far the finished work ran over to re-estimate everything still to come.",
     "cloud": "Each dot is one of 3,000 simulated ways the project could end, placed by its finish date and total cost.",
     "forecast": "The forecast is the center of the cloud, and its line traces how that center has moved since day one, with a numbered marker at each checkpoint.",
     "actual": "The star is when the project really finished and what it really cost, shown from the start so you can watch each forecast close in on it.",
@@ -982,7 +1000,7 @@ function planTargets(X, Y, level) {
 
   /* ---------- draw + playback ---------- */
   // the day counter: calendar day of the project out of the days it actually runs
-  const actEl = document.getElementById('tfAct'), dayEl = document.getElementById('tfDay'), daysEl = document.getElementById('tfDays'), fillEl = document.getElementById('tfPfill'), progEl = document.getElementById('tfProg');
+  const miniS = document.getElementById('tfMiniS'), miniD = document.getElementById('tfMiniD'), actEl = document.getElementById('tfAct'), dayEl = document.getElementById('tfDay'), daysEl = document.getElementById('tfDays'), fillEl = document.getElementById('tfPfill'), progEl = document.getElementById('tfProg');
   const calDay = x => Math.round((dateAt(x) - WD[0]) / 86400000);
   function drawProgress() {
     const total = calDay(endT()), now = Math.min(total, calDay(S.t));
@@ -990,6 +1008,8 @@ function planTargets(X, Y, level) {
     fillEl.style.width = (now / total * 100).toFixed(2) + '%';
     actEl.style.setProperty('--fill', (now / total * 100).toFixed(2) + '%');
     progEl.setAttribute('aria-valuemax', total); progEl.setAttribute('aria-valuenow', now);
+    miniS.textContent = Math.round(accuracy('static') * 100) + '%';
+    miniD.textContent = Math.round(accuracy('dynamic') * 100) + '%';
   }
   function render() { measureFit(); panels.forEach(drawScatter); drawProgress(); drawStrip(); drawSchedule(); }
 
@@ -1098,7 +1118,7 @@ function planTargets(X, Y, level) {
     const find = e => { const [x, y] = at(e); return (p.hits && hitTest(p.hits, x, y)) || segHit(p.segHits, x, y); };
     p.cv.addEventListener('pointermove', e => set(find(e)));
     p.cv.addEventListener('pointerdown', e => set(find(e)));
-    p.cv.addEventListener('pointerleave', () => set(null));
+    p.cv.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') set(null); });
   });
   let drag = false;
   function nearLine(x, y) {
@@ -1112,8 +1132,10 @@ function planTargets(X, Y, level) {
   // drag on either the timekeeper or the schedule: same axis, so both playheads move together
   for (const cv of [stripCv, tl]) {
     cv.addEventListener('pointerdown', e => {
-      if (!TLG) return; const r = cv.getBoundingClientRect(), x = e.clientX - r.left;
+      if (!TLG) return; const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      if (cv === stripCv) for (const [bx, by, rr, c] of stripBadges) if (Math.hypot(x - bx, y - by) <= rr + 6) { setHover('seg' + c); return; }
       if (x < TLG.G - 4) return;
+      if (e.pointerType !== 'mouse' && panels[0].hover) setHover(null);   // a tap-and-drag elsewhere clears a tapped highlight
       drag = true; cv.setPointerCapture(e.pointerId); setPlaying(false); setT(TLG.inv(x));
     });
     cv.addEventListener('pointermove', e => {
@@ -1126,7 +1148,7 @@ function planTargets(X, Y, level) {
         if (k !== panels[0].hover) { setHover(k); cv.style.cursor = k ? 'pointer' : ''; }
       }
     });
-    cv.addEventListener('pointerleave', () => { if (cv === stripCv && panels[0].hover) { setHover(null); cv.style.cursor = ''; } });
+    cv.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && cv === stripCv && panels[0].hover) { setHover(null); cv.style.cursor = ''; } });
     cv.addEventListener('pointerup', () => { drag = false; });
     cv.addEventListener('pointercancel', () => { drag = false; });
   }
